@@ -77,9 +77,11 @@ THook(unsigned int, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shar
 	MinecraftCommands* self, __int64 a2, std::shared_ptr<CommandContext> cmd, char a4) {
 	auto ptr = cmd.get();
 	CommandOrigin& cmdo = ptr->getOrigin();
-	auto pl = SymCall("?getEntity@PlayerCommandOrigin@@UEBAPEAVActor@@XZ", Player*, void*)(&cmdo);
-	std::cout << "[" << gettime() << u8" INFO][BH] "<< pl->getNameTag() << " CMD " << ptr->getCmd() << endl;
-	return original(self, a2, cmd,a4);
+	if (cmdo.getOriginType() == OriginType::Player) {
+		auto pl = SymCall("?getEntity@PlayerCommandOrigin@@UEBAPEAVActor@@XZ", Player*, void*)(&cmdo);
+		std::cout << "[" << gettime() << u8" INFO][BH] " << pl->getNameTag() << " CMD " << ptr->getCmd() << endl;
+	}
+	return original(self, a2, cmd, a4);
 }
 
 THook(void*, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
