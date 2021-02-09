@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Helper.h"
 #include <unordered_map>
 
 using namespace std;
@@ -65,11 +66,6 @@ void loadCfg() {
 	}
 }
 
-namespace perm {
-	char getPermissionLevel(Player* _this) {
-		return  *(*(char**)((uintptr_t)_this + 2216));
-	}
-}
 
 THook(void*, "?fireEventPlayerMessage@MinecraftEventing@@AEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@000@Z",
 	void* _this, std::string& player_name, std::string& xu, std::string& msg, std::string& chat_style) {
@@ -122,13 +118,17 @@ THook(void*, "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z", void* a, void*
 THook(bool, "?useItem@GameMode@@UEAA_NAEAVItemStack@@@Z",
 	void* _this, ItemStack& item) {
 	auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(_this) + 8);
-	cout << perm::getPermissionLevel(sp) << endl;;
+	cout << perm::getPermissionLevel(sp) << endl;
 	return original(_this, item);
+}
+
+THook(void, "?setup@HelpCommand@@SAXAEAVCommandRegistry@@@Z",
+	void* self) {
+	if (regABILITY) 
+		SymCall("?setup@AbilityCommand@@SAXAEAVCommandRegistry@@@Z", void, void*)(self);
+	return original(self);
 }
 
 void entry() {
 	loadCfg();
-	if (regABILITY) {
-		SymCall("?setup@AbilityCommand@@SAXAEAVCommandRegistry@@@Z", void, CommandRegistry&)(LocateS<CommandRegistry>());
-	}
 }

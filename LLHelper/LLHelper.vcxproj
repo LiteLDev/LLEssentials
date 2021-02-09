@@ -83,6 +83,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)headers;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <OutDir>..\..\..\..\Desktop\bds\plugins</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -154,7 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="framework.h" />
+    <ClInclude Include="Helper.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
