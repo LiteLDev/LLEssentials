@@ -8,7 +8,28 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
-
+using namespace std;
 #include <iostream>
 #include <loader/Loader.h>
+#include<streambuf>
+#include <map>
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/document.h"
+#include <fstream>
+#include <sstream>
+#include "mc/Player.h"
+#include "mc/Level.h"
+#include "mc/mass.h"
+#include "mc/Block.h"
+#include "mc/BlockSource.h"
+#include "mc/Item.h"
+#include "mc/command/command.h"
+#include <ctime>
+#include <chrono>
+#include<unordered_set>
+#include<JsonLoader.h>
+extern bool EXP_PLAY;
+extern int explosion_land_dist;
+extern bool NO_EXPLOSION;
+extern bool NOGREYTEXT;
 #endif //PCH_H

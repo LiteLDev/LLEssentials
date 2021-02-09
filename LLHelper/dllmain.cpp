@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "framework.h"
 
+void entry();
 
 BOOL APIENTRY DllMain(HMODULE hModule,
     DWORD  ul_reason_for_call,
@@ -22,5 +23,6 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 extern "C" {
     _declspec(dllexport) void onPostInit() {
         std::ios::sync_with_stdio(false);
+        entry();
     }
 }

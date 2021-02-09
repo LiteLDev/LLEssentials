@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "Core.h"
+#include<vector>
+using namespace std;
+
 class ItemStackBase {
 	char filler[136];
 

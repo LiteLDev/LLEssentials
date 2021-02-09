@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{a1bb280d-36d6-4515-9922-aa2173921e75}</ProjectGuid>
-    <RootNamespace>CMDMAP</RootNamespace>
+    <RootNamespace>LLHelper</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>LLHelper</ProjectName>
   </PropertyGroup>
