@@ -24,6 +24,8 @@ using namespace std;
 #include "mc/BlockSource.h"
 #include "mc/Item.h"
 #include "mc/command/command.h"
+#include <api/types/helper.h>
+#include <api/types/types.h>
 #include <ctime>
 #include <chrono>
 #include<unordered_set>
