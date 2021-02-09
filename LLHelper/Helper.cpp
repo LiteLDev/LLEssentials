@@ -48,7 +48,7 @@ void loadCfg() {
 		for (auto i : items) banItems.insert(i);
 	}
 	catch (string e) {
-		printf("[BDXHelper] json error %s\n", e.c_str());
+		printf("[LLHelper] json error %s\n", e.c_str());
 		throw 0;
 	}
 }
@@ -77,10 +77,10 @@ THook(void*, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
 	return original(_this, a2, a3);
 }
 
-THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
-	void* _this, Player* a2) {
-	std::cout << "[" << gettime() << u8" INFO][BH] " << a2->getNameTag() << " joined server " << endl;
-	return original(_this, a2);
+THook(void*, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdentifier@@AEBVConnectionRequest@@AEAVServerPlayer@@@Z",
+	ServerNetworkHandler* _this, NetworkIdentifier* a1, void* ConnectionRequest, ServerPlayer* a4) {
+	std::cout << "[" << gettime() << u8" INFO][BH] " << a4->getNameTag() << " joined server IP:"<< liteloader::getIP(*a1) << endl;
+	return original(_this, a1, ConnectionRequest,a4);
 }
 
 THook(void, "?explode@Level@@QEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",

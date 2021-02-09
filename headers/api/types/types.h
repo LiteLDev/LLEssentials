@@ -122,9 +122,9 @@ struct WPlayer : Wrapped<ServerPlayer> {
 	}
 	//LIAPI class NetworkIdentifier* _getNI();
 	//LIAPI class Certificate* _getCert();
-	/*inline string getIP() {
-		return liteloader::getIP(*_getNI());
-	}*/
+	//inline string getIP() {
+	//	return liteloader::getIP(*_getNI());
+	//}
 };
 struct WItem : Wrapped<ItemStack> {
 	WItem(ItemStack& is) : Wrapped<ItemStack>(is) {}
