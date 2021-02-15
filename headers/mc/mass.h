@@ -1,7 +1,6 @@
 ﻿#pragma once
-//#include<api\serviceLocate.h>
-#include <api/serviceLocate.h>
-#include <loader/Loader.h>
+#include<api/serviceLocate.h>
+#include<loader\Loader.h>
 #include <mc/Core.h>
 
 struct MCRESULT {
@@ -75,19 +74,17 @@ struct RakPeer_t {
 	}
 };
 class ServerPlayer;
-
 class ServerNetworkHandler {
 public:
 	//class ServerPlayer * __ptr64 __cdecl ServerNetworkHandler::_getServerPlayer(class NetworkIdentifier const & __ptr64,unsigned char)
-	/*ServerPlayer* _getServerPlayer(NetworkIdentifier const& a0, unsigned char a1) {
+	ServerPlayer* _getServerPlayer(NetworkIdentifier const& a0, unsigned char a1) {
 		return SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z", ServerPlayer*, decltype(this), decltype(a0), decltype(a1))(this, a0, a1);
 	}
 	MCINLINE void disconnectClient(class NetworkIdentifier const& a, class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>> const& b, bool c) {
 		return SymCall("?disconnectClient@ServerNetworkHandler@@QEAAXAEBVNetworkIdentifier@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z", void, void*, class NetworkIdentifier const&, class std::basic_string<char, struct std::char_traits<char>, class std::allocator<char>> const&, bool)(this, a, b, c);
 	}
 	MCINLINE void onDisconnect(class NetworkIdentifier const& a0) { SymCall("?onDisconnect@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N1@Z", void, ServerNetworkHandler const*, class NetworkIdentifier const&)(this, a0); }
-*/};
-
+};
 class Minecraft {
 public:
 	MCINLINE class Level* getLevel() {

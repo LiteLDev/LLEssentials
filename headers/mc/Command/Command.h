@@ -1,5 +1,5 @@
 ﻿#pragma once
-//#include<lbpch.h>
+#include<lbpch.h>
 //MC_COMMAND_EXTRA
 class CommandRegistry;
 class CommandOrigin;
@@ -182,7 +182,7 @@ public:
 	std::vector<InvertableFilter<std::string>> namefilters;								// 16
 	std::vector<InvertableFilter<ActorDefinitionIdentifier>> typefilter2;				// 40
 	std::vector<InvertableFilter<std::string>> tagfilters;								// 64
-	//std::vector<std::function<bool(CommandOrigin const&, Actor const&)>> customfilters; // 88
+	std::vector<std::function<bool(CommandOrigin const&, Actor const&)>> customfilters; // 88
 	char position[16];																	// 112
 	BlockPos box;																		// 128
 	float radiusMin;																	// 140
@@ -253,7 +253,7 @@ public:
 			SymCall("??0CommandSelectorBase@@IEAA@_N@Z", void, void*, bool)(this, isPlayer);
 	}
 };
-//static_assert(offsetof(CommandSelectorBase, explicitIdSelector) == 165);
+static_assert(offsetof(CommandSelectorBase, explicitIdSelector) == 165);
 template <typename T>
 class CommandSelector : public CommandSelectorBase {
 public:
