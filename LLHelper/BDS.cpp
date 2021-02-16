@@ -2,18 +2,18 @@
 #include "BDS.h"
 #include "Helper.h"
 
-inline void setPlayerGameType(Player* pl, int t) {
+void setPlayerGameType(Player* pl, int t) {
 	SymCall("?setPlayerGameType@ServerPlayer@@UEAAXW4GameType@@@Z", void, Player*, int)(pl, t);
 }
 
-inline void* createPacket(int id) {
+void* createPacket(int id) {
 	void* ret;
 	SymCall("?createPacket@MinecraftPackets@@SA?AV?$shared_ptr@VPacket@@@std@@W4MinecraftPacketIds@@@Z",
 		void*, void**, int)(&ret, id);
 	return ret;
 }
 
-inline void forceKick(void* pl, string msg) {
+void forceKick(void* pl, string msg) {
 	auto fc = [pl, msg] {
 		void* network = (void*)((uintptr_t)pl + 2536); //ServerPlayer::isHostingPlayer
 		SymCall("?disconnectClient@ServerNetworkHandler@@QEAAXAEBVNetworkIdentifier@@EAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z",
