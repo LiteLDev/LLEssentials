@@ -1,9 +1,9 @@
 #include "pch.h"
+#include "BDS.h"
 #include "Helper.h"
-#include "tickdo.h"
 
-void setPlayerGameType(Player* pl,int t) {
-	SymCall("?setPlayerGameType@Player@@UEAAXW4GameType@@@Z", void, Player*, int)(pl, t);
+void setPlayerGT(Player* pl, int t) {
+	SymCall("?setPlayerGameType@ServerPlayer@@UEAAXW4GameType@@@Z", void, Player*, int)(pl, t);
 }
 
 void* createPacket(int id) {

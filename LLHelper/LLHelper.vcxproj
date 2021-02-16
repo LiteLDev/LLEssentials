@@ -155,13 +155,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BDS.hpp" />
+    <ClInclude Include="BDS.h" />
+    <ClInclude Include="commad.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="tickdo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BDS.cpp" />
     <ClCompile Include="command.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="dllmain.cpp" />

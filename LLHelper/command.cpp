@@ -1,13 +1,13 @@
 #include "pch.h"
 #include <api/Basic_Event.h>
 #include <api/commands.h>
-#include "BDS.hpp"
+#include "commad.h"
 
 bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player>& s, int mode) {
 	auto res = s.results(ori);
 	if (!Command::checkHasTargets(res, outp)) return false;
 	for (auto i : res) {
-		setPlayerGameType(i, mode);
+		setPlayerGT(i, mode);
 	}
 	return true;
 }

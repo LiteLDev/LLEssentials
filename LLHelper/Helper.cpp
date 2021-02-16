@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Helper.h"
 #include <unordered_map>
-
+#include "commad.h"
 using namespace std;
 Logger LOG("./liteloader.log");
 unordered_map<string, string> CMDMAP, CMDSCHEDULE;
@@ -40,6 +40,7 @@ void loadCfg() {
 
 void entry() {
 	loadCfg();
+	REGCMD();
 }
 
 THook(bool, "?useItem@GameMode@@UEAA_NAEAVItemStack@@@Z",

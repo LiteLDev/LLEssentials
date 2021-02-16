@@ -24,10 +24,13 @@
     <ClInclude Include="Logger.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="BDS.hpp">
+    <ClInclude Include="tickdo.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="tickdo.h">
+    <ClInclude Include="BDS.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="commad.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -51,6 +54,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="command.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="BDS.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
