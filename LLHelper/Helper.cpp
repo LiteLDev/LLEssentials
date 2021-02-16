@@ -47,7 +47,7 @@ THook(bool, "?useItem@GameMode@@UEAA_NAEAVItemStack@@@Z",
 	std::string id = std::to_string(item->getId());
 	if (CMDMAP.count(id)) {
 		auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(self) + 8);
-		liteloader::runcmd("execute \"" + sp->getNameTag() + "\" ~~~ " + CMDMAP[id]);
+		liteloader::runcmd("execute \"" + offPlayer::getRealName(sp) + "\" ~~~ " + CMDMAP[id]);
 	}
 }
 

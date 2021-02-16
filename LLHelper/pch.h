@@ -30,4 +30,5 @@ using namespace std;
 #include <chrono>
 #include<unordered_set>
 #include<JsonLoader.h>
+#include <mc/OffsetHelper.h>
 #endif //PCH_H
