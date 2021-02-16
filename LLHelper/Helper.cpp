@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "Helper.h"
-#include "Logger.h"
 #include <unordered_map>
 
 using namespace std;
+Logger LOG("./liteloader.log");
 unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
 unordered_set<short> logItems, banItems;
@@ -40,6 +40,15 @@ void loadCfg() {
 
 void entry() {
 	loadCfg();
+}
+
+THook(bool, "?useItem@GameMode@@UEAA_NAEAVItemStack@@@Z",
+	void* self, ItemStack* item) {
+	std::string id = std::to_string(item->getId());
+	if (CMDMAP.count(id)) {
+		auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(self) + 8);
+		liteloader::runcmd("execute \"" + sp->getNameTag() + "\" ~~~ " + CMDMAP[id]);
+	}
 }
 
 THook(void, "?init@Minecraft@@QEAAXXZ", void* self) {

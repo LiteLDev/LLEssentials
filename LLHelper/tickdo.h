@@ -1,4 +1,5 @@
 #pragma once
 #include <vector>
+#include <functional>
 
-std::vector func;
+extern std::vector<std::function<void()>> func;

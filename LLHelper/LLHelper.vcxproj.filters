@@ -41,13 +41,16 @@
     <ClCompile Include="Helper.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Logger.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Protect.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="tick_schedule.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="command.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

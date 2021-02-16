@@ -1,5 +1,17 @@
 #include "pch.h"
 #include "Helper.h"
+#include "tickdo.h"
+
+void setPlayerGameType(Player* pl,int t) {
+	SymCall("?setPlayerGameType@Player@@UEAAXW4GameType@@@Z", void, Player*, int)(pl, t);
+}
+
+void* createPacket(int id) {
+	void* ret;
+	SymCall("?createPacket@MinecraftPackets@@SA?AV?$shared_ptr@VPacket@@@std@@W4MinecraftPacketIds@@@Z",
+		void*, void**, int)(&ret, id);
+	return ret;
+}
 
 void forceKick(void* pl, string msg) {
 	auto fc = [pl, msg] {
