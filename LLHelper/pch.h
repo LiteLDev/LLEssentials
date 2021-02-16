@@ -30,8 +30,4 @@ using namespace std;
 #include <chrono>
 #include<unordered_set>
 #include<JsonLoader.h>
-extern bool EXP_PLAY;
-extern int explosion_land_dist;
-extern bool NO_EXPLOSION;
-extern bool NOGREYTEXT;
 #endif //PCH_H
