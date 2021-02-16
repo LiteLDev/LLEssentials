@@ -2,7 +2,7 @@
 #include "BDS.h"
 #include "Helper.h"
 
-void setPlayerGT(Player* pl, int t) {
+inline void setPlayerGameType(Player* pl, int t) {
 	SymCall("?setPlayerGameType@ServerPlayer@@UEAAXW4GameType@@@Z", void, Player*, int)(pl, t);
 }
 

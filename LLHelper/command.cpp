@@ -7,7 +7,7 @@ bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 	auto res = s.results(ori);
 	if (!Command::checkHasTargets(res, outp)) return false;
 	for (auto i : res) {
-		setPlayerGT(i, mode);
+		setPlayer(i, mode);
 	}
 	return true;
 }
