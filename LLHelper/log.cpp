@@ -7,21 +7,28 @@ THook(unsigned int, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shar
 	CommandOrigin& cmdo = ptr->getOrigin();
 	if (cmdo.getOriginType() == OriginType::Player) {
 		auto pl = SymCall("?getEntity@PlayerCommandOrigin@@UEBAPEAVActor@@XZ", Player*, void*)(&cmdo);
-		LOG << "[" << gettime() << u8" INFO][BH] " << pl->getNameTag() << " CMD " << ptr->getCmd() << endl;
+		LOG << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(pl) << " CMD " << ptr->getCmd() << endl;
 	}
 	return original(self, a2, cmd, a4);
 }
 
 THook(void*, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
 	void* _this, ServerPlayer* a2, bool a3) {
-	LOG << "[" << gettime() << u8" INFO][BH] " << a2->getNameTag() << " left server " << endl;
+	auto playerPos = a2->getPos();
+	auto px = (int)playerPos.x;
+	auto py = (int)playerPos.y;
+	auto pz = (int)playerPos.z;
+	if (px < 0)px = px - 1;
+	if (pz < 0)pz = pz - 1;
+	auto dim = a2->getDimensionId();
+	LOG << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(a2) << " left server  Pos:(" << px <<","<< py <<"," << pz <<","<<dim << ") xuid: " << offPlayer::getXUID(a2) <<endl;
 	return original(_this, a2, a3);
 }
 
 THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
 	void* _this, Player* a2) {
 	auto n = (NetworkIdentifier*)((uintptr_t)a2 + 2536);
-	LOG << "[" << gettime() << u8" INFO][BH] " << a2->getNameTag() << " joined server IP: " << liteloader::getIP(*n) << endl;
+	LOG << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(a2) << " joined server IP: " << liteloader::getIP(*n) << " xuid: "<< offPlayer::getXUID(a2) <<endl;
 	return original(_this, a2);
 }
 
@@ -33,7 +40,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 	auto itemid = item->getId();
 	if (logItems.count(itemid)) {
 		LOG << "[" << gettime() << u8" INFO][ItemLog] "
-			<< sp->getNameTag()
+			<< offPlayer::getRealName(sp)
 			<< " used logitem(" << item->getName() << ")"
 			<< " on " << blockname
 			<< "(" << bpos->toString() << ")"
@@ -52,6 +59,6 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextP
 	auto msg = std::string(*(std::string*)((uintptr_t)text + 80));
 	if (msg.length() >= MAX_CHAT_LEN)
 		return;
-	LOG << "[" << gettime() << u8" INFO][BH] <" << pl->getNameTag() << "> " << msg << endl;
+	LOG << "[" << gettime() << u8" INFO][BH] <" << offPlayer::getRealName(pl) << "> " << msg << endl;
 	return original(self, id, text);
 }
