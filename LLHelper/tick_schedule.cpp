@@ -21,7 +21,5 @@ THook(void, "?tick@Level@@UEAAXXZ", void* self) {
 	}
 	ScheduleCheck();
 	func.clear();
-	if (ticks == 10000000000)
-		ticks = 0;
 	ticks++;
 }
