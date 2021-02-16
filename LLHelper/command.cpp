@@ -7,7 +7,7 @@ bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 	auto res = s.results(ori);
 	if (!Command::checkHasTargets(res, outp)) return false;
 	for (auto i : res) {
-		setPlayer(i, mode);
+		setPlayerGameType(i, mode);
 	}
 	return true;
 }
