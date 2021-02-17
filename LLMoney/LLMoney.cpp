@@ -16,7 +16,7 @@
 #include<fstream>
 #include<streambuf>
 #include<api/Basic_Event.h>
-#include<api/xuidreg.h>
+#include<api/xuidreg/xuidreg.h>
 #include <llmoney.h>
 double MoneyFee;
 LangPack LP("langpack/money.json");
