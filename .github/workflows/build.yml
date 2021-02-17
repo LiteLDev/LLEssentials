@@ -31,7 +31,6 @@ jobs:
         mkdir D:/out
         mkdir D:/out/lib
         mkdir D:/out/headers
-        mkdir D:/out/config
     
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -39,7 +38,8 @@ jobs:
         cp -a x64/Release/*.dll D:/out
         cp -a x64/Release/*.lib D:/out/lib
         cp -a headers/llmoney.h D:/out/headers
-        cp -a config/* D:/out/config
+        cp -a config/ D:/out/config
+        cp -a langpack/ D:/out/langpack
       shell: bash
         
     - name: Upload artifact

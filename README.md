@@ -2,8 +2,9 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-Some example plugins for LiteLoader  
-一些LiteLoader的示例插件
+Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  
+一些[LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  的示例插件
+
 # Contributors ✨
 
 
