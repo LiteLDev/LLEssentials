@@ -86,6 +86,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			money_t fee = (money_t)(val * MoneyFee);
 			if (fee)
 				createTrans(dstxuid.val(), 0, fee, "money pay fee");
+			outp.success("pay success");
 			return true;
 		}
 		else {
@@ -100,6 +101,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			return false;
 		}
 		if (setMoney(dstxuid.val(), val)) {
+			outp.success("set success");
 			return true;
 		}
 		else {
@@ -113,6 +115,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			return false;
 		}
 		if (createTrans(0, dstxuid.val(), val, "money add")) {
+			outp.success("add success");
 			return true;
 		}
 		else {

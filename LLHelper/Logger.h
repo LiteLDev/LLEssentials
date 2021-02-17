@@ -1,7 +1,7 @@
 #pragma once
 #define endl "\n";
 #pragma warning(disable:4996)
-
+#include "pch.h"
 inline string gettime()
 {
 	time_t rawtime;

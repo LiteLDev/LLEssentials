@@ -19,7 +19,7 @@ using namespace std;
 #include <sstream>
 #include "mc/Player.h"
 #include "mc/Level.h"
-#include "mc/mass.h"
+#include <mc/mass.h>
 #include "mc/Block.h"
 #include "mc/BlockSource.h"
 #include "mc/Item.h"
@@ -30,6 +30,13 @@ using namespace std;
 #include <chrono>
 #include<unordered_set>
 #include<JsonLoader.h>
-#include <mc/OffsetHelper.h>
 #include "BDS.h"
+#include<stl\KVDB.h>
+#include <api/xuidreg/xuidreg.h>
+#include <stl/viewhelper.h>
+#include <mc/Certificate.h>
+#include <string>
+#include<api/serviceLocate.h>
+static std::map<xuid_t, Player*> onlinePlayers;
+#include<mc/OffsetHelper.h>
 #endif //PCH_H
