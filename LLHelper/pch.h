@@ -37,6 +37,9 @@ using namespace std;
 #include <mc/Certificate.h>
 #include <string>
 #include<api/serviceLocate.h>
-static std::map<xuid_t, Player*> onlinePlayers;
+#include<api/refl/playerMap.h>
 #include<mc/OffsetHelper.h>
+#include<api/myPacket.h>
+#include<stl/Bstream.h>
+#include<stl/varint.h>
 #endif //PCH_H

@@ -6,6 +6,7 @@ THook(void, "?explode@Level@@QEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 	if (NO_EXPLOSION) {
 		return;
 	}
+	return original(_this, a2, a3, a4,a5,a6,a7,a8,a9);
 }
 
 THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
@@ -13,6 +14,7 @@ THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlock
 	if (NO_EXPLOSION) {
 		return;
 	}
+	return original(a1,a2,a3,a4);
 }
 
 THook(void*, "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z", void* a, void* b) {

@@ -13,17 +13,17 @@ inline string gettime()
 	return string(timestr);
 }
 
-class Logger {
+class Logger1 {
 	std::string path;
 	std::ofstream logfile;
 public:
-	Logger(std::string path) {
+	Logger1(std::string path) {
 		this->path = path;
 		logfile.open(path, std::ios::app);
 		logfile << "[" << gettime() << " INFO ] Server Started" << endl;
 	}
 	template <typename T>
-	Logger& operator<< (T msg) {
+	Logger1& operator<< (T msg) {
 		logfile << msg;
 		cout << msg;
 		return *this;

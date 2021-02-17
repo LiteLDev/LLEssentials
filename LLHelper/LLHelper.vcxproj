@@ -158,7 +158,7 @@
     <ClInclude Include="BDS.h" />
     <ClInclude Include="commad.h" />
     <ClInclude Include="Helper.h" />
-    <ClInclude Include="Logger.h" />
+    <ClInclude Include="Logger1.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="tickdo.h" />
   </ItemGroup>

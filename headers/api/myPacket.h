@@ -7,7 +7,7 @@ using std::string_view;
 class BinaryStream {
 public:
     std::string& getRaw() {
-        return *dAccess<std::string*,88>(this);
+        return *dAccess<std::string*,96>(this);
     }
 };
 class Packet {

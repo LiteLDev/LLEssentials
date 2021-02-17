@@ -9,8 +9,15 @@
 #include "Helper.h"
 #include <string_view>
 unique_ptr<KVDBImpl> db;
+
+
 void loadCNAME() {
 	db = MakeKVDB(GetDataPath("LLhelper"), false);
+	//db->iter([](string_view k, string_view v) {
+	//	if (!k._Starts_with("b_"))
+	//		CNAME.emplace(k, v);
+	//	return true;
+	//	});
 }
 bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player>& s, int mode) {
 	auto res = s.results(ori);
@@ -77,7 +84,7 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 	}
 	case BANOP::ban: {
 		addBanEntry(S(XIDREG::str2id(entry).val()), time.set ? time.val() : 0);
-		liteloader::runcmdA("skick", QUOTE(entry));
+		liteloader::runcmdA("kick", QUOTE(entry));
 		outp.success("ban " + QUOTE(entry) + " success");
 		return true;
 	}
@@ -106,6 +113,7 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 	return false;
 }
 
+/*
 bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) {
 	LOWERSTRING(target);
 	vector<Player> to_kick;
@@ -124,6 +132,59 @@ bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) 
 }
 
 
+enum class CNAMEOP :int {
+	set = 1,
+	remove = 2
+};
+bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, string& src, optional<string>& name) {
+	if (op == CNAMEOP::set) {
+		auto& str = name.val();
+		for (int i = 0; i < str.size(); ++i) {
+			if (str[i] == '^') str[i] = '\n';
+		}
+		CNAME[src] = str;
+		db->put(src, str);
+		auto wp = LocateS<WLevel>()->getPlayer(src);
+		if (!wp.set) {
+			p.addMessage("Player not online!we will only save the custom name.");
+			return false;
+		}
+		wp.val()->setName(str);
+		ORIG_NAME[wp.val().v] = wp.val().getName();
+	}
+	else {
+		CNAME.erase(src);
+		db->del(src);
+		auto wp = LocateS<WLevel>()->getPlayer(src);
+		if (!wp.set) {
+			p.addMessage("Player not online!we will only delete the custom name.");
+			return false;
+		}
+		wp.val()->setName(src);
+		ORIG_NAME._map.erase(wp.val().v);
+	}
+	return true;
+}
+*/
+
+bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player>& p, string& host, optional<int> port) {
+	int P = port.set ? port.val() : 19132;
+	auto res = p.results(ori);
+	if (!Command::checkHasTargets(res, outp)) return false;
+	WBStream ws;
+	ws.apply(MCString(host), (unsigned short)P);
+	MyPkt<0x55, false> trpk(ws);
+	for (auto i : res) {
+		((ServerPlayer*)i)->sendNetworkPacket(trpk);
+	}
+	return true;
+}
+
+static bool onReload(CommandOrigin const& ori, CommandOutput& outp) {
+	loadCfg();
+	return true;
+}
+
 void REGCMD() {
 	loadCNAME();
 	Event::addEventListener([](RegCmdEV e) {
@@ -135,8 +196,12 @@ void REGCMD() {
 		MakeCommand("ban", "blacklist", 1);
 		CmdOverload(ban, onCMD_Ban, "op", "target", "time");
 		CmdOverload(ban, onCMD_BanList, "list");
-		MakeCommand("skick", "force kick", 1);
-		CmdOverload(skick, onCMD_skick, "target");
+		MakeCommand("transfer", "transfer player to another server", 1);
+		CmdOverload(transfer, onCMD_Trans, "target", "host", "port");
+		MakeCommand("hreload", "reload cmdhelper", 1);
+		CmdOverload(hreload, onReload);
+		//MakeCommand("skick", "force kick", 1);
+		//CmdOverload(skick, onCMD_skick, "target");
 		});
 }
 

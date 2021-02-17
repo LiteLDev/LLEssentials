@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include "commad.h"
 using namespace std;
-Logger LOG("./liteloader.log");
+Logger1 LOG1("./liteloader.log");
 unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
 unordered_set<short> logItems, banItems;

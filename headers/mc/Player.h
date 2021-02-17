@@ -1557,10 +1557,11 @@ MCINLINE void setPermissions(enum CommandPermissionLevel a0) {
 		*((void**)&rv) = dlsym("?setPermissions@ServerPlayer@@UEAAXW4CommandPermissionLevel@@@Z");
 		return (this->*rv)(a0);
 	}
-MCINLINE void sendNetworkPacket(void* a0) const {
-	SymCall("?sendNetworkPacket@ServerPlayer@@UEBAXAEAVPacket@@@Z",
-		void, void*, void*)((void*)this, a0);
-	}
+MCINLINE void sendNetworkPacket(class Packet& a0) const {
+	void (ServerPlayer:: * rv)(class Packet&) const;
+	*((void**)&rv) = dlsym("?sendNetworkPacket@ServerPlayer@@UEBAXAEAVPacket@@@Z");
+	return (this->*rv)(a0);
+}
 	MCINLINE void setArmor(enum ArmorSlot a0, class ItemStack const& a1) {
 		void (ServerPlayer::*rv)(enum ArmorSlot, class ItemStack const&);
 		*((void**)&rv) = dlsym("?setArmor@ServerPlayer@@UEAAXW4ArmorSlot@@AEBVItemStack@@@Z");
