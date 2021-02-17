@@ -31,6 +31,7 @@ jobs:
         mkdir D:/out
         mkdir D:/out/lib
         mkdir D:/out/headers
+        midir D:/out/config
     
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -38,10 +39,11 @@ jobs:
         cp -a x64/Release/*.dll D:/out
         cp -a x64/Release/*.lib D:/out/lib
         cp -a headers/llmoney.h D:/out/headers
+        cp -a config/* D:/out/config
       shell: bash
         
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: LiteLoader
+        name: LiteLoaderKit
         path: D:/out

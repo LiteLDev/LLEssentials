@@ -1,0 +1,19 @@
+{
+	"force_enable_expplay": false,
+	"CMDMAP": {
+		"391": "me 114514"
+	},
+	"timer": {
+		"600": "say 114514"
+	},
+	"banItems": [],
+	"logItems": [7],
+	"force_enable_ability": true,
+	"FAKE_SEED": 114514,
+	"NO_EXPLOSION": true,
+	"MAX_CHAT_LEN": 96,
+	"LOG_CHAT": true,
+	"LOG_CMD": true,
+	"NoEndermanTakeBlock": true,
+	"ProtectFarmBlock": true
+}
