@@ -31,7 +31,7 @@ jobs:
         mkdir D:/out
         mkdir D:/out/lib
         mkdir D:/out/headers
-        midir D:/out/config
+        mkdir D:/out/config
     
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
