@@ -114,14 +114,15 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 }
 
 bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) {
-	int kickedplayer = 0;
-	LOWERSTRING(target);
 	auto func = [target](Player* pl) -> bool {
-		auto name = offPlayer::getRealName(pl);
-		LOWERSTRING(name);
+		auto name = SymCall("?getNameTag@Actor@@UEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
+			std::string&, Player*)(pl);
+		std::cout << 3 << endl;
 		if (name._Starts_with(target)) {
+			std::cout << 4 << endl;
 			forceKick(pl, "kick");
 		}
+		std::cout << 5 << endl;
 		return true;
 	};
 	forEachPlayer(ori.getLevel(), func);
@@ -198,8 +199,8 @@ void REGCMD() {
 		CmdOverload(transfer, onCMD_Trans, "target", "host", "port");
 		MakeCommand("hreload", "reload cmdhelper", 1);
 		CmdOverload(hreload, onReload);
-		MakeCommand("skick", "force kick", 1);
-		CmdOverload(skick, onCMD_skick, "target");
+		//MakeCommand("skick", "force kick", 1);
+		//CmdOverload(skick, onCMD_skick, "target");
 		});
 }
 
