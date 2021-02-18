@@ -198,8 +198,8 @@ void REGCMD() {
 		CmdOverload(transfer, onCMD_Trans, "target", "host", "port");
 		MakeCommand("hreload", "reload cmdhelper", 1);
 		CmdOverload(hreload, onReload);
-		//MakeCommand("skick", "force kick", 1);
-		//CmdOverload(skick, onCMD_skick, "target");
+		MakeCommand("skick", "force kick", 1);
+		CmdOverload(skick, onCMD_skick, "target");
 		});
 }
 
