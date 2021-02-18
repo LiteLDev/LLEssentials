@@ -22,3 +22,8 @@ void forceKick(void* pl, string msg) {
 	};
 	func.push_back(fc);
 }
+
+void forEachPlayer(Level* lv, std::function<bool(Player*)> func) {
+	SymCall("?forEachPlayer@Level@@QEBAXV?$function@$$A6A_NAEBVPlayer@@@Z@std@@@Z",
+		void, void*, std::function<bool(Player*)>)(lv, func);
+}

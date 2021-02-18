@@ -113,29 +113,27 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 	return false;
 }
 
-/*
 bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) {
+	int kickedplayer = 0;
 	LOWERSTRING(target);
-	vector<Player> to_kick;
-	for (auto i :       ) {
-		auto name = offPlayer::getRealName(i);
+	auto func = [target](Player* pl) -> bool {
+		auto name = offPlayer::getRealName(pl);
 		LOWERSTRING(name);
 		if (name._Starts_with(target)) {
-			if (name == target) {
-				forceKick(i,"kick");
-				return true;
-			}
-			to_kick.push_back(i);
+			forceKick(pl, "kick");
 		}
-	}
+		return true;
+	};
+	forEachPlayer(ori.getLevel(), func);
 	return true;
 }
-
 
 enum class CNAMEOP :int {
 	set = 1,
 	remove = 2
 };
+
+/*
 bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, string& src, optional<string>& name) {
 	if (op == CNAMEOP::set) {
 		auto& str = name.val();
