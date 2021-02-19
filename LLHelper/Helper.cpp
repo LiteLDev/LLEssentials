@@ -50,6 +50,7 @@ THook(bool, "?useItem@GameMode@@UEAA_NAEAVItemStack@@@Z",
 		auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(self) + 8);
 		liteloader::runcmd("execute \"" + offPlayer::getRealName(sp) + "\" ~~~ " + CMDMAP[id]);
 	}
+	return original(self, item);
 }
 
 THook(void, "?init@Minecraft@@QEAAXXZ", void* self) {

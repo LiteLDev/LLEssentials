@@ -10,4 +10,6 @@ extern unordered_set<short> logItems, banItems;
 extern bool LOG_CMD, LOG_CHAT, regABILITY, NO_EXPLOSION, EXP_PLAY, penderman, pfarm;
 extern Minecraft* mc;
 extern Logger1 LOG1;
+extern playerMap<string> ORIG_NAME;
+extern unordered_map<string, string> CNAME;
 void loadCfg();

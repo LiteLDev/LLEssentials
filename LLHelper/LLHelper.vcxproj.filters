@@ -61,6 +61,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\headers\LiteLoader.lib" />
+    <Library Include="..\lib\LiteLoader.lib" />
   </ItemGroup>
 </Project>

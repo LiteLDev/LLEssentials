@@ -9,15 +9,15 @@
 #include "Helper.h"
 #include <string_view>
 unique_ptr<KVDBImpl> db;
-
-
+playerMap<string> ORIG_NAME;
+unordered_map<string, string> CNAME;
 void loadCNAME() {
 	db = MakeKVDB(GetDataPath("LLhelper"), false);
-	//db->iter([](string_view k, string_view v) {
-	//	if (!k._Starts_with("b_"))
-	//		CNAME.emplace(k, v);
-	//	return true;
-	//	});
+	db->iter([](string_view k, string_view v) {
+		if (!k._Starts_with("b_"))
+			CNAME.emplace(k, v);
+		return true;
+		});
 }
 bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player>& s, int mode) {
 	auto res = s.results(ori);
@@ -114,18 +114,41 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 }
 
 bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) {
-	auto func = [target](Player* pl) -> bool {
-		auto name = SymCall("?getNameTag@Actor@@UEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
-			std::string&, Player*)(pl);
-		std::cout << 3 << endl;
-		if (name._Starts_with(target)) {
-			std::cout << 4 << endl;
-			forceKick(pl, "kick");
+	string playername = target;
+	vector<Player*> plist = liteloader::getAllPlayers();
+	Player* A = nullptr;
+	for (auto p : plist) {
+		if (offPlayer::getRealName(p) == playername) {
+			A = p;
+			break;
 		}
-		std::cout << 5 << endl;
+	}
+	if(A){
+		forceKick(A, "kick");
+		outp.addMessage("kick success");
 		return true;
-	};
-	forEachPlayer(ori.getLevel(), func);
+	}
+	else
+	{
+		//no player
+	}
+}
+
+bool oncmd_vanish(CommandOrigin const& ori, CommandOutput& outp) {
+	auto wp = MakeWP(ori).val();
+	auto sp = MakeSP(ori);
+	VarULong ul(ZigZag(wp->getUniqueID().id));
+	WBStream ws;
+	ws.apply(ul);
+	MyPkt<14> pk{ ws };
+	vector<Player*> plist = liteloader::getAllPlayers();
+	for (auto p : plist) {
+		if (p != sp) {
+			auto spp = (ServerPlayer*)p;
+			spp->sendNetworkPacket(pk);
+		}
+	}
+	outp.addMessage("Successfully opened. When you want to cancel, please join the server again.");
 	return true;
 }
 
@@ -134,37 +157,49 @@ enum class CNAMEOP :int {
 	remove = 2
 };
 
-/*
 bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, string& src, optional<string>& name) {
-	if (op == CNAMEOP::set) {
-		auto& str = name.val();
-		for (int i = 0; i < str.size(); ++i) {
-			if (str[i] == '^') str[i] = '\n';
+		string playername = src;
+		vector<Player*> plist = liteloader::getAllPlayers();
+		Player* A = nullptr;
+		for (auto p : plist) {
+			if (offPlayer::getRealName(p) == playername) {
+				A = p;
+				break;
+			}
 		}
-		CNAME[src] = str;
-		db->put(src, str);
-		auto wp = LocateS<WLevel>()->getPlayer(src);
-		if (!wp.set) {
-			p.addMessage("Player not online!we will only save the custom name.");
-			return false;
+		if (A) {
+			if (op == CNAMEOP::set) {
+				auto& str = name.val();
+				for (int i = 0; i < str.size(); ++i) {
+					if (str[i] == '^') str[i] = '\n';
+				}
+				CNAME[src] = str;
+				db->put(src, str);
+				optional<WPlayer> aa = WPlayer(*(ServerPlayer*)A);
+				if (!aa.set) {
+					p.addMessage("Player not online!we will only save the custom name.");
+					return false;
+				}
+				aa.val()->setName(str);
+				ORIG_NAME[aa.val().v] = aa.val().getName();
+				p.addMessage("Set success");
+			}
+			else {
+				CNAME.erase(src);
+				db->del(src);
+				optional<WPlayer> aa = WPlayer(*(ServerPlayer*)A);
+				if (!aa.set) {
+					p.addMessage("Player not online!we will only delete the custom name.");
+					return false;
+				}
+				aa.val()->setName(src);
+				ORIG_NAME._map.erase(aa.val().v);
+				p.addMessage("delete success");
+			}
+			return true;
 		}
-		wp.val()->setName(str);
-		ORIG_NAME[wp.val().v] = wp.val().getName();
-	}
-	else {
-		CNAME.erase(src);
-		db->del(src);
-		auto wp = LocateS<WLevel>()->getPlayer(src);
-		if (!wp.set) {
-			p.addMessage("Player not online!we will only delete the custom name.");
-			return false;
-		}
-		wp.val()->setName(src);
-		ORIG_NAME._map.erase(wp.val().v);
-	}
-	return true;
 }
-*/
+
 
 bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player>& p, string& host, optional<int> port) {
 	int P = port.set ? port.val() : 19132;
@@ -190,6 +225,7 @@ void REGCMD() {
 		CMDREG::SetCommandRegistry(e.CMDRg);
 		CEnum<BANOP> _1("banop", { "ban","unban","banip" });
 		CEnum<BANOP_LIST> _2("banoplist", { "list" });
+		CEnum<CNAMEOP> _3("cnameop", { "set","rm" });
 		MakeCommand("gmode", "set your gametype", 1);
 		CmdOverload(gmode, oncmd_gmode, "target", "mode");
 		MakeCommand("ban", "blacklist", 1);
@@ -199,8 +235,12 @@ void REGCMD() {
 		CmdOverload(transfer, onCMD_Trans, "target", "host", "port");
 		MakeCommand("hreload", "reload cmdhelper", 1);
 		CmdOverload(hreload, onReload);
-		//MakeCommand("skick", "force kick", 1);
-		//CmdOverload(skick, onCMD_skick, "target");
+		MakeCommand("skick", "force kick", 1);
+		CmdOverload(skick, onCMD_skick, "target");
+		MakeCommand("cname", "custom name", 1);
+		CmdOverload(cname, onCMD_CNAME, "op", "target", "name");
+		MakeCommand("vanish", "hide yourself", 1);
+		CmdOverload(vanish, oncmd_vanish);
 		});
 }
 

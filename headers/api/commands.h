@@ -2,7 +2,7 @@
 #include <tuple>
 #include <mc/Command/CommandReg.h>
 #include <stl/optional.h>
-CommandRegistry* CmdRegGlobal = nullptr;
+inline CommandRegistry* CmdRegGlobal = nullptr;
 namespace CMDREG {
 	inline void SetCommandRegistry(CommandRegistry* reg) {
 		CmdRegGlobal = reg;
@@ -216,9 +216,22 @@ static_assert(sizeof(MakeOverload<void, int>) == 1);
 #define CmdOverload2(name2, cb, cb2, ...) \
 	{ MakeOverload __ov2((struct name2*)0, cb2, #name2, cb, __VA_ARGS__); }
 #include<api/types/types.h>
+inline static optional<WPlayer> MakeWP(CommandOrigin const& ori) {
+	if (ori.getOriginType() == OriginType::Player) {
+		return { { *(ServerPlayer*)ori.getEntity() } };
+	}
+	return {};
+}
 inline static ServerPlayer* MakeSP(CommandOrigin const& ori) {
 	if (ori.getOriginType() == OriginType::Player) {
 		return { (ServerPlayer*)ori.getEntity() };
+	}
+	return nullptr;
+}
+inline static ServerPlayer* MakeSP(void* x) {
+	if (!x) return nullptr;
+	if (dAccess<void*, 0>(x) == SYM("??_7ServerPlayer@@6B@")) {
+		return (ServerPlayer*)x;
 	}
 	return nullptr;
 }

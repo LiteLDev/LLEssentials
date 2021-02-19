@@ -21,6 +21,9 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="homeStorage.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -29,16 +32,17 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="api.cpp">
+    <ClCompile Include="TPA.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="LLMoney.cpp">
+    <ClCompile Include="homeStorage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="landapi.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\lib\LiteLoader.lib" />
-    <Library Include="..\lib\sqlite3.lib" />
-    <Library Include="..\lib\SQLiteCpp.lib" />
   </ItemGroup>
 </Project>

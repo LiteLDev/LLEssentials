@@ -28,6 +28,11 @@ THook(void*, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
 THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
 	void* _this, Player* a2) {
 	auto n = (NetworkIdentifier*)((uintptr_t)a2 + 2536);
+	if (auto it = CNAME.find(offPlayer::getRealName(a2)); it != CNAME.end()) {
+		a2->setName(it->second);
+		optional<WPlayer> aa = WPlayer(*(ServerPlayer*)a2);
+		ORIG_NAME[aa.val().v] = offPlayer::getRealName(a2);
+	}
 	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(a2) << " joined server IP: " << liteloader::getIP(*n) << " xuid: "<< offPlayer::getXUID(a2) <<endl;
 	return original(_this, a2);
 }

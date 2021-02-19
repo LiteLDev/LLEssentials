@@ -81,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)headers;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)third-party;$(SolutionDir)headers;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -168,9 +168,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\headers\LiteLoader.lib" />
-    <Library Include="..\headers\sqlite3.lib" />
-    <Library Include="..\headers\SQLiteCpp.lib" />
+    <Library Include="..\lib\LiteLoader.lib" />
+    <Library Include="..\lib\sqlite3.lib" />
+    <Library Include="..\lib\SQLiteCpp.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
