@@ -22,6 +22,9 @@ double MoneyFee;
 LangPack LP("langpack/money.json");
 static Logger LOG(stdio_commit{ "[MONEY] " });
 bool initDB();
+void Version() {
+	cout << "[LLMoney] version 210219" << endl;
+}
 extern money_t DEF_MONEY;
 enum MONEYOP :int {
 	query = 1,
@@ -159,6 +162,7 @@ bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYO
 
 
 void entry() {
+	Version();
 	if (!initDB()) {
 		exit(1);
 	}

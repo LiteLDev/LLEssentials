@@ -4,6 +4,9 @@
 #include "pch.h"
 #include <Llland.h>
 #include "homeStorage.h"
+void Version() {
+	cout << "[LLtpa] version 210219" << endl;
+}
 std::unique_ptr<KVDBImpl> db;
 static Logger LOG(stdio_commit{ "[TPA] " });
 bool checkLandOwnerRange_stub(IVec2 vc, IVec2 vc2, int dim, unsigned long long xuid);
@@ -439,8 +442,8 @@ void loadall() {
 	}
 	loadCfg();
 }
-
 void tpa_entry() {
+	Version();
 	checkLandOwnerRange_stub({ 0, 0 }, { 0, 0 }, 0, 0);
 	db = MakeKVDB(GetDataPath("tpa"), true, 8);
 	loadall();

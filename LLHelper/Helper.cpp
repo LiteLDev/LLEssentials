@@ -9,7 +9,9 @@ int FAKE_SEED, MAX_CHAT_LEN;
 unordered_set<short> logItems, banItems;
 bool LOG_CMD, LOG_CHAT, regABILITY, NO_EXPLOSION, EXP_PLAY, penderman, pfarm;
 Minecraft* mc;
-
+void Version() {
+	cout << "[LLHelper] version 210219" << endl;
+}
 void loadCfg() {
 	try {
 		CMDMAP.clear();
@@ -41,6 +43,7 @@ void loadCfg() {
 void entry() {
 	loadCfg();
 	REGCMD();
+	Version();
 }
 
 THook(bool, "?useItem@GameMode@@UEAA_NAEAVItemStack@@@Z",
