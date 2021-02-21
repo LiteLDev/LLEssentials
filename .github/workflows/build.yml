@@ -1,4 +1,4 @@
-name: Build LiteLoader
+name: Build LiteLoaderKit
 
 on: [push]
 
@@ -42,8 +42,14 @@ jobs:
         cp -a langpack/ D:/out/langpack
       shell: bash
         
+    - name: Create 7z
+      uses: DuckSoft/create-7z-action@v1.0
+      with:
+        pathSource: D:/out/
+        pathTarget: D:/LiteLoader.7z
+
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: LiteLoaderKit
-        path: D:/out
+        name: LiteLoader
+        path: D:/LiteLoader.7z
