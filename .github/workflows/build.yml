@@ -46,10 +46,17 @@ jobs:
       uses: DuckSoft/create-7z-action@v1.0
       with:
         pathSource: D:/out/
-        pathTarget: D:/LiteLoader.7z
+        pathTarget: D:/LiteLoaderKit.7z
+
+    - name: UPX GitHub Action
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      uses: crazy-max/ghaction-upx@v1.3.3
+      with:
+        version: latest
+        file: D:/out/LLMoney.dll D:/out/LLtpa.dll D:/out/LLHelper.dll
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: LiteLoader
-        path: D:/LiteLoader.7z
+        name: LiteLoaderKit
+        path: D:/LiteLoaderKit.7z
