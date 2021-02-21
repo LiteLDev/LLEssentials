@@ -49,7 +49,6 @@ jobs:
         pathTarget: D:/LiteLoaderKit.7z
 
     - name: UPX GitHub Action
-      working-directory: ${{env.GITHUB_WORKSPACE}}
       uses: crazy-max/ghaction-upx@v1.3.3
       with:
         version: latest
