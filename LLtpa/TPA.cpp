@@ -41,7 +41,7 @@ static clock_t TPexpire = CLOCKS_PER_SEC * 10;
 static clock_t TPratelimit = CLOCKS_PER_SEC * 2;
 static int MAX_HOMES = 5;
 static int HOME_DISTANCE_LAND = 0;
-static bool BACK_ENABLED, SUICIDE_ENABLED;
+static bool BACK_ENABLED, SUICIDE_ENABLED, TPA_ENABLED, HOME_ENABLED;
 
 
 playerMap<Vec4> deathPos;
@@ -424,6 +424,8 @@ void loadCfg() {
 		jr.bind("home_land_distance", HOME_DISTANCE_LAND, -1);
 		jr.bind("BACK_ENABLED", BACK_ENABLED, true);
 		jr.bind("SUICIDE_ENABLED", SUICIDE_ENABLED, true);
+		jr.bind("TPA_ENABLED", TPA_ENABLED, true);
+		jr.bind("HOME_ENABLED", HOME_ENABLED, true);
 	}
 	catch (string e) {
 		LOG("JSON ERROR", e);
@@ -455,18 +457,21 @@ void tpa_entry() {
 		CEnum<WARPOP> _2("warpop", { "go","add","ls","del","gui" });
 		CEnum<HOMEOP> _4("homeop", { "go","add","ls","del" });
 		CEnum<TPAOP> _3("tpaop", { "ac","de","cancel","toggle" });
-		MakeCommand("tpa", "tpa system", 0);
-		MakeCommand("warp", "warp system", 0);
-		MakeCommand("home", "home system", 0);
-		MakeCommand("homeAs", "run home as a player", 1);
-
-		CmdOverload(warp, oncmd_warp, "op", "name");
-		CmdOverload(home, oncmd_home, "op", "name");
-		CmdOverload(homeAs, oncmd_homeAs, "Pname", "op", "home_name");
-		CmdOverload(tpa, oncmd_tpa, "dir", "target");
-		CmdOverload(tpa, oncmd_tpa2, "op");
-		MakeCommand("tpareload", "reload tpa", 1);
-		CmdOverload(tpareload, onReload);
+		if (TPA_ENABLED) {
+			MakeCommand("tpa", "tpa system", 0);
+			CmdOverload(tpa, oncmd_tpa, "dir", "target");
+			CmdOverload(tpa, oncmd_tpa2, "op");
+			MakeCommand("tpareload", "reload tpa", 1);
+			CmdOverload(tpareload, onReload);
+		}
+		if (HOME_ENABLED) {
+			MakeCommand("warp", "warp system", 0);
+			MakeCommand("home", "home system", 0);
+			MakeCommand("homeAs", "run home as a player", 1);
+			CmdOverload(warp, oncmd_warp, "op", "name");
+			CmdOverload(home, oncmd_home, "op", "name");
+			CmdOverload(homeAs, oncmd_homeAs, "Pname", "op", "home_name");
+		}
 		if (BACK_ENABLED) {
 			MakeCommand("back", "back to last deathpoint", 0);
 			CmdOverload(back, oncmd_back);
