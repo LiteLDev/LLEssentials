@@ -345,10 +345,10 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 		IVec2 endVc{ wp->getPos() };
 		startVc += -HOME_DISTANCE_LAND;
 		endVc += HOME_DISTANCE_LAND;
-		if (!checkLandOwnerRange_stub(startVc, endVc, vc.dimid, wp.getXuid())) {
+		/*if (!checkLandOwnerRange_stub(startVc, endVc, vc.dimid, wp.getXuid())) {
 			outp.error(_TRS("home.near.others.land"));
 			return false;
-		}
+		}*/
 		hm.data.emplace_back(val.value(), vc);
 		hm.save();
 		outp.success("home point `" + val.value() + "` was set successfully!!");
