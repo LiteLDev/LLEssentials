@@ -388,7 +388,7 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	return true;
 }
 bool oncmd_home(CommandOrigin const& ori, CommandOutput& outp, MyEnum<HOMEOP> op, optional<string>& val) {
-	return generic_home(ori, outp, getHomeInCache(MakeWP(ori).val().getXuid()), op, val);
+	return generic_home(ori, outp, getHomeInCache(stoull(offPlayer::getXUID(&MakeWP(ori).val().get()))), op, val);
 }
 bool oncmd_homeAs(CommandOrigin const& ori, CommandOutput& outp, string const& target, MyEnum<HOMEOP> op, optional<string>& val) {
 	return generic_home(ori, outp, getHomeInCache(XIDREG::str2id(target).val()), op, val);
