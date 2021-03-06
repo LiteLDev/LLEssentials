@@ -13,9 +13,3 @@ extern "C" {
         entry();
     }
 }
-
-LIAPI string GetDataPath(const string& myname) {
-    using namespace std::filesystem;
-    create_directory("data");
-    return "data/" + myname;
-}

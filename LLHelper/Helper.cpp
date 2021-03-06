@@ -15,7 +15,7 @@ void Version() {
 void loadCfg() {
 	try {
 		CMDMAP.clear();
-		ConfigJReader jr("config/LLHelper.json");
+		ConfigJReader jr("plugins\\LLHelper\\LLHelper.json");
 		jr.bind("CMDMAP", CMDMAP);
 		jr.bind("timer", CMDSCHEDULE);
 		jr.bind("FAKE_SEED", FAKE_SEED, 114514);
@@ -41,6 +41,7 @@ void loadCfg() {
 }
 
 void entry() {
+	filesystem::create_directory("plugins\\LLHelper");
 	loadCfg();
 	REGCMD();
 	Version();

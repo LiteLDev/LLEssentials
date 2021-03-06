@@ -30,7 +30,7 @@ struct TPASet {
 
 #pragma endregion
 #pragma region gvals
-static LangPack LP("langpack/tpa.json");
+static LangPack LP("plugins\\LLtpa\\langpack\\tpa.json");
 #include<unordered_map>
 using std::unordered_map;
 static std::list<TPReq> reqs;
@@ -417,7 +417,7 @@ bool oncmd_suicide(CommandOrigin const& ori, CommandOutput& outp) {
 }
 void loadCfg() {
 	try {
-		ConfigJReader jr("config/tpa.json");
+		ConfigJReader jr("plugins\\LLtpa\\tpa.json");
 		jr.bind("max_homes", MAX_HOMES, 5);
 		jr.bind("tpa_timeout", TPexpire, CLOCKS_PER_SEC * 20);
 		jr.bind("tpa_ratelimit", TPratelimit, CLOCKS_PER_SEC * 5);
@@ -446,8 +446,11 @@ void loadall() {
 }
 void tpa_entry() {
 	Version();
+	filesystem::create_directory("plugins\\LLtpa");
+	filesystem::create_directory("plugins\\LLtpa\\data");
+	filesystem::create_directory("plugins\\LLtpa\\langpack");
 	checkLandOwnerRange_stub({ 0, 0 }, { 0, 0 }, 0, 0);
-	db = MakeKVDB(GetDataPath("tpa"), true, 8);
+	db = MakeKVDB("plugins\\LLtpa\\data", true, 8);
 	loadall();
 	reinitWARPGUI();
 	schTask();

@@ -18,7 +18,7 @@ struct cleanSTMT {
 };
 bool initDB() {
 	try {
-		db = std::make_unique<SQLite::Database>(GetDataPath("money.db"), SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
+		db = std::make_unique<SQLite::Database>("plugins\\LLMoney\\money.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
 		db->exec("PRAGMA journal_mode = MEMORY");
 		db->exec("PRAGMA synchronous = NORMAL");
 		db->exec("CREATE TABLE IF NOT EXISTS money ( \

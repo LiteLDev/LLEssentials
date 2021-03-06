@@ -12,7 +12,7 @@ unique_ptr<KVDBImpl> db;
 playerMap<string> ORIG_NAME;
 unordered_map<string, string> CNAME;
 void loadCNAME() {
-	db = MakeKVDB(GetDataPath("LLhelper"), false);
+	db = MakeKVDB("plugins\\LLHelper\\data", false);
 	db->iter([](string_view k, string_view v) {
 		if (!k._Starts_with("b_"))
 			CNAME.emplace(k, v);

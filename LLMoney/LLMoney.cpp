@@ -19,7 +19,7 @@
 #include<api/xuidreg/xuidreg.h>
 #include <llmoney.h>
 double MoneyFee;
-LangPack LP("langpack/money.json");
+LangPack LP("plugins\\LLMoney\\langpack\\money.json");
 static Logger LOG(stdio_commit{ "[MONEY] " });
 bool initDB();
 void Version() {
@@ -163,6 +163,8 @@ bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYO
 
 void entry() {
 	Version();
+	filesystem::create_directory("plugins\\LLMoney");
+	filesystem::create_directory("plugins\\LLMoney\\langpack");
 	if (!initDB()) {
 		exit(1);
 	}
@@ -179,7 +181,7 @@ void entry() {
 		CmdOverload(money_op, oncmd_money3_p, "purge", "difftime");
 		});
 	try {
-		ConfigJReader jr("config/money.json");
+		ConfigJReader jr("plugins\\LLMoney\\money.json");
 		int defmoney;
 		jr.bind("def_money", defmoney, 0);
 		jr.bind("pay_tax", MoneyFee, .0);
