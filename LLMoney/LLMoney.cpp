@@ -23,7 +23,7 @@ LangPack LP("plugins\\LLMoney\\langpack\\money.json");
 static Logger LOG(stdio_commit{ "[MONEY] " });
 bool initDB();
 void Version() {
-	cout << "[LLMoney] version 210219" << endl;
+	cout << "[LLMoney] version 210306" << endl;
 }
 extern money_t DEF_MONEY;
 enum MONEYOP :int {
