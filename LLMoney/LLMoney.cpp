@@ -143,16 +143,11 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 	return true;
 }
 
-bool oncmd_money2_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_pay> op, CommandSelector<Player>& dst, int val) {
-	auto res = dst.results(ori);
-	if (!Command::checkHasTargets(res, outp)) return false;
-	bool fg = true;
-	for (auto i : res) {
-
-	}
-	return fg;
-}
 bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_PURGE> op, optional<int>& difftime) {
+	if (ori.getPermissionsLevel() < 1) {
+		outp.error(_TRS("money.no.perm"));
+		return false;
+	}
 	if (difftime.Set())
 		Money::purgeHist(difftime.val());
 	else
@@ -171,14 +166,12 @@ void entry() {
 		Event::addEventListener([](RegCmdEV ev) {
 		CMDREG::SetCommandRegistry(ev.CMDRg);
 		MakeCommand("money", "money", 0);
-		MakeCommand("money_op", "money_op", 1);
 		CEnum<MONEYOP> _1("type", { "query","hist" });
 		CEnum<MONEYOP_pay> _2("type2", { "pay","set","add","reduce" });
 		CEnum<MONEYOP_PURGE> _3("mpurge", { "purge" });
 		CmdOverload(money, oncmd_money, "op", "target");
 		CmdOverload(money, oncmd_money2, "op", "target1", "money");
-		CmdOverload(money_op, oncmd_money2_p, "op", "target2", "money");
-		CmdOverload(money_op, oncmd_money3_p, "purge", "difftime");
+		CmdOverload(money, oncmd_money3_p, "purge", "difftime");
 		});
 	try {
 		ConfigJReader jr("plugins\\LLMoney\\money.json");
