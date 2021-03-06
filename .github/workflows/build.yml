@@ -61,8 +61,8 @@ jobs:
       uses: crazy-max/ghaction-upx@v1.3.3
       with:
         version: latest
-        file: D:/out/LLMoney.dll
-        args: D:/out/LLtpa.dll D:/out/LLHelper.dll
+        file: D:/out/plugins/LLMoney.dll
+        args: D:/out/plugins/LLtpa.dll D:/out/plugins/LLHelper.dll
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
