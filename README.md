@@ -7,7 +7,9 @@
 Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  
 一些[LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  的示例插件
 推荐插件下载地址：
+
 https://l.sakuralo.top/resources/
+
 https://www.minebbs.com/resources/categories/bdserver.38/?prefix_id=59
 
 # Usage
