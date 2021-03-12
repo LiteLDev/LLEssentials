@@ -1,6 +1,6 @@
 # LiteLoaderPlugins
 <a href="https://github.com/LiteLDev/LiteLoaderPlugins/actions">![status](https://img.shields.io/github/workflow/status/LiteLDev/LiteLoaderPlugins/Build%20LiteLoaderKit?style=for-the-badge)</a>
-<a href="https://t.me/liteloader">![Telegram](https://img.shields.io/badge/telegram-LiteLoader-%232CA5E0?style=for-the-badge&logo=Telegram)</a>
+<a href="https://t.me/liteloader">![Telegram](https://img.shields.io/badge/telegram-LiteLoader-%232CA5E0?style=for-the-badge&logo=Telegram)</a>  
 Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  
 These LLHelper and LLtpa are not working on Minecraft 1.16.210, please use [LLEssentials](https://l.sakuralo.top/resources/llessentials-1-16-200.9/)  
 一些[LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  的示例插件  
