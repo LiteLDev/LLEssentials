@@ -37,7 +37,7 @@ jobs:
       run: |
         cp -a x64/Release/*.dll D:/out/plugins
         cp -a x64/Release/*.lib D:/out/lib
-        cp -a headers/llmoney.h D:/out/headers
+        cp -a headers/LLMoney.h D:/out/headers
         cp -a config/money.json D:/out/plugins/LLMoney/
         cp -a langpack/money.json D:/out/plugins/LLMoney/langpack/
       shell: bash

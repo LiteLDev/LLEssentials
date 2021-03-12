@@ -17,7 +17,8 @@
 #include<streambuf>
 #include<api/Basic_Event.h>
 #include<api/xuidreg/xuidreg.h>
-#include <llmoney.h>
+#include <LLMoney.h>
+
 using namespace std;
 double MoneyFee;
 LangPack LP("plugins\\LLMoney\\langpack\\money.json");
