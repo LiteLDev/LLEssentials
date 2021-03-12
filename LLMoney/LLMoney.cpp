@@ -18,12 +18,13 @@
 #include<api/Basic_Event.h>
 #include<api/xuidreg/xuidreg.h>
 #include <llmoney.h>
+using namespace std;
 double MoneyFee;
 LangPack LP("plugins\\LLMoney\\langpack\\money.json");
 static Logger LOG(stdio_commit{ "[MONEY] " });
 bool initDB();
 void Version() {
-	cout << "[LLMoney] version 210306" << endl;
+	cout << "[LLMoney] version 210312" << endl;
 }
 extern money_t DEF_MONEY;
 enum MONEYOP :int {

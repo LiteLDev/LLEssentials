@@ -1557,8 +1557,8 @@ MCINLINE void setPermissions(enum CommandPermissionLevel a0) {
 		*((void**)&rv) = dlsym("?setPermissions@ServerPlayer@@UEAAXW4CommandPermissionLevel@@@Z");
 		return (this->*rv)(a0);
 	}
-MCINLINE void sendNetworkPacket(class Packet& a0) const {
-		void (ServerPlayer::*rv)(class Packet&) const;
+MCINLINE void sendNetworkPacket(void* a0) const {
+		void (ServerPlayer::*rv)(void*) const;
 		*((void**)&rv) = dlsym("?sendNetworkPacket@ServerPlayer@@UEBAXAEAVPacket@@@Z");
 		return (this->*rv)(a0);
 	}

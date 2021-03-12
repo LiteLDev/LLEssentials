@@ -3,13 +3,17 @@
 #include <liteloader.h>
 #include <functional>
 #include <mc\mass.h>
-using namespace std;
+#include <mc/Certificate.h>
+
+using std::function;
 typedef unsigned long long xuid_t;
+class Actor;
 class ServerPlayer;
 class Player;
 class Block;
 class Mob;
 class ItemStack;
+
 class JoinEV {
 public:
 	ServerPlayer* Player;
@@ -25,7 +29,7 @@ public:
 
 class ChatEV {
 public:
-	ServerPlayer* Player;
+	Player* pl;
 	string msg;
 };
 
@@ -48,6 +52,10 @@ public:
 };
 
 class ServerStartedEV {
+
+};
+
+class  PostInitEV {
 
 };
 
@@ -90,10 +98,21 @@ public:
 	ItemStack* ItemStack;
 };
 
+class MobDieEV {
+public:
+	Mob* mob;
+	Actor* DamageSource;
+};
+
+class PreJoinEV {
+public:
+	Certificate* cert;
+};
+
 namespace Event {
 	LIAPI inline void addEventListener(function<void(JoinEV)> callback);
 	LIAPI inline void addEventListener(function<void(LeftEV)> callback);
-	LIAPI inline void addEventListener(function<void(ChatEV)> callback);
+	LIAPI inline void addEventListener(function<bool(ChatEV)> callback);
 	LIAPI inline void addEventListener(function<void(ChangeDimEV)> callback);
 	LIAPI inline void addEventListener(function<void(ServerStartedEV)> callback);
 	LIAPI inline void addEventListener(function<bool(PlayerUseCmdEV)> callback);
@@ -104,4 +123,7 @@ namespace Event {
 	LIAPI inline void addEventListener(function<void(PlayerUseItemOnEV)> callback);
 	LIAPI inline void addEventListener(function<void(MobHurtedEV)> callback);
 	LIAPI inline void addEventListener(function<void(PlayerUseItemEV)> callback);
+	LIAPI inline void addEventListener(function<void(PostInitEV)> callback);
+	LIAPI inline void addEventListener(function<void(MobDieEV)> callback);
+	LIAPI inline void addEventListener(function<void(PreJoinEV)> callback);
 };
