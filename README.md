@@ -5,13 +5,9 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  
-一些[LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  的示例插件
-
-推荐插件下载地址：
-
-https://l.sakuralo.top/resources/
-
-https://www.minebbs.com/resources/categories/bdserver.38/?prefix_id=59
+These LLHelper and LLtpa are not working on Minecraft 1.16.210, please use [LLEssentials](https://l.sakuralo.top/resources/llessentials-1-16-200.9/)  
+一些[LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)  的示例插件  
+LLHelper和LLtpa已经不再适用于Minecraft 1.16.210了，请使用[LLEssentials](https://l.sakuralo.top/resources/llessentials-1-16-200.9/)
 
 # Usage
 [Wiki](https://github.com/LiteLDev/LiteLoaderPlugins/wiki)
