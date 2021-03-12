@@ -34,38 +34,25 @@ jobs:
         mkdir D:/out/plugins
         mkdir D:/out/plugins/LLMoney
         mkdir D:/out/plugins/LLMoney/langpack
-        mkdir D:/out/plugins/LLHelper
-        mkdir D:/out/plugins/LLtpa
-        mkdir D:/out/plugins/LLtpa/langpack
     
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cp -a x64/Release/*.dll D:/out/plugins
-        cp -a x64/Release/*.lib D:/out/lib
+        cp -a x64/Release/LLMoney.dll D:/out/plugins
+        cp -a x64/Release/LLMoney.lib D:/out/lib
         cp -a headers/llmoney.h D:/out/headers
         cp -a config/money.json D:/out/plugins/LLMoney/
         cp -a langpack/money.json D:/out/plugins/LLMoney/langpack/
-        cp -a config/tpa.json D:/out/plugins/LLtpa/
-        cp -a langpack/tpa.json D:/out/plugins/LLtpa/langpack/
-        cp -a config/LLHelper.json D:/out/plugins/LLHelper/
       shell: bash
-        
-    - name: Create 7z
-      uses: DuckSoft/create-7z-action@v1.0
-      with:
-        pathSource: D:/out/
-        pathTarget: D:/LiteLoaderKit.7z
 
     - name: UPX GitHub Action
       uses: crazy-max/ghaction-upx@v1.3.3
       with:
         version: latest
         file: D:/out/plugins/LLMoney.dll
-        args: D:/out/plugins/LLtpa.dll D:/out/plugins/LLHelper.dll
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: LiteLoaderKit
-        path: D:/LiteLoaderKit.7z
+        path: D:\out
