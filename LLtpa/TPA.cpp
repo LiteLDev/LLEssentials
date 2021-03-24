@@ -2,14 +2,13 @@
 //
 
 #include "pch.h"
-#include <Llland.h>
 #include "homeStorage.h"
 void Version() {
-	cout << "[LLtpa] version 210219" << endl;
+	std::cout << "[LLtpa] version 210219" << endl;
 }
 std::unique_ptr<KVDBImpl> db;
 static Logger LOG(stdio_commit{ "[TPA] " });
-bool checkLandOwnerRange_stub(IVec2 vc, IVec2 vc2, int dim, unsigned long long xuid);
+
 #pragma region structs
 enum direction :int {
 	A_B = 1,
@@ -388,7 +387,7 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	return true;
 }
 bool oncmd_home(CommandOrigin const& ori, CommandOutput& outp, MyEnum<HOMEOP> op, optional<string>& val) {
-	return generic_home(ori, outp, getHomeInCache(stoull(offPlayer::getXUID(&MakeWP(ori).val().get()))), op, val);
+	return generic_home(ori, outp, getHomeInCache(offPlayer::getXUID(&MakeWP(ori).val().get())), op, val);
 }
 bool oncmd_homeAs(CommandOrigin const& ori, CommandOutput& outp, string const& target, MyEnum<HOMEOP> op, optional<string>& val) {
 	return generic_home(ori, outp, getHomeInCache(XIDREG::str2id(target).val()), op, val);
@@ -446,10 +445,9 @@ void loadall() {
 }
 void tpa_entry() {
 	Version();
-	filesystem::create_directory("plugins\\LLtpa");
-	filesystem::create_directory("plugins\\LLtpa\\data");
-	filesystem::create_directory("plugins\\LLtpa\\langpack");
-	checkLandOwnerRange_stub({ 0, 0 }, { 0, 0 }, 0, 0);
+	std::filesystem::create_directory("plugins\\LLtpa");
+	std::filesystem::create_directory("plugins\\LLtpa\\data");
+	std::filesystem::create_directory("plugins\\LLtpa\\langpack");
 	db = MakeKVDB("plugins\\LLtpa\\data", true, 8);
 	loadall();
 	reinitWARPGUI();
