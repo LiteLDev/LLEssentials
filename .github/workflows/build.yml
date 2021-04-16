@@ -22,7 +22,7 @@ jobs:
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        MSBuild.exe ./LLMoney/LLMoney.vcproj -property:Configuration=Release
+        MSBuild.exe ./LLMoney/LLMoney.vcxproj -property:Configuration=Release
       shell: bash
     
     - name: MkDirs
