@@ -22,7 +22,7 @@ jobs:
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        MSBuild.exe ./LiteLoaderMOD.sln -property:Configuration=Release
+        MSBuild.exe ./LLMoney/LLMoney.vcproj -property:Configuration=Release
       shell: bash
     
     - name: MkDirs
@@ -35,21 +35,14 @@ jobs:
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cp -a x64/Release/*.dll D:/out/plugins
-        cp -a x64/Release/*.lib D:/out/lib
-        cp -a headers/LLMoney.h D:/out/headers
-        cp -a config/money.json D:/out/plugins/LLMoney/
-        cp -a langpack/money.json D:/out/plugins/LLMoney/langpack/
+        cp x64/Release/*.dll D:/out/plugins
+        cp x64/Release/*.lib D:/out/lib
+        cp headers/LLMoney.h D:/out/headers
+        cp -r plugins/LLMoney/ D:/out/
       shell: bash
-
-    - name: UPX GitHub Action
-      uses: crazy-max/ghaction-upx@v1.3.3
-      with:
-        version: latest
-        file: D:/out/plugins/LLMoney.dll
 
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         name: LiteLoaderKit
-        path: D:\out
+        path: D:/out
