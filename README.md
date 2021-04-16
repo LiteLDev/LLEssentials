@@ -7,7 +7,7 @@ These LLHelper and LLtpa are not working on Minecraft 1.16.210, please use [LLEs
 LLHelper和LLtpa已经不再适用于Minecraft 1.16.210了，请使用[LLEssentials](https://l.sakuralo.top/resources/llessentials-1-16-200.9/)
 
 # Usage
-[Wiki](https://github.com/LiteLDev/LiteLoaderPlugins/wiki)
+[Documents](https://docs.litetitle.com/)
 
 # Notice
 You need to download `sqlite3.dll` if you want to use LLMoney, [click here](https://sqlite.org/2021/sqlite-dll-win64-x64-3340100.zip)  
