@@ -37,7 +37,7 @@ jobs:
       run: |
         cp x64/Release/*.dll D:/out/plugins
         cp x64/Release/*.lib D:/out/lib
-        cp x64/*.pdb D:/out/plugins
+        cp x64/Release/*.pdb D:/out/plugins
         cp headers/LLMoney.h D:/out/headers
         cp -r plugins/* D:/out/
       shell: bash
