@@ -21,7 +21,7 @@
 
 using namespace std;
 double MoneyFee;
-LangPack LP("plugins\\LLMoney\\langpack\\money.json");
+LangPack LangP("plugins\\LLMoney\\langpack\\money.json");
 static Logger LOG(stdio_commit{ "[MONEY] " });
 bool initDB();
 void Version() {
