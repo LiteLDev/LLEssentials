@@ -1,0 +1,8 @@
+{
+    "max_homes": 3,
+    "tpa_timeout": 20000,
+    "tpa_ratelimit": 5000,
+    "home_land_distance": 8,
+    "BACK_ENABLED": true,
+    "SUICIDE_ENABLED": true
+}

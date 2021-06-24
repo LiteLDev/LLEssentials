@@ -4,7 +4,7 @@
 #include "pch.h"
 #include "homeStorage.h"
 void Version() {
-	std::cout << "[LLtpa] version 210219" << endl;
+	std::cout << "[LLtpa] version 210219" << std::endl;
 }
 std::unique_ptr<KVDBImpl> db;
 static Logger LOG(stdio_commit{ "[TPA] " });
@@ -29,7 +29,7 @@ struct TPASet {
 
 #pragma endregion
 #pragma region gvals
-static LangPack LP("plugins\\LLtpa\\langpack\\tpa.json");
+static LangPack LangP("plugins\\LLtpa\\langpack\\tpa.json");
 #include<unordered_map>
 using std::unordered_map;
 static std::list<TPReq> reqs;
@@ -121,17 +121,17 @@ bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
 			Vec4 AP{ (rq->dir == A_B ? B : A).value() };
 			AP.teleport((rq->dir == A_B ? A : B).value());
 			reqs.erase(rq);
-			liteloader::runcmdEx("tellraw \"" + rq->A + "\" {\"rawtext\":[{\"text\":\"" + _TRS("tpa.reason.accept") + "\"}]}");
+			A.value().sendText(_TRS("tpa.reason.accept"));
 			return true;
 		}
 		reqs.erase(rq);
 		return false;
 	}
 	if (A.set) {
-		liteloader::runcmdEx("tellraw \"" + rq->A + "\" {\"rawtext\":[{\"text\":\"" + (res == TPCloseReason::deny ? _TRS("tpa.reason.deny") : _TRS("tpa.reason.timeout")) + "\"}]}");
+		A.value().sendText(res == TPCloseReason::deny ? _TRS("tpa.reason.deny") : _TRS("tpa.reason.timeout"));
 	}
 	if (B.set) {
-		liteloader::runcmdEx("tellraw \"" + rq->B + "\" {\"rawtext\":[{\"text\":\"" + (res == TPCloseReason::deny ? _TRS("tpa.reason.deny") : _TRS("tpa.reason.timeout")) + "\"}]}");
+		A.value().sendText(res == TPCloseReason::deny ? _TRS("tpa.reason.deny") : _TRS("tpa.reason.timeout"));
 	}
 	reqs.erase(rq);
 	return true;
@@ -147,7 +147,7 @@ void DoMakeReq(WPlayer _a, WPlayer _b, direction dir) {
 	tpaSetting[A].lastReq = clock();
 	reqs.emplace_back(dir, a, b, clock());
 	string prompt = a + (dir == A_B ? _TRS("tpa.req.A_B") : _TRS("tpa.req.B_A"));
-	liteloader::runcmdEx("tellraw \"" + offPlayer::getRealName(_b) + "\" {\"rawtext\":[{\"text\":\"" + prompt + "\"}]}");
+	_b.sendText(prompt);
 	using namespace GUI;
 	shared_ptr<RawFormBinder> x;
 	char buf[1024];
@@ -468,10 +468,10 @@ void tpa_entry() {
 		if (HOME_ENABLED) {
 			MakeCommand("warp", "warp system", 0);
 			MakeCommand("home", "home system", 0);
-			MakeCommand("homeAs", "run home as a player", 1);
+			MakeCommand("homeas", "run home as a player", 1);
 			CmdOverload(warp, oncmd_warp, "op", "name");
 			CmdOverload(home, oncmd_home, "op", "name");
-			CmdOverload(homeAs, oncmd_homeAs, "Pname", "op", "home_name");
+			CmdOverload(homeas, oncmd_homeAs, "Pname", "op", "home_name");
 		}
 		if (BACK_ENABLED) {
 			MakeCommand("back", "back to last deathpoint", 0);
@@ -487,7 +487,7 @@ void tpa_entry() {
 			auto sp = ev.Player;
 			auto p = WPlayer(*(ServerPlayer*)sp);
 			deathPos[p.v] = Vec4{ p };
-			liteloader::runcmd("tellraw @a[name=\"" + offPlayer::getRealName(sp) + "\"] {\"rawtext\":[{\"text\":\"" + _TRS("tpa.back.use") + "\"}]}");
+			p.sendText(_TRS("tpa.back.use"));
 			});
 	}
 }

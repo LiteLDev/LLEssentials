@@ -1,9 +1,9 @@
 #pragma once
 #ifdef LITELOADER_EXPORTS
-#define LIAPI __declspec(dllexport)
+#    define LIAPI __declspec(dllexport)
 #else
-#define LIAPI __declspec(dllexport)
+#    define LIAPI __declspec(dllexport)
 #endif
 typedef unsigned char uchar;
-#define LiteLoaderVersion "0.2.0"
-#define LiteLoaderVersionNum (unsigned short) 2
+#define LiteLoaderVersion "1.0.2"
+#define LiteLoaderVersionNum (unsigned short)8

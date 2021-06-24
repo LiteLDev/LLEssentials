@@ -40,7 +40,7 @@ THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
 	void* self, ItemStack* item, BlockPos* bpos, uchar a1, Vec3* plpos, Block* block) {
-	const BlockLegacy* b = &(block->getLegacyBlock());
+	const BlockLegacy* b = offBlock::getLegacyBlock(block);
 	auto blockname = (std::string&)*(__int64*)((__int64)((uintptr_t)b + 128));
 	auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(self) + 8);
 	auto itemid = item->getId();
