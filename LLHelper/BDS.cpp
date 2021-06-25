@@ -13,14 +13,16 @@ void* createPacket(int id) {
 	return ret;
 }
 
-void forceKick(void* pl, string msg) {
-	auto fc = [pl, msg] {
+void forceKick(Player* pl) {
+	/*auto fc = [pl, msg] {
 		void* network = (void*)((uintptr_t)pl + 2536); //ServerPlayer::isHostingPlayer
 		SymCall("?disconnectClient@ServerNetworkHandler@@QEAAXAEBVNetworkIdentifier@@EAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z",
 			void*, void*, void*, unsigned __int8, string, bool)
 			(mc->getServerNetworkHandler(), network, 0, msg, 0);
 	};
-	func.push_back(fc);
+	func.push_back(fc);*/
+	WPlayer wp = WPlayer(*pl);
+	wp.forceKick();
 }
 
 void forEachPlayer(Level* lv, std::function<bool(Player*)> func) {

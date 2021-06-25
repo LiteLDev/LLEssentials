@@ -27,7 +27,7 @@ THook(void*, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
 
 THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
 	void* _this, Player* a2) {
-	auto n = (NetworkIdentifier*)((uintptr_t)a2 + 2536);
+	auto n = (NetworkIdentifier*)((uintptr_t)a2 + 2712);
 	if (auto it = CNAME.find(offPlayer::getRealName(a2)); it != CNAME.end()) {
 		a2->setName(it->second);
 		optional<WPlayer> aa = WPlayer(*(ServerPlayer*)a2);
@@ -53,7 +53,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 			<< endl;
 	}
 	if (banItems.count(itemid)) {
-		forceKick(sp, u8"You used banned item!");
+		forceKick(sp);
 	}
 	return original(self, item, bpos, a1, plpos, block);
 }
@@ -62,7 +62,7 @@ THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextP
 	void* self, NetworkIdentifier* id, void* text) {
 	auto pl = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
 		Player*, void*, void*, char)(self, id, *(char*)((uintptr_t)text + 16));
-	auto msg = std::string(*(std::string*)((uintptr_t)text + 80));
+	auto msg = std::string(*(std::string*)((uintptr_t)text + 88));
 	if (msg.length() >= MAX_CHAT_LEN)
 		return;
 	LOG1 << "[" << gettime() << u8" INFO][BH] <" << offPlayer::getRealName(pl) << "> " << msg << endl;

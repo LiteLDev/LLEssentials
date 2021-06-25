@@ -25,6 +25,7 @@ bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 	for (auto i : res) {
 		setPlayerGameType(i, mode);
 	}
+	outp.success("Your game mode is changed to " + std::to_string(mode));
 	return true;
 }
 
@@ -70,8 +71,10 @@ bool onCMD_BanList(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP_L
 				outp.addMessage(banned + " (" + (strname.set ? strname.val() : "") + ") " + std::to_string(*(time_t*)val.data()));
 			}
 		}
+		outp.success("Done");
 		return true;
 		});
+	outp.success("Done");
 	return true;
 }
 bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, string& entry, optional<int>& time) {
@@ -124,7 +127,7 @@ bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) 
 		}
 	}
 	if(A){
-		forceKick(A, "kick");
+		forceKick(A);
 		outp.addMessage("kick success");
 		return true;
 	}
@@ -244,19 +247,19 @@ void REGCMD() {
 		});
 }
 
-THook(void, "?_onClientAuthenticated@ServerNetworkHandler@@AEAAXAEBVNetworkIdentifier@@AEBVCertificate@@@Z", void* snh, NetworkIdentifier& neti, Certificate& cert) {
+THook(void, "?_onClientAuthenticated@ServerNetworkHandler@@AEAAXAEBVNetworkIdentifier@@AEBVCertificate@@@Z", ServerNetworkHandler* snh, NetworkIdentifier& neti, Certificate& cert) {
 	original(snh, neti, cert);
 	auto xuid = ExtendedCertificate::getXuid(cert);
 	auto be1 = getBanEntry(xuid);
 	auto IP = liteloader::getIP(neti);
 	auto be2 = getBanEntry(IP);
-	auto nh = mc->getServerNetworkHandler();
+	//auto nh = mc->getServerNetworkHandler();
 	if (be1.set) {
 		if (be1.val() != 0 && be1.val() < time(0)) {
 			removeBanEntry(xuid);
 		}
 		else {
-			nh->onDisconnect(neti);
+			snh->onDisconnect(neti);
 		}
 	}
 	if (be2.set) {
@@ -264,7 +267,7 @@ THook(void, "?_onClientAuthenticated@ServerNetworkHandler@@AEAAXAEBVNetworkIdent
 			removeBanEntry(IP);
 		}
 		else {
-			nh->onDisconnect(neti);
+			snh->onDisconnect(neti);
 		}
 	}
 }
