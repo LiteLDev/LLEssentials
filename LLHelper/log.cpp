@@ -41,8 +41,8 @@ THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
 	void* self, ItemStack* item, BlockPos* bpos, uchar a1, Vec3* plpos, Block* block) {
 	const BlockLegacy* b = offBlock::getLegacyBlock(block);
-	auto blockname = (std::string&)*(__int64*)((__int64)((uintptr_t)b + 128));
-	auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(self) + 8);
+	std::string blockname = dAccess<std::string, 128>(b);
+	Player* sp = dAccess<Player*, 8>(self);
 	auto itemid = item->getId();
 	if (logItems.count(itemid)) {
 		LOG1 << "[" << gettime() << u8" INFO][ItemLog] "
@@ -61,8 +61,8 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextPacket@@@Z",
 	void* self, NetworkIdentifier* id, void* text) {
 	auto pl = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
-		Player*, void*, void*, char)(self, id, *(char*)((uintptr_t)text + 16));
-	auto msg = std::string(*(std::string*)((uintptr_t)text + 88));
+		Player*, void*, void*, char)(self, id, dAccess<char,16>(text)));
+	std::string msg = dAccess<std::string, 88>(text);
 	if (msg.length() >= MAX_CHAT_LEN)
 		return;
 	LOG1 << "[" << gettime() << u8" INFO][BH] <" << offPlayer::getRealName(pl) << "> " << msg << endl;

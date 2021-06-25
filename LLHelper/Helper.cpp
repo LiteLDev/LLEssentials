@@ -51,7 +51,7 @@ THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",
 	void* self, ItemStack* item) {
 	std::string id = std::to_string(item->getId());
 	if (CMDMAP.count(id)) {
-		Player* pl = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(self) + 8);
+		Player* pl = dAccess<Player*, 8>(self);
 		std::cout << offPlayer::getRealName(pl) << "\n";
 		liteloader::runcmdAs(pl, CMDMAP[id]);
 	}
