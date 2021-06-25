@@ -39,7 +39,7 @@ jobs:
         cp x64/Release/*.lib D:/out/lib
         cp x64/Release/*.pdb D:/out/plugins
         cp headers/LLMoney.h D:/out/headers
-        cp -r plugins/* D:/out/
+        cp -r plugins/* D:/out/plugins
       shell: bash
 
     - name: Upload artifact
