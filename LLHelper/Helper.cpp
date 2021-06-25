@@ -47,12 +47,13 @@ void entry() {
 	Version();
 }
 
-THook(bool, "?useItem@GameMode@@UEAA_NAEAVItemStack@@@Z",
+THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",
 	void* self, ItemStack* item) {
 	std::string id = std::to_string(item->getId());
 	if (CMDMAP.count(id)) {
-		auto sp = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(self) + 8);
-		liteloader::runcmdAs(sp, CMDMAP[id]);
+		Player* pl = *reinterpret_cast<Player**>(reinterpret_cast<unsigned long long>(self) + 8);
+		std::cout << offPlayer::getRealName(pl) << "\n";
+		liteloader::runcmdAs(pl, CMDMAP[id]);
 	}
 	return original(self, item);
 }
