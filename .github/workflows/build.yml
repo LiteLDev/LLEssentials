@@ -1,4 +1,4 @@
-name: Build LiteLoaderKit
+name: Build LiteLoaderPlugins
 
 on: [push]
 

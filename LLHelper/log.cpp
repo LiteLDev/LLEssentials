@@ -61,7 +61,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextPacket@@@Z",
 	void* self, NetworkIdentifier* id, void* text) {
 	auto pl = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
-		Player*, void*, void*, char)(self, id, dAccess<char,16>(text)));
+		Player*, void*, void*, char)(self, id, dAccess<char,16>(text));
 	std::string msg = dAccess<std::string, 88>(text);
 	if (msg.length() >= MAX_CHAT_LEN)
 		return;
