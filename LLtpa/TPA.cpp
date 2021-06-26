@@ -3,9 +3,8 @@
 
 #include "pch.h"
 #include "homeStorage.h"
-void Version() {
-	std::cout << "[LLtpa] version 210219" << std::endl;
-}
+
+#define _ver "210626"
 std::unique_ptr<KVDBImpl> db;
 static Logger LOG(stdio_commit{ "[TPA] " });
 
@@ -444,7 +443,6 @@ void loadall() {
 	loadCfg();
 }
 void tpa_entry() {
-	Version();
 	std::filesystem::create_directory("plugins\\LLtpa");
 	std::filesystem::create_directory("plugins\\LLtpa\\data");
 	std::filesystem::create_directory("plugins\\LLtpa\\langpack");
@@ -490,4 +488,5 @@ void tpa_entry() {
 			p.sendText(_TRS("tpa.back.use"));
 			});
 	}
+	LOG("Loaded version: ",_ver);
 }

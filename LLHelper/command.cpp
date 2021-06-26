@@ -8,6 +8,8 @@
 #include "BDS.h"
 #include "Helper.h"
 #include <string_view>
+
+LangPack LangP("plugins\\LLHelper\\langpack\\helper.json");
 unique_ptr<KVDBImpl> db;
 playerMap<string> ORIG_NAME;
 unordered_map<string, string> CNAME;
@@ -25,7 +27,7 @@ bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 	for (auto i : res) {
 		setPlayerGameType(i, mode);
 	}
-	outp.success("Your game mode is changed to " + std::to_string(mode));
+	outp.success(_TRS("gmode.success"));
 	return true;
 }
 
@@ -71,10 +73,10 @@ bool onCMD_BanList(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP_L
 				outp.addMessage(banned + " (" + (strname.set ? strname.val() : "") + ") " + std::to_string(*(time_t*)val.data()));
 			}
 		}
-		outp.success("Done");
+		outp.success(_TRS("ban.list..success"));
 		return true;
 		});
-	outp.success("Done");
+	outp.success(_TRS("ban.list.success"));
 	return true;
 }
 bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, string& entry, optional<int>& time) {
@@ -83,24 +85,26 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 	{
 	case BANOP::banip: {
 		addBanEntry(entry, time.set ? time.val() : 0);
+		outp.success(QUOTE(entry) + _TRS("ban.banip.success"));
 		return true;
 	}
 	case BANOP::ban: {
 		addBanEntry(S(XIDREG::str2id(entry).val()), time.set ? time.val() : 0);
 		liteloader::runcmdA("kick", QUOTE(entry));
-		outp.success("ban " + QUOTE(entry) + " success");
+		outp.success(QUOTE(entry) + _TRS("ban.ban.success"));
 		return true;
 	}
 				   break;
 	case BANOP::unban: {
 		if (getBanEntry(entry).set) {
 			removeBanEntry(entry);
+			outp.success(QUOTE(entry) + _TRS("ban.unban.success"));
 			return true;
 		}
 		else {
 			auto XID = XIDREG::str2id(entry);
 			if (!XID.set) {
-				outp.error("not banned");
+				outp.error(_TRS("ban.unban.error"));
 				return false;
 			}
 			else {
@@ -128,7 +132,7 @@ bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) 
 	}
 	if(A){
 		forceKick(A);
-		outp.addMessage("kick success");
+		outp.addMessage(target + _TRS("skick.success"));
 		return true;
 	}
 	else
@@ -151,7 +155,7 @@ bool oncmd_vanish(CommandOrigin const& ori, CommandOutput& outp) {
 			spp->sendNetworkPacket(pk);
 		}
 	}
-	outp.addMessage("Successfully opened. When you want to cancel, please join the server again.");
+	outp.addMessage(_TRS("vanish.success"));
 	return true;
 }
 
@@ -180,24 +184,24 @@ bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op,
 				db->put(src, str);
 				optional<WPlayer> aa = WPlayer(*(ServerPlayer*)A);
 				if (!aa.set) {
-					p.addMessage("Player not online!we will only save the custom name.");
+					p.addMessage(_TRS("cname.set.notonline"));
 					return false;
 				}
 				aa.val()->setName(str);
 				ORIG_NAME[aa.val().v] = aa.val().getName();
-				p.addMessage("Set success");
+				p.addMessage(_TRS("cname.set.success"));
 			}
 			else {
 				CNAME.erase(src);
 				db->del(src);
 				optional<WPlayer> aa = WPlayer(*(ServerPlayer*)A);
 				if (!aa.set) {
-					p.addMessage("Player not online!we will only delete the custom name.");
+					p.addMessage(_TRS("cname.del.notonline"));
 					return false;
 				}
 				aa.val()->setName(src);
 				ORIG_NAME._map.erase(aa.val().v);
-				p.addMessage("delete success");
+				p.addMessage(_TRS("cname.del.success"));
 			}
 			return true;
 		}
@@ -219,6 +223,7 @@ bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 
 static bool onReload(CommandOrigin const& ori, CommandOutput& outp) {
 	loadCfg();
+	outp.success(_TRS("hreload.success"));
 	return true;
 }
 

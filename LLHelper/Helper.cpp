@@ -2,16 +2,17 @@
 #include "Helper.h"
 #include <unordered_map>
 #include "commad.h"
+
 using namespace std;
+#define _ver "210626"
+static Logger LOG(stdio_commit{ "[LLHelper] " });
 Logger1 LOG1("./liteloader.log");
 unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
 unordered_set<short> logItems, banItems;
 bool LOG_CMD, LOG_CHAT, regABILITY, NO_EXPLOSION, EXP_PLAY, penderman, pfarm;
 Minecraft* mc;
-void Version() {
-	cout << "[LLHelper] version 210219" << endl;
-}
+
 void loadCfg() {
 	try {
 		CMDMAP.clear();
@@ -44,7 +45,7 @@ void entry() {
 	filesystem::create_directory("plugins\\LLHelper");
 	loadCfg();
 	REGCMD();
-	Version();
+	LOG("Loaded version: ", _ver);
 }
 
 THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",

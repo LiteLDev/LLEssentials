@@ -42,4 +42,5 @@ using namespace std;
 #include<api/myPacket.h>
 #include<stl/Bstream.h>
 #include<stl/varint.h>
+#include <stl\langPack.h>
 #endif //PCH_H

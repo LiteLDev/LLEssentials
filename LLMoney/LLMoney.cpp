@@ -19,14 +19,13 @@
 #include<api/xuidreg/xuidreg.h>
 #include <LLMoney.h>
 
+#define _ver "210626"
 using namespace std;
 double MoneyFee;
 LangPack LangP("plugins\\LLMoney\\langpack\\money.json");
 static Logger LOG(stdio_commit{ "[MONEY] " });
 bool initDB();
-void Version() {
-	cout << "[LLMoney] version 210312" << endl;
-}
+
 extern money_t DEF_MONEY;
 enum MONEYOP :int {
 	query = 1,
@@ -159,7 +158,6 @@ bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYO
 
 
 void entry() {
-	Version();
 	filesystem::create_directory("plugins\\LLMoney");
 	filesystem::create_directory("plugins\\LLMoney\\langpack");
 	if (!initDB()) {
@@ -186,4 +184,5 @@ void entry() {
 		LOG.p<LOGLVL::Error>("json error", e);
 		throw 0;
 	}
+	LOG("Loaded version: ", _ver);
 }
