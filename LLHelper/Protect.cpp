@@ -19,7 +19,7 @@ THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlock
 
 THook(void*, "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z", void* a, void* b) {
 	if (FAKE_SEED) {
-		dAccess<int, 40>(a) = FAKE_SEED;
+		dAccess<int, 48>(a) = FAKE_SEED;
 	}
 	return original(a, b);
 }

@@ -11,7 +11,7 @@ unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
 unordered_set<short> logItems, banItems;
 bool LOG_CMD, LOG_CHAT, regABILITY, NO_EXPLOSION, EXP_PLAY, penderman, pfarm;
-Minecraft* mc;
+//Minecraft* mc;
 
 void loadCfg() {
 	try {
@@ -26,6 +26,7 @@ void loadCfg() {
 		jr.bind("LOG_CMD", LOG_CMD, true);
 		jr.bind("NoEndermanTakeBlock", penderman, true);
 		jr.bind("ProtectFarmBlock", pfarm, true);
+		jr.bind("force_enable_ability", regABILITY, true);
 		vector<int> items;
 		logItems.clear();
 		banItems.clear();
@@ -59,7 +60,16 @@ THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",
 	return original(self, item);
 }
 
+THook(void, "?setup@ChangeSettingCommand@@SAXAEAVCommandRegistry@@@Z",
+	void* self) {
+	if (regABILITY)
+		SymCall("?setup@AbilityCommand@@SAXAEAVCommandRegistry@@@Z"
+			, void, void*)(self);
+	return original(self);
+}
+/*
 THook(void, "?init@Minecraft@@QEAAXXZ", void* self) {
 	original(self);
 	mc = (Minecraft*)self;
 }
+*/
