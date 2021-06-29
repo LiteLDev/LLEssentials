@@ -1,4 +1,4 @@
-// BDXTPA.cpp : ¶¨Òå DLL µÄµ¼³öº¯Êý¡£
+ï»¿// BDXTPA.cpp : å®šä¹‰ DLL çš„å¯¼å‡ºå‡½æ•°ã€‚
 //
 
 #include "pch.h"
