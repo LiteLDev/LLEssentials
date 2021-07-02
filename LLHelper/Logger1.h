@@ -20,7 +20,7 @@ public:
 	Logger1(std::string path) {
 		this->path = path;
 		logfile.open(path, std::ios::app);
-		logfile << "[" << gettime() << " INFO ] Server Started" << endl;
+		logfile << "[" << gettime() << " INFO] Server Started" << endl;
 	}
 	template <typename T>
 	Logger1& operator<< (T msg) {

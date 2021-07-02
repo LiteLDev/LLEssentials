@@ -3,13 +3,15 @@
 
 THook(unsigned int, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
 	MinecraftCommands* self, __int64 a2, std::shared_ptr<CommandContext> cmd, char a4) {
-	auto ptr = cmd.get();
-	CommandOrigin& cmdo = ptr->getOrigin();
-	if (cmdo.getOriginType() == OriginType::Player) {
-		auto pl = SymCall("?getEntity@PlayerCommandOrigin@@UEBAPEAVActor@@XZ", Player*, void*)(&cmdo);
-		LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(pl) << " CMD " << ptr->getCmd() << endl;
+	if (LOG_CMD) {
+		auto ptr = cmd.get();
+		CommandOrigin& cmdo = ptr->getOrigin();
+		if (cmdo.getOriginType() == OriginType::Player) {
+			auto pl = SymCall("?getEntity@PlayerCommandOrigin@@UEBAPEAVActor@@XZ", Player*, void*)(&cmdo);
+			LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(pl) << " CMD " << ptr->getCmd() << endl;
+		}
 	}
-	return original(self, a2, cmd, a4);
+		return original(self, a2, cmd, a4);
 }
 
 THook(void*, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
@@ -60,11 +62,13 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 
 THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextPacket@@@Z",
 	void* self, NetworkIdentifier* id, void* text) {
-	auto pl = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
-		Player*, void*, void*, char)(self, id, dAccess<char,16>(text));
-	std::string msg = dAccess<std::string, 88>(text);
-	if (msg.length() >= MAX_CHAT_LEN)
-		return;
-	LOG1 << "[" << gettime() << u8" INFO][BH] <" << offPlayer::getRealName(pl) << "> " << msg << endl;
+	if (LOG_CHAT) {
+		auto pl = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
+			Player*, void*, void*, char)(self, id, dAccess<char, 16>(text));
+		std::string msg = dAccess<std::string, 88>(text);
+		if (msg.length() >= MAX_CHAT_LEN)
+			return;
+		LOG1 << "[" << gettime() << u8" INFO][BH] <" << offPlayer::getRealName(pl) << "> " << msg << endl;
+	}
 	return original(self, id, text);
 }

@@ -227,6 +227,30 @@ static bool onReload(CommandOrigin const& ori, CommandOutput& outp) {
 	return true;
 }
 
+void getItemName(const Item* item, string* str) {
+	SymCall("?getSerializedName@Item@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
+		void, const Item*, string*)(item, str);
+}
+
+bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
+	if (ori.getOriginType() == OriginType::Player) {
+		auto wp = MakeWP(ori);
+		if (wp.set) {
+			ItemStack item = wp.val().get().getCarriedItem();
+			std::string itemName;
+			if (item.getId() != 0) {
+				getItemName(item.getItem(), &itemName);
+			}
+			outp.success(itemName + " " + std::to_string(item.getId()));
+			return true;
+		}
+	}
+	else {
+		outp.error("You are not a player");
+		return false;
+	}
+}
+
 void REGCMD() {
 	loadCNAME();
 	Event::addEventListener([](RegCmdEV e) {
@@ -249,6 +273,8 @@ void REGCMD() {
 		CmdOverload(cname, onCMD_CNAME, "op", "target", "name");
 		MakeCommand("vanish", "hide yourself", 1);
 		CmdOverload(vanish, oncmd_vanish);
+		MakeCommand("item", "show item info on hand", 0);
+		CmdOverload(item, oncmd_item);
 		});
 }
 

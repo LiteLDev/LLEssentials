@@ -6,7 +6,7 @@
 using namespace std;
 #define _ver "210626"
 static Logger LOG(stdio_commit{ "[LLHelper] " });
-Logger1 LOG1("./liteloader.log");
+Logger1 LOG1(".\\logs\\LLHelper.log");
 unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
 unordered_set<short> logItems, banItems;
