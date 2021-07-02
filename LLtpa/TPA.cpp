@@ -4,7 +4,7 @@
 #include "pch.h"
 #include "homeStorage.h"
 
-#define _ver "210626"
+#define _ver "210702"
 std::unique_ptr<KVDBImpl> db;
 static Logger LOG(stdio_commit{ "[TPA] " });
 
@@ -205,9 +205,20 @@ bool oncmd_tpa(CommandOrigin const& ori, CommandOutput& outp, MyEnum<direction> 
 	}
 	return false;
 }
+
 enum class TPAOP :int {
-	ac = 1, de = 2, cancel = 3, toggle = 4
+	ac = 1, de = 2, cancel = 3, toggle = 4, gui = 5
 };
+
+std::vector<string> playerList() {
+	auto plist = liteloader::getAllPlayers();
+	std::vector<string> pl;
+	for (auto p : plist) {
+		pl.push_back(p->getNameTag());
+	}
+	return pl;
+}
+
 bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op) {
 	switch (op) {
 	case TPAOP::ac: {
@@ -243,6 +254,25 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 
 		break;
 	}
+	case TPAOP::gui: {
+		auto _wp = MakeWP(ori);
+		auto wp = _wp.val();
+		using namespace GUI;
+		auto fm = std::make_shared<FullForm>();
+		fm->title = _TRS("tpa.gui.title");
+		std::string guiLabel = _TRS("tpa.gui.label");
+		std::string guiDropdown1 = _TRS("tpa.gui.dropdown1");
+		std::string guiDropdown2 = _TRS("tpa.gui.dropdown2");
+		fm->addWidget({ GUILabel(guiLabel.c_str()) });
+		fm->addWidget({ GUIDropdown(guiDropdown1.c_str() ,{"to","here"}) });
+		fm->addWidget({ GUIDropdown(guiDropdown2.c_str() ,playerList()) });
+		sendForm(wp, FullFormBinder{ fm,{[](WPlayer P, FullFormBinder::DType data) {
+			if (!data.set) return;
+				auto& [d1,d2] = data.val();
+				liteloader::runcmdAs(P, "tpa " + d2[0] + " " + QUOTE(d2[1]));
+		}} });
+		break;
+	}
 	}
 	return true;
 }
@@ -254,13 +284,14 @@ shared_ptr<GUI::SimpleForm> WARPGUI;
 void reinitWARPGUI() {
 	using namespace GUI;
 	if (!WARPGUI) WARPGUI = make_shared<SimpleForm>();
-	WARPGUI->title = "Warp System";
-	WARPGUI->content = "choose a warp point";
+	WARPGUI->title = _TRS("warp.gui.title");
+	WARPGUI->content = _TRS("warp.gui.content");
 	WARPGUI->reset();
 	for (auto& [k, v] : warps) {
 		WARPGUI->addButton(GUIButton(string(k)));
 	}
 }
+
 void sendWARPGUI(WPlayer wp) {
 	using namespace GUI;
 	sendForm(wp, SimpleFormBinder(WARPGUI, [](WPlayer wp, SimpleFormBinder::DType d) {
@@ -280,7 +311,7 @@ enum WARPOP :int {
 	go = 1, add = 2, ls = 3, del = 4, gui = 5
 };
 enum class HOMEOP :int {
-	go = 1, add = 2, ls = 3, del = 4
+	go = 1, add = 2, ls = 3, del = 4, gui = 5
 };
 bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op, optional<string>& val) {
 	switch (op)
@@ -328,7 +359,9 @@ bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op
 	return true;
 }
 #pragma endregion
+
 #pragma region HOME
+
 bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEnum<HOMEOP> op, optional<string>& val) {
 	switch (op)
 	{
@@ -365,19 +398,37 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 		for (auto& i : hm.data) {
 			outp.addMessage(i.name + " " + i.pos.toStr());
 		}
-
 		break;
 	}
 	case HOMEOP::go: {
 		for (auto& i : hm.data) {
 			if (i.name == val.value()) {
 				i.pos.teleport(MakeWP(ori).val());
-
 				return true;
 			}
 		}
 		outp.error(_TRS("home.not.found"));
 		return false;
+		break;
+	}
+	case HOMEOP::gui: {
+		auto wp1 = MakeWP(ori);
+		WPlayer wp;
+		if (wp1.set) {
+			wp = wp1.val();
+		}
+		auto HomeGUI = make_shared<GUI::SimpleForm>();
+		HomeGUI->title = _TRS("home.gui.title");
+		HomeGUI->content = _TRS("home.gui.content");
+		HomeGUI->reset();
+		for (auto& i : hm.data) {
+			HomeGUI->addButton(GUI::GUIButton(string(i.name)));
+		}
+		GUI::sendForm(wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](WPlayer wp, GUI::SimpleFormBinder::DType d) {
+			if (d.set) {
+				wp.runcmdA("home", "go", QUOTE(d.val().second));
+			}
+			}));
 		break;
 	}
 	default:
@@ -454,8 +505,8 @@ void tpa_entry() {
 		CMDREG::SetCommandRegistry(e.CMDRg);
 		CEnum<direction> _1("tpdir", { "to","here" });
 		CEnum<WARPOP> _2("warpop", { "go","add","ls","del","gui" });
-		CEnum<HOMEOP> _4("homeop", { "go","add","ls","del" });
-		CEnum<TPAOP> _3("tpaop", { "ac","de","cancel","toggle" });
+		CEnum<HOMEOP> _4("homeop", { "go","add","ls","del", "gui" });
+		CEnum<TPAOP> _3("tpaop", { "ac","de","cancel","toggle", "gui" });
 		if (TPA_ENABLED) {
 			MakeCommand("tpa", "tpa system", 0);
 			CmdOverload(tpa, oncmd_tpa, "dir", "target");
