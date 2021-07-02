@@ -17,6 +17,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | /tpa <to/here/ac/de/cancel/toggle> [player]	| Teleport to a player's location/teleport the player to your location/accept the teleport/refuse the teleport/cancel the teleport/change the status of whether to accept the teleport | Player |
 | /warp <add/del/go/ls> [warp] | Add a warp/delete warp/go to warp/list warp | OP |
 | /home <add/del/go/ls> [home] | Add a home/delete home/go home/list home | Player |
+| /item | Show the item info on hand | Player |
 
 # Config
 LLHelper:
