@@ -69,7 +69,7 @@ enum class TPFailReason :int {
 	blocked = 3
 };
 TPFailReason CanMakeReq(string_view a, string_view b) {
-	CHash A = do_hash(a), B = do_hash(b);
+	CHash A = do_hash(a.data()), B = do_hash(b.data());
 	if (tpaSetting[A].lastReq >= clock() - TPratelimit) {
 		return TPFailReason::ratelimit;
 	}
@@ -142,7 +142,7 @@ bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
 void DoMakeReq(WPlayer _a, WPlayer _b, direction dir) {
 	auto a = offPlayer::getRealName(_a);
 	auto b = offPlayer::getRealName(_b);
-	CHash A = do_hash(a), B = do_hash(b);
+	CHash A = do_hash(a.c_str()), B = do_hash(b.c_str());
 	tpaSetting[A].lastReq = clock();
 	reqs.emplace_back(dir, a, b, clock());
 	string prompt = a + (dir == A_B ? _TRS("tpa.req.A_B") : _TRS("tpa.req.B_A"));
@@ -247,7 +247,7 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 		break;
 	}
 	case TPAOP::toggle: {
-		CHash hs = do_hash(ori.getName());
+		CHash hs = do_hash(ori.getName().c_str());
 		auto state = !tpaSetting[hs].Accept;
 		tpaSetting[hs].Accept = state;
 		outp.addMessage("new state " + std::to_string(state));

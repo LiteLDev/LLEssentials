@@ -150,7 +150,7 @@ extern THookRegister THookRegisterTemplate;
 #define TInstanceHook(ret, sym, type, ...) \
     TInstanceHook2(sym, ret, sym, type, VA_EXPAND(__VA_ARGS__))
 
-
+/*
 template<int len> struct PatchHelper {
     unsigned char data[len];
     using ref_t = char (&)[len];
@@ -211,4 +211,4 @@ void PatchHelper<len>::EasyPatch(PatchHelper<len> expected, PatchHelper<len> pat
     VirtualProtect((LPVOID)this, (SIZE_T)len, PAGE_EXECUTE_READWRITE, &old);
     DoPatch(expected, patched);
     VirtualProtect((LPVOID)this, (SIZE_T)len, old, NULL);
-}
+}*/

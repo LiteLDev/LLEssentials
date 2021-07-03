@@ -28,10 +28,10 @@ static void load(const string& path) {
     LangPack(std::unordered_map<string, string> &mp) { load2(mp); }
     void load2(std::unordered_map<string, string> &mp) {
         for (auto &i : mp) {
-            if (TMAP.count(do_hash(i.first))) {
+            if (TMAP.count(do_hash(i.first.c_str()))) {
                 std::cerr << "[LANGPACK/ERROR] !!! hash coll detected for " << i.first << std::endl;
             }
-            TMAP.emplace(do_hash(i.first), i.second);
+            TMAP.emplace(do_hash(i.first.c_str()), i.second);
         }
     }
     template <CHash HASH>
