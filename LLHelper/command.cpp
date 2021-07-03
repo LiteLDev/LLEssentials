@@ -243,7 +243,7 @@ bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
 		auto wp = MakeWP(ori);
 		if (wp.set) {
 			ItemStack item = wp.val().get().getCarriedItem();
-			std::string itemName;
+			std::string itemName = "Air";
 			if (item.getId() != 0) {
 				getItemName(item.getItem(), &itemName);
 			}
