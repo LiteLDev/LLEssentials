@@ -166,17 +166,20 @@ enum class CNAMEOP :int {
 };
 
 bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, string& src, optional<string>& name) {
-	string playerName = src;
 	vector<Player*> pList = liteloader::getAllPlayers();
 	Player* player = nullptr;
 	for (auto p : pList) {
-		if (offPlayer::getRealName(p) == playerName) {
+		if (offPlayer::getRealName(p) == src) {
 			player = p;
 			break;
 		}
 	}
 	if (op == CNAMEOP::set) {
-		auto& str = name.val();
+		if (!name.set) {
+			p.error(_TRS("cname.set.null"));
+			return false;
+		}
+		std::string& str = name.val();
 		for (int i = 0; i < str.size(); ++i) {
 			if (str[i] == '^') str[i] = '\n';
 		}
@@ -186,23 +189,23 @@ bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op,
 			p.success(_TRS("cname.set.notonline"));
 			return false;
 		}
-		optional<WPlayer> wPlayer = WPlayer(*(ServerPlayer*)player);
+		optional<WPlayer> wPlayer = WPlayer(*player);
 		if (!wPlayer.set) {
 			p.success(_TRS("cname.set.notonline"));
 			return false;
 		}
 		p.success(_TRS("cname.set.success"));
 		wPlayer.val()->setName(str);
-		ORIG_NAME[wPlayer.val().v] = wPlayer.val().getName();
+		ORIG_NAME[wPlayer.val().v] = wPlayer.val().getName().c_str();
 	}
-	else {
+	if (op == CNAMEOP::remove) {
 		CNAME.erase(src);
 		db->del(src);
 		if (!player) {
 			p.success(_TRS("cname.rm.notonline"));
 			return false;
 		}
-		optional<WPlayer> wPlayer = WPlayer(*(ServerPlayer*)player);
+		optional<WPlayer> wPlayer = WPlayer(*player);
 		if (!wPlayer.set) {
 			p.success(_TRS("cname.rm.notonline"));
 			return false;

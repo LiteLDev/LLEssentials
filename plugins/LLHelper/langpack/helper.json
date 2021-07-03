@@ -5,11 +5,12 @@
     "ban.ban.success": " is banned",
     "ban.unban.success": " is unbanned",
     "ban.unban.error": "not banned",
-    "kick.success": "is kicked",
+    "skick.success": "is kicked",
     "vanish.success": "Successfully opened. When you want to cancel, please join the server again.",
-    "cname.set.notonline": "Player not online!we will only save the custom name.",
+    "cname.set.notonline": "Player not online!we will only save the custom name",
     "cname.set.success": "Set success",
-    "cname.rm.notonline": "Player not online!we will only delete the custom name.",
-    "cname.rm.success": "delete success",
+    "cname.rm.notonline": "Player not online!we will only delete the custom name",
+    "cname.rm.success": "Delete success",
+    "cname.set.null": "Null name",
     "hreload.success": "Reloaded"
 }
