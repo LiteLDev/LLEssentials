@@ -4,5 +4,7 @@
     "tpa_ratelimit": 5000,
     "home_land_distance": 8,
     "BACK_ENABLED": true,
-    "SUICIDE_ENABLED": true
+    "SUICIDE_ENABLED": true,
+    "TPA_ENABLED": true,
+    "HOME_ENABLED": true
 }

@@ -131,7 +131,7 @@ bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) 
 			break;
 		}
 	}
-	if(A){
+	if (A) {
 		forceKick(A);
 		outp.addMessage(target + _TRS("skick.success"));
 		return true;
@@ -166,48 +166,53 @@ enum class CNAMEOP :int {
 };
 
 bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, string& src, optional<string>& name) {
-		string playername = src;
-		vector<Player*> plist = liteloader::getAllPlayers();
-		Player* A = nullptr;
-		for (auto p : plist) {
-			if (offPlayer::getRealName(p) == playername) {
-				A = p;
-				break;
-			}
+	string playerName = src;
+	vector<Player*> pList = liteloader::getAllPlayers();
+	Player* player = nullptr;
+	for (auto p : pList) {
+		if (offPlayer::getRealName(p) == playerName) {
+			player = p;
+			break;
 		}
-		if (A) {
-			if (op == CNAMEOP::set) {
-				auto& str = name.val();
-				for (int i = 0; i < str.size(); ++i) {
-					if (str[i] == '^') str[i] = '\n';
-				}
-				CNAME[src] = str;
-				db->put(src, str);
-				optional<WPlayer> aa = WPlayer(*(ServerPlayer*)A);
-				if (!aa.set) {
-					p.addMessage(_TRS("cname.set.notonline"));
-					return false;
-				}
-				aa.val()->setName(str);
-				ORIG_NAME[aa.val().v] = aa.val().getName();
-				p.addMessage(_TRS("cname.set.success"));
-			}
-			else {
-				CNAME.erase(src);
-				db->del(src);
-				optional<WPlayer> aa = WPlayer(*(ServerPlayer*)A);
-				if (!aa.set) {
-					p.addMessage(_TRS("cname.del.notonline"));
-					return false;
-				}
-				aa.val()->setName(src);
-				ORIG_NAME._map.erase(aa.val().v);
-				p.addMessage(_TRS("cname.del.success"));
-			}
-			return true;
+	}
+	if (op == CNAMEOP::set) {
+		auto& str = name.val();
+		for (int i = 0; i < str.size(); ++i) {
+			if (str[i] == '^') str[i] = '\n';
 		}
+		CNAME[src] = str;
+		db->put(src, str);
+		if (!player) {
+			p.success(_TRS("cname.set.notonline"));
+			return false;
+		}
+		optional<WPlayer> wPlayer = WPlayer(*(ServerPlayer*)player);
+		if (!wPlayer.set) {
+			p.success(_TRS("cname.set.notonline"));
+			return false;
+		}
+		p.success(_TRS("cname.set.success"));
+		wPlayer.val()->setName(str);
+		ORIG_NAME[wPlayer.val().v] = wPlayer.val().getName();
+	}
+	else {
+		CNAME.erase(src);
+		db->del(src);
+		if (!player) {
+			p.success(_TRS("cname.rm.notonline"));
+			return false;
+		}
+		optional<WPlayer> wPlayer = WPlayer(*(ServerPlayer*)player);
+		if (!wPlayer.set) {
+			p.success(_TRS("cname.rm.notonline"));
+			return false;
+		}
+		p.success(_TRS("cname.rm.success"));
+		wPlayer.val()->setName(src);
+		ORIG_NAME._map.erase(wPlayer.val().v);
+	}
+	return true;
 }
-
 
 bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player>& p, string& host, optional<int> port) {
 	int P = port.set ? port.val() : 19132;

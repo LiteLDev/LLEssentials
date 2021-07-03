@@ -7,6 +7,8 @@
     "home.not.found": "找不到传送点！",
     "home.gui.title": "Home",
     "home.gui.content": "choose a home",
+    "warp.gui.title": "Warp System",
+    "warp.gui.content": "choose a warp point",
     "tpa.req.A_B": " 发起了一个传送到你的请求,使用/tpa ac接受,/tpa de拒绝",
     "tpa.req.B_A": " 发起了一个传送到他的请求,使用/tpa ac接受,/tpa de拒绝",
     "tpa.reason.deny": "TPA请求被拒绝",
