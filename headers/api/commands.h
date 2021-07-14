@@ -99,8 +99,8 @@ static inline void MakeCommand(string const &name, const char *desc, int lvl) {
     SymCall(
         "?registerCommand@CommandRegistry@@QEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$"
         "allocator@D@2@@std@@PEBDW4CommandPermissionLevel@@UCommandFlag@@3@Z",
-        void, void *, std::string const &, char const *, char, char,
-        char)(CmdRegGlobal, name, desc, lvl, 0, 0x40);
+        void, void *, std::string const &, char const *, char, short,
+        short)(CmdRegGlobal, name, desc, lvl, 0, 0x80);
 }
 
 template <typename T>
@@ -249,15 +249,22 @@ static_assert(sizeof(MakeOverload<void, int>) == 1);
     { MakeOverload __ov2((struct name2 *)0, cb2, #name2, cb, __VA_ARGS__); }
 #include <api/types/types.h>
 inline static optional<WPlayer> MakeWP(CommandOrigin const &ori) {
-    if (ori.getOriginType() == OriginType::Player) {
+    if ((ServerPlayer *)ori.getEntity()) {
         return {{*(ServerPlayer *)ori.getEntity()}};
     }
+    // if (ori.getOriginType() == OriginType::Player) {
+    //return {{*(ServerPlayer *)ori.getEntity()}};
+    //}
     return {};
 }
 inline static ServerPlayer *MakeSP(CommandOrigin const &ori) {
-    if (ori.getOriginType() == OriginType::Player) {
-        return {(ServerPlayer *)ori.getEntity()};
+    ServerPlayer *sp = (ServerPlayer *)ori.getEntity();
+    if (sp) {
+        return {sp};
     }
+    // if (ori.getOriginType() == OriginType::Player) {
+    //return {(ServerPlayer *)ori.getEntity()};
+    //}
     return nullptr;
 }
 inline static ServerPlayer *MakeSP(void *x) {

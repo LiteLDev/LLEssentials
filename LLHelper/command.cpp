@@ -242,22 +242,26 @@ void getItemName(const Item* item, string* str) {
 }
 
 bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
-	if (ori.getOriginType() == OriginType::Player) {
-		auto wp = MakeWP(ori);
-		if (wp.set) {
-			ItemStack item = wp.val().get().getCarriedItem();
-			std::string itemName = "Air";
-			if (item.getId() != 0) {
-				getItemName(item.getItem(), &itemName);
-			}
-			outp.success(itemName + " " + std::to_string(item.getId()));
-			return true;
+	//if (ori.getOriginType() == OriginType::Player) {
+	auto wp = MakeWP(ori);
+	if (wp.set && wp.val()) {
+		ItemStack item = wp.val().get().getCarriedItem();
+		std::string itemName = "Air";
+		if (item.getId() != 0) {
+			getItemName(item.getItem(), &itemName);
 		}
+		outp.success(itemName + " " + std::to_string(item.getId()));
+		return true;
 	}
 	else {
 		outp.error("You are not a player");
 		return false;
 	}
+	/*}
+	else {
+		outp.error("You are not a player");
+		return false;
+	}*/
 }
 
 void REGCMD() {
