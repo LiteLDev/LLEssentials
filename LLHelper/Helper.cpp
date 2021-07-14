@@ -4,7 +4,7 @@
 #include "commad.h"
 
 using namespace std;
-#define _ver "210703"
+#define _ver "210714"
 static Logger LOG(stdio_commit{ "[LLHelper] " });
 Logger1 LOG1(".\\logs\\LLHelper.log");
 unordered_map<string, string> CMDMAP, CMDSCHEDULE;
