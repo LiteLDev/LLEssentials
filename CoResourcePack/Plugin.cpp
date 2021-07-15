@@ -1,16 +1,5 @@
 #include "pch.h"
-#include "lbpch.h"
-#include "mc/OffsetHelper.h"
-#include "mc/core.h"
-#include "mc/block.h"
-#include "mc/item.h"
-#include "mc/mass.h"
-#include "api/commands.h"
-#include "api/Basic_Event.h"
 #include "loader/Loader.h"
-#include "mc/BlockSource.h"
-#include "mc/Block.h"
-#include "mc/Player.h"
 #include <iostream>
 #include <string>
 using namespace std;
