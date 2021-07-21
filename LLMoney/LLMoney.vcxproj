@@ -154,10 +154,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="LLMoney.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="api.cpp" />
+    <ClCompile Include="compatibility.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="LLMoney.cpp" />
     <ClCompile Include="pch.cpp">

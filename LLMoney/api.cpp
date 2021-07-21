@@ -46,135 +46,143 @@ bool initDB() {
 	}
 	return true;
 }
-namespace Money {
-	LLMONEY_API money_t getMoney(xuid_t xuid) {
-		try {
-			static SQLite::Statement get{ *db,"select Money from money where XUID=?" };
-			get.bindNoCopy(1, &xuid, sizeof(xuid));
-			money_t rv = DEF_MONEY;
-			bool fg = false;
-			while (get.executeStep()) {
-				rv = (money_t)get.getColumn(0).getInt64();
-				fg = true;
+
+LLMONEY_API money_t LLMoneyGet(xuid_t xuid) {
+	try {
+		static SQLite::Statement get{ *db,"select Money from money where XUID=?" };
+		get.bindNoCopy(1, &xuid, sizeof(xuid));
+		money_t rv = DEF_MONEY;
+		bool fg = false;
+		while (get.executeStep()) {
+			rv = (money_t)get.getColumn(0).getInt64();
+			fg = true;
+		}
+		get.reset();
+		get.clearBindings();
+		if (!fg) {
+			static SQLite::Statement set{ *db,"insert into money values (?,?)" };
+			set.bindNoCopy(1, &xuid, sizeof xuid);
+			set.bind(2, DEF_MONEY);
+			set.exec();
+			set.reset();
+			set.clearBindings();
+		}
+		return rv;
+	}
+	catch (std::exception const& e) {
+		LOGE("[Money] DB err %s\n", e.what());
+		return -1;
+	}
+}
+
+LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money) {
+	return LLMoneyTrans(0, xuid, money, "add " + std::to_string(money));
+}
+
+LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money) {
+	return LLMoneyTrans(xuid, 0, money, "reduce " + std::to_string(money));
+}
+
+LLMONEY_API string LLMoneyGetHist(xuid_t xuid, int timediff) {
+	try {
+		static SQLite::Statement get{ *db,"select tFrom,tTo,Money,datetime(Time,'unixepoch', 'localtime'),Note from mtrans where strftime('%s','now')-time<? and (tFrom=? OR tTo=?) ORDER BY Time DESC" };
+		string rv;
+		get.bind(1, timediff);
+		get.bindNoCopy(2, &xuid, sizeof xuid);
+		get.bindNoCopy(3, &xuid, sizeof xuid);
+		while (get.executeStep()) {
+			auto from = XIDREG::id2str(*(xuid_t*)get.getColumn(0).getBlob());
+			auto to = XIDREG::id2str(*(xuid_t*)get.getColumn(1).getBlob());
+			if (from.set && to.set)
+				rv += from.val() + " -> " + to.val() + " " + std::to_string((money_t)get.getColumn(2).getInt64()) + " " + get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
+		}
+		get.reset();
+		get.clearBindings();
+		return rv;
+	}
+	catch (std::exception const& e) {
+		LOGE("[Money] DB err %s\n", e.what());
+		return "failed";
+	}
+}
+
+LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const& note) {
+	if (val < 0 || from == to) return false;
+	try {
+		db->exec("begin");
+		static SQLite::Statement set{ *db,"update money set Money=? where XUID=?" };
+		if (from != 0) {
+			auto fmoney = LLMoneyGet(from);
+			if (fmoney < val) {
+				db->exec("rollback");
+				return false;
 			}
-			get.reset();
-			get.clearBindings();
-			if (!fg) {
-				static SQLite::Statement set{ *db,"insert into money values (?,?)" };
-				set.bindNoCopy(1, &xuid, sizeof xuid);
-				set.bind(2, DEF_MONEY);
+			fmoney -= val;
+			{
+
+				set.bindNoCopy(2, &from, sizeof from);
+				set.bind(1, fmoney);
 				set.exec();
 				set.reset();
 				set.clearBindings();
 			}
-			return rv;
 		}
-		catch (std::exception const& e) {
-			LOGE("[Money] DB err %s\n", e.what());
-			return -1;
-		}
-	}
-	LLMONEY_API bool reduceMoney(xuid_t xuid, money_t money) {
-		return createTrans(xuid, 0, money, "reduce " + std::to_string(money));
-	}
-	LLMONEY_API string getTransHist(xuid_t xuid, int timediff) {
-		try {
-			static SQLite::Statement get{ *db,"select tFrom,tTo,Money,datetime(Time,'unixepoch', 'localtime'),Note from mtrans where strftime('%s','now')-time<? and (tFrom=? OR tTo=?) ORDER BY Time DESC" };
-			string rv;
-			get.bind(1, timediff);
-			get.bindNoCopy(2, &xuid, sizeof xuid);
-			get.bindNoCopy(3, &xuid, sizeof xuid);
-			while (get.executeStep()) {
-				auto from = XIDREG::id2str(*(xuid_t*)get.getColumn(0).getBlob());
-				auto to = XIDREG::id2str(*(xuid_t*)get.getColumn(1).getBlob());
-				if (from.set && to.set)
-					rv += from.val() + " -> " + to.val() + " " + std::to_string((money_t)get.getColumn(2).getInt64()) + " " + get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
-			}
-			get.reset();
-			get.clearBindings();
-			return rv;
-		}
-		catch (std::exception const& e) {
-			LOGE("[Money] DB err %s\n", e.what());
-			return "failed";
-		}
-	}
-	LLMONEY_API bool createTrans(xuid_t from, xuid_t to, money_t val, string const& note) {
-		if (val < 0 || from == to) return false;
-		try {
-			db->exec("begin");
-			static SQLite::Statement set{ *db,"update money set Money=? where XUID=?" };
-			if (from != 0) {
-				auto fmoney = getMoney(from);
-				if (fmoney < val) {
-					db->exec("rollback");
-					return false;
-				}
-				fmoney -= val;
-				{
-
-					set.bindNoCopy(2, &from, sizeof from);
-					set.bind(1, fmoney);
-					set.exec();
-					set.reset();
-					set.clearBindings();
-				}
-			}
-			if (to != 0) {
-				auto tmoney = getMoney(to);
-				tmoney += val;
-				if (tmoney < 0) {
-					db->exec("rollback");
-					return false;
-				}
-				{
-					set.bindNoCopy(2, &to, sizeof to);
-					set.bind(1, tmoney);
-					set.exec();
-					set.reset();
-					set.clearBindings();
-				}
+		if (to != 0) {
+			auto tmoney = LLMoneyGet(to);
+			tmoney += val;
+			if (tmoney < 0) {
+				db->exec("rollback");
+				return false;
 			}
 			{
-				static SQLite::Statement addTrans{ *db,"insert into mtrans (tFrom,tTo,Money,Note) values (?,?,?,?)" };
-				addTrans.bindNoCopy(1, &from, sizeof from);
-				addTrans.bindNoCopy(2, &to, sizeof to);
-				addTrans.bind(3, val);
-				addTrans.bindNoCopy(4, note);
-				addTrans.exec();
-				addTrans.reset();
-				addTrans.clearBindings();
+				set.bindNoCopy(2, &to, sizeof to);
+				set.bind(1, tmoney);
+				set.exec();
+				set.reset();
+				set.clearBindings();
 			}
-			db->exec("commit");
-			return true;
 		}
-		catch (std::exception const& e) {
-			db->exec("rollback");
-			LOGE("[Money] DB err %s\n", e.what());
-			return false;
+		{
+			static SQLite::Statement addTrans{ *db,"insert into mtrans (tFrom,tTo,Money,Note) values (?,?,?,?)" };
+			addTrans.bindNoCopy(1, &from, sizeof from);
+			addTrans.bindNoCopy(2, &to, sizeof to);
+			addTrans.bind(3, val);
+			addTrans.bindNoCopy(4, note);
+			addTrans.exec();
+			addTrans.reset();
+			addTrans.clearBindings();
 		}
+		db->exec("commit");
+		return true;
 	}
-	LLMONEY_API bool setMoney(xuid_t xuid, money_t money) {
-		money_t now = getMoney(xuid), diff;
-		xuid_t from, to;
-		if (money >= now) {
-			from = 0;
-			to = xuid;
-			diff = money - now;
-		}
-		else {
-			from = xuid;
-			to = 0;
-			diff = now - money;
-		}
-		return createTrans(from, to, diff, "set to " + std::to_string(money));
+	catch (std::exception const& e) {
+		db->exec("rollback");
+		LOGE("[Money] DB err %s\n", e.what());
+		return false;
 	}
-	LLMONEY_API void purgeHist(int difftime) {
-		try {
-			db->exec("DELETE FROM mtrans WHERE strftime('%s','now')-time>" + std::to_string(difftime));
-		}
-		catch (std::exception&) {
+}
 
-		}
+LLMONEY_API bool LLMoneySet(xuid_t xuid, money_t money) {
+	money_t now = LLMoneyGet(xuid), diff;
+	xuid_t from, to;
+	if (money >= now) {
+		from = 0;
+		to = xuid;
+		diff = money - now;
 	}
-};
+	else {
+		from = xuid;
+		to = 0;
+		diff = now - money;
+	}
+	return LLMoneyTrans(from, to, diff, "set to " + std::to_string(money));
+}
+
+LLMONEY_API void LLMoneyClearHist(int difftime) {
+	try {
+		db->exec("DELETE FROM mtrans WHERE strftime('%s','now')-time>" + std::to_string(difftime));
+	}
+	catch (std::exception&) {
+
+	}
+}

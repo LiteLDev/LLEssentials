@@ -17,7 +17,7 @@
 #include<streambuf>
 #include<api/Basic_Event.h>
 #include<api/xuidreg/xuidreg.h>
-#include <LLMoney.h>
+#include "LLMoney.h"
 
 #define _ver "210714"
 using namespace std;
@@ -41,7 +41,6 @@ enum MONEYOP_PURGE :int {
 	purge = 1
 };
 bool oncmd_money(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> op, optional<string>& dst) {
-	using namespace Money;
 	optional<xuid_t> dstid;
 	if (dst.set && ori.getPermissionsLevel() > 0) {
 		dstid = XIDREG::str2id(dst.val());
@@ -56,17 +55,16 @@ bool oncmd_money(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> 
 	switch (op)
 	{
 	case query:
-		outp.addMessage("Money: " + std::to_string(getMoney(dstid.val())));
+		outp.addMessage("Money: " + std::to_string(LLMoneyGet(dstid.val())));
 		break;
 	case hist:
-		outp.addMessage(getTransHist(dstid.val()));
+		outp.addMessage(LLMoneyGetHist(dstid.val()));
 		break;
 	}
 	return true;
 }
 
 bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_pay> op, string const& dst, int val) {
-	using namespace Money;
 	optional<xuid_t> dstxuid, myuid;
 	dstxuid = XIDREG::str2id(dst);
 	if (!dstxuid.Set()) {
@@ -86,10 +84,10 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			outp.error(_TRS("money.no.target"));
 			return false;
 		}
-		if (createTrans(myuid.val(), dstxuid.val(), val, "money pay")) {
+		if (LLMoneyTrans(myuid.val(), dstxuid.val(), val, "money pay")) {
 			money_t fee = (money_t)(val * MoneyFee);
 			if (fee)
-				createTrans(dstxuid.val(), 0, fee, "money pay fee");
+				LLMoneyTrans(dstxuid.val(), 0, fee, "money pay fee");
 			outp.success("pay success");
 			return true;
 		}
@@ -104,7 +102,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			outp.error(_TRS("money.no.perm"));
 			return false;
 		}
-		if (setMoney(dstxuid.val(), val)) {
+		if (LLMoneySet(dstxuid.val(), val)) {
 			outp.success("set success");
 			return true;
 		}
@@ -118,7 +116,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			outp.error(_TRS("money.no.perm"));
 			return false;
 		}
-		if (createTrans(0, dstxuid.val(), val, "money add")) {
+		if (LLMoneyTrans(0, dstxuid.val(), val, "money add")) {
 			outp.success("add success");
 			return true;
 		}
@@ -132,7 +130,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			outp.error(_TRS("money.no.perm"));
 			return false;
 		}
-		if (createTrans(dstxuid.val(), 0, val, "money reduce")) {
+		if (LLMoneyTrans(dstxuid.val(), 0, val, "money reduce")) {
 			return true;
 		}
 		else {
@@ -150,9 +148,9 @@ bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYO
 		return false;
 	}
 	if (difftime.Set())
-		Money::purgeHist(difftime.val());
+		LLMoneyClearHist(difftime.val());
 	else
-		Money::purgeHist(0);
+		LLMoneyClearHist(0);
 	return true;
 }
 
