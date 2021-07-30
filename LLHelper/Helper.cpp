@@ -43,13 +43,13 @@ void loadCfg() {
 }
 
 void onPlayerLeft(LeftEV);
-void onPlayerJoin(JoinEV);
 bool onPlayerChat(ChatEV);
+bool onPlayerCmd(PlayerUseCmdEV);
 
 void entry() {
 	Event::addEventListener(onPlayerLeft);
-	Event::addEventListener(onPlayerJoin);
 	Event::addEventListener(onPlayerChat);
+	Event::addEventListener(onPlayerCmd);
 	loadCfg();
 	REGCMD();
 	LOG("Loaded version: ", _ver);

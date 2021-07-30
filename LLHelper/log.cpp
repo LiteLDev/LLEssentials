@@ -1,19 +1,11 @@
 #include "pch.h"
 #include "Helper.h"
 
-THook(unsigned int, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shared_ptr@VCommandContext@@@std@@_N@Z",
-	MinecraftCommands* self, __int64 a2, std::shared_ptr<CommandContext> cmd, char a4) {
+bool onPlayerCmd(PlayerUseCmdEV e) {
 	if (LOG_CMD) {
-		auto ptr = cmd.get();
-		CommandOrigin& cmdo = ptr->getOrigin();
-		if (cmdo.getEntity()) {
-			//if (cmdo.getOriginType() == OriginType::Player) {
-			auto pl = SymCall("?getEntity@PlayerCommandOrigin@@UEBAPEAVActor@@XZ", Player*, void*)(&cmdo);
-			LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(pl) << " CMD " << ptr->getCmd() << endl;
-		}
-		//}
+		LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(e.Player) << " CMD " << e.cmd << "\n";
 	}
-	return original(self, a2, cmd, a4);
+	return true;
 }
 
 void onPlayerLeft(LeftEV e) {
@@ -27,14 +19,16 @@ void onPlayerLeft(LeftEV e) {
 	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(e.Player) << " left server  Pos:(" << px << "," << py << "," << pz << "," << dim << ") xuid: " << offPlayer::getXUID(e.Player) << "\n";
 }
 
-void onPlayerJoin(JoinEV e) {
-	NetworkIdentifier* net = dAccess<NetworkIdentifier*, 2712>(e.Player);
-	if (auto it = CNAME.find(offPlayer::getRealName(e.Player)); it != CNAME.end()) {
-		e.Player->setName(it->second);
-		optional<WPlayer> owp = WPlayer(*(ServerPlayer*)e.Player);
-		ORIG_NAME[owp.val().v] = offPlayer::getRealName(e.Player);
+THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
+	void* _this, Player* a2) {
+	auto n = (NetworkIdentifier*)((uintptr_t)a2 + 2712);
+	if (auto it = CNAME.find(offPlayer::getRealName(a2)); it != CNAME.end()) {
+		a2->setName(it->second);
+		optional<WPlayer> aa = WPlayer(*(ServerPlayer*)a2);
+		ORIG_NAME[aa.val().v] = offPlayer::getRealName(a2);
 	}
-	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(e.Player) << " joined server IP: " << liteloader::getIP(*net) << " xuid: " << offPlayer::getXUID(e.Player) << "\n";
+	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(a2) << " joined server IP: " << liteloader::getIP(*n) << " xuid: " << offPlayer::getXUID(a2) << "\n";
+	return original(_this, a2);
 }
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
