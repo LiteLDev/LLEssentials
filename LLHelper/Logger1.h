@@ -25,7 +25,7 @@ public:
 	template <typename T>
 	Logger1& operator<< (T msg) {
 		logfile << msg;
-		cout << msg;
+		std::cout << msg;
 		return *this;
 	}
 };

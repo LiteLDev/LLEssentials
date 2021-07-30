@@ -12,7 +12,7 @@
 LangPack LangP("plugins\\LLHelper\\langpack\\helper.json");
 unique_ptr<KVDBImpl> db;
 playerMap<string> ORIG_NAME;
-unordered_map<string, string> CNAME;
+std::unordered_map<string, string> CNAME;
 
 void loadCNAME() {
 	db = MakeKVDB("plugins\\LLHelper\\data", false);
@@ -123,7 +123,7 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 
 bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) {
 	string playername = target;
-	vector<Player*> plist = liteloader::getAllPlayers();
+	std::vector<Player*> plist = liteloader::getAllPlayers();
 	Player* A = nullptr;
 	for (auto p : plist) {
 		if (offPlayer::getRealName(p) == playername) {
@@ -149,7 +149,7 @@ bool oncmd_vanish(CommandOrigin const& ori, CommandOutput& outp) {
 	WBStream ws;
 	ws.apply(ul);
 	MyPkt<14> pk{ ws };
-	vector<Player*> plist = liteloader::getAllPlayers();
+	std::vector<Player*> plist = liteloader::getAllPlayers();
 	for (auto p : plist) {
 		if (p != sp) {
 			auto spp = (ServerPlayer*)p;
@@ -166,7 +166,7 @@ enum class CNAMEOP :int {
 };
 
 bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, string& src, optional<string>& name) {
-	vector<Player*> pList = liteloader::getAllPlayers();
+	std::vector<Player*> pList = liteloader::getAllPlayers();
 	Player* player = nullptr;
 	for (auto p : pList) {
 		if (offPlayer::getRealName(p) == src) {
