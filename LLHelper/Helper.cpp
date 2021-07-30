@@ -3,13 +3,13 @@
 #include <unordered_map>
 #include "commad.h"
 
-using namespace std;
+
 #define _ver "210714"
 static Logger LOG(stdio_commit{ "[LLHelper] " });
 Logger1 LOG1(".\\logs\\LLHelper.log");
-unordered_map<string, string> CMDMAP, CMDSCHEDULE;
+std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
-unordered_set<short> logItems, banItems;
+std::unordered_set<short> logItems, banItems;
 bool LOG_CMD, LOG_CHAT, regABILITY, NO_EXPLOSION, EXP_PLAY, penderman, pfarm;
 //Minecraft* mc;
 
@@ -27,7 +27,7 @@ void loadCfg() {
 		jr.bind("NoEndermanTakeBlock", penderman, true);
 		jr.bind("ProtectFarmBlock", pfarm, true);
 		jr.bind("force_enable_ability", regABILITY, true);
-		vector<int> items;
+		std::vector<int> items;
 		logItems.clear();
 		banItems.clear();
 		jr.bind("logItems", items, {});
@@ -42,8 +42,14 @@ void loadCfg() {
 	}
 }
 
+void onPlayerLeft(LeftEV);
+void onPlayerJoin(JoinEV);
+bool onPlayerChat(ChatEV);
+
 void entry() {
-	filesystem::create_directory("plugins\\LLHelper");
+	Event::addEventListener(onPlayerLeft);
+	Event::addEventListener(onPlayerJoin);
+	Event::addEventListener(onPlayerChat);
 	loadCfg();
 	REGCMD();
 	LOG("Loaded version: ", _ver);

@@ -32,10 +32,10 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TPA.cpp">
+    <ClCompile Include="HomeStorage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="homeStorage.cpp">
+    <ClCompile Include="Teleport.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

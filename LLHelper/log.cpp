@@ -16,31 +16,26 @@ THook(unsigned int, "?executeCommand@MinecraftCommands@@QEBA?AUMCRESULT@@V?$shar
 	return original(self, a2, cmd, a4);
 }
 
-THook(void*, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
-	void* _this, ServerPlayer* a2, bool a3) {
-	auto playerPos = a2->getPos();
-	auto px = (int)playerPos.x;
-	auto py = (int)playerPos.y;
-	auto pz = (int)playerPos.z;
+void onPlayerLeft(LeftEV e) {
+	Vec3 player_pos = e.Player->getPos();
+	int px = (int)player_pos.x;
+	int py = (int)player_pos.y;
+	int pz = (int)player_pos.z;
 	if (px < 0)px = px - 1;
 	if (pz < 0)pz = pz - 1;
-	auto dim = a2->getDimensionId();
-	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(a2) << " left server  Pos:(" << px << "," << py << "," << pz << "," << dim << ") xuid: " << offPlayer::getXUID(a2) << endl;
-	return original(_this, a2, a3);
+	auto dim = e.Player->getDimensionId();
+	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(e.Player) << " left server  Pos:(" << px << "," << py << "," << pz << "," << dim << ") xuid: " << offPlayer::getXUID(e.Player) << "\n";
 }
 
-THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
-	void* _this, Player* a2) {
-	auto n = (NetworkIdentifier*)((uintptr_t)a2 + 2712);
-	if (auto it = CNAME.find(offPlayer::getRealName(a2)); it != CNAME.end()) {
-		a2->setName(it->second);
-		optional<WPlayer> aa = WPlayer(*(ServerPlayer*)a2);
-		ORIG_NAME[aa.val().v] = offPlayer::getRealName(a2);
+void onPlayerJoin(JoinEV e) {
+	NetworkIdentifier* net = dAccess<NetworkIdentifier*, 2712>(e.Player);
+	if (auto it = CNAME.find(offPlayer::getRealName(e.Player)); it != CNAME.end()) {
+		e.Player->setName(it->second);
+		optional<WPlayer> owp = WPlayer(*(ServerPlayer*)e.Player);
+		ORIG_NAME[owp.val().v] = offPlayer::getRealName(e.Player);
 	}
-	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(a2) << " joined server IP: " << liteloader::getIP(*n) << " xuid: " << offPlayer::getXUID(a2) << endl;
-	return original(_this, a2);
+	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(e.Player) << " joined server IP: " << liteloader::getIP(*net) << " xuid: " << offPlayer::getXUID(e.Player) << "\n";
 }
-
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
 	void* self, ItemStack* item, BlockPos* bpos, uchar a1, Vec3* plpos, Block* block) {
@@ -54,7 +49,7 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 			<< " used logitem(" << item->getName() << ")"
 			<< " on " << blockname
 			<< "(" << bpos->toString() << ")"
-			<< endl;
+			<< "\n";
 	}
 	if (banItems.count(itemid)) {
 		forceKick(sp);
@@ -62,15 +57,9 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 	return original(self, item, bpos, a1, plpos, block);
 }
 
-THook(void, "?handle@ServerNetworkHandler@@UEAAXAEBVNetworkIdentifier@@AEBVTextPacket@@@Z",
-	void* self, NetworkIdentifier* id, void* text) {
-	if (LOG_CHAT) {
-		auto pl = SymCall("?_getServerPlayer@ServerNetworkHandler@@AEAAPEAVServerPlayer@@AEBVNetworkIdentifier@@E@Z",
-			Player*, void*, void*, char)(self, id, dAccess<char, 16>(text));
-		std::string msg = dAccess<std::string, 88>(text);
-		if (msg.length() >= MAX_CHAT_LEN)
-			return;
-		LOG1 << "[" << gettime() << u8" INFO][BH] <" << offPlayer::getRealName(pl) << "> " << msg << endl;
+bool onPlayerChat(ChatEV e) {
+	if (e.msg.length() >= MAX_CHAT_LEN) {
+		return false;
 	}
-	return original(self, id, text);
+	LOG1 << "[" << gettime() << u8" INFO][BH] <" << offPlayer::getRealName(e.pl) << "> " << e.msg << "\n";
 }

@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "tickdo.h"
+#include "TickDo.h"
 #include "Helper.h"
 long long ticks;
 std::vector<std::function<void()>> func;

@@ -32,13 +32,13 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="api.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="LLMoney.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="compatibility.cpp">
+    <ClCompile Include="Api.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Compatibility.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

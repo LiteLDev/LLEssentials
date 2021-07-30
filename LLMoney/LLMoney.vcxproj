@@ -158,8 +158,8 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="api.cpp" />
-    <ClCompile Include="compatibility.cpp" />
+    <ClCompile Include="Api.cpp" />
+    <ClCompile Include="Compatibility.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="LLMoney.cpp" />
     <ClCompile Include="pch.cpp">

@@ -8,7 +8,6 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
-using namespace std;
 #include <iostream>
 #include <loader/Loader.h>
 #include<streambuf>
