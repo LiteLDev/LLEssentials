@@ -6,16 +6,15 @@
 #include "mc/Player.h"
 #include "mc/item.h"
 #include <api/types/types.h>
-#include <api/types/helper.h>
 #include <mc/BlockSource.h>
 #include <mc/Block.h>
 #include <mc/OffsetHelper.h>
-#include <api/commands.h>
+#include <api/regCommandHelper.h>
 #include <map>
 #include "pch.h"
 #include<fstream>
 #include<streambuf>
-#include<api/Basic_Event.h>
+#include<api/basicEvent.h>
 #include<api/xuidreg/xuidreg.h>
 #include "LLMoney.h"
 

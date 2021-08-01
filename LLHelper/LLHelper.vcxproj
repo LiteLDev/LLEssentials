@@ -156,7 +156,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BDS.h" />
-    <ClInclude Include="Commad.h" />
+    <ClInclude Include="Command.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Logger1.h" />
     <ClInclude Include="pch.h" />

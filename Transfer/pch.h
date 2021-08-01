@@ -9,10 +9,10 @@
 
 // 添加要在此处预编译的标头
 #include <iostream>
-#include <api/Basic_Event.h>
-#include <api/commands.h>
-#include <stl\varint.h>
+#include <api/basicEvent.h>
+#include <api/regCommandHelper.h>
+#include <stl/varint.h>
 #include <api/myPacket.h>
-#include <stl\Logger.h>
+#include <stl/Logger.h>
 
 #endif //PCH_H

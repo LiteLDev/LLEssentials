@@ -10,36 +10,35 @@
 // 添加要在此处预编译的标头
 #include <iostream>
 #include <loader/Loader.h>
-#include<streambuf>
+#include <streambuf>
 #include <map>
-#include "rapidjson/rapidjson.h"
-#include "rapidjson/document.h"
+#include <rapidjson/rapidjson.h>
+#include <rapidjson/document.h>
 #include <fstream>
 #include <sstream>
-#include "mc/Player.h"
-#include "mc/Level.h"
+#include <mc/Player.h>
+#include <mc/Level.h>
 #include <mc/mass.h>
-#include "mc/Block.h"
-#include "mc/BlockSource.h"
-#include "mc/Item.h"
-#include "mc/command/command.h"
-#include <api/types/helper.h>
+#include <mc/Block.h>
+#include <mc/BlockSource.h>
+#include <mc/Item.h>
+#include <mc/CommandReg.h>
 #include <api/types/types.h>
 #include <ctime>
 #include <chrono>
-#include<unordered_set>
-#include<JsonLoader.h>
+#include <unordered_set>
+#include <JsonLoader.h>
 #include "BDS.h"
-#include<stl\KVDB.h>
+#include <stl/KVDB.h>
 #include <api/xuidreg/xuidreg.h>
 #include <stl/viewhelper.h>
 #include <mc/Certificate.h>
 #include <string>
-#include<api/serviceLocate.h>
-#include<api/refl/playerMap.h>
-#include<mc/OffsetHelper.h>
-#include<api/myPacket.h>
-#include<stl/Bstream.h>
-#include<stl/varint.h>
-#include <stl\langPack.h>
+#include <api/serviceLocate.h>
+#include <api/refl/playerMap.h>
+#include <mc/OffsetHelper.h>
+#include <api/myPacket.h>
+#include <stl/Bstream.h>
+#include <stl/varint.h>
+#include <stl/langPack.h>
 #endif //PCH_H

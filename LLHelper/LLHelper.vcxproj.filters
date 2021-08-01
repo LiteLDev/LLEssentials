@@ -27,10 +27,10 @@
     <ClInclude Include="Logger1.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Commad.h">
+    <ClInclude Include="TickDo.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="TickDo.h">
+    <ClInclude Include="Command.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

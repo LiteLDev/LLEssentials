@@ -6,6 +6,7 @@
 #include <stl/Bstream.h>
 #include <string>
 #include "mass.h"
+
 enum ActorType : int;
 enum class AbilitiesIndex : int;
 static inline int iround(float x) {
@@ -15,18 +16,6 @@ static inline int iround(float x) {
     return r;
 }
 
-class Vec3 {
-  public:
-    float x, y, z;
-    std::string toString() {
-        return "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")";
-    }
-    template <typename _TP>
-    void pack(WBStreamImpl<_TP> &ws) const {
-        ws.apply(x, y, z);
-    }
-    void unpack(RBStream &rs) { rs.apply(x, y, z); }
-};
 
 class BlockPos {
   public:
@@ -41,6 +30,81 @@ class BlockPos {
         ws.apply(x, y, z);
     }
     void unpack(RBStream &rs) { rs.apply(x, y, z); }
+    inline BlockPos add(int dx, int dy, int dz) { return {x + dx, y + dy, z + dz}; }
+
+};
+
+class Vec3 {
+  public:
+    float x, y, z;
+
+    inline std::string toString() {
+        return "(" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + ")";
+    }
+    inline BlockPos toBlockPos() {
+        auto px = (int)x;
+        auto py = (int)y;
+        auto pz = (int)z;
+        if (px < 0)
+            px = px - 1;
+        if (px < 0)
+            py = py - 1;
+        if (pz < 0)
+            pz = pz - 1;
+        return {px, py, pz};
+    }
+    template <typename _TP>
+    void pack(WBStreamImpl<_TP> &ws) const {
+        ws.apply(x, y, z);
+    }
+    void unpack(RBStream &rs) { rs.apply(x, y, z); }
+
+    inline Vec3 add(float dx, float dy, float dz) { return {x + dx, y + dy, z + dz}; }
+
+    Vec3 operator*(float num) { return {x * num, y * num, z * num}; }
+
+    Vec3 operator+(const Vec3 &v2) { return {this->x + v2.x, this->y + v2.y, this->z + v2.z}; }
+    Vec3 operator-(const Vec3 &v2) { return {this->x - v2.x, this->y - v2.y, this->z - v2.z}; }
+};
+
+class AABB {
+  public:
+    Vec3 p1{};
+    Vec3 p2{};
+
+    AABB(Vec3 _p1, Vec3 _p2) {
+        p1 = _p1;
+        p2 = _p2;
+    }
+
+   inline  Vec3 getCenter() { 
+        return ( p1 + p2 ) * 0.5; 
+    }
+};
+
+class BoundingBox {
+  public:
+    BlockPos bpos1;
+    BlockPos bpos2;
+
+    inline BlockPos getCenter() const {
+        return {(bpos1.x + bpos2.x) / 2, (bpos1.y + bpos2.y) / 2, (bpos1.z + bpos2.z) / 2};
+    }
+
+    inline AABB toAABB() 
+    { 
+       Vec3 vec1 = {(float)bpos1.x, (float)bpos1.y, (float)bpos1.z};
+       Vec3 vec2 = {(float)bpos1.x, (float)bpos1.y, (float)bpos1.z};
+       return {vec1, vec2 + Vec3{1, 1, 1}}; 
+    }
+
+
+};
+
+class ChunkPos {
+  public:
+    int x, z;
+
 };
 
 struct IVec2 {
@@ -106,9 +170,5 @@ class ActorDamageSource {
     virtual int getEntityCategories() const = 0;
 };
 
-class ChunkPos {
-  public:
-    int x, z;
-};
 
 constexpr const int SAFE_PADDING = 0;

@@ -2,6 +2,7 @@
 #include <api/serviceLocate.h>
 #include <loader\Loader.h>
 #include <mc/Core.h>
+#include <functional>
 
 struct MCRESULT {
     unsigned char filler[4];
@@ -21,6 +22,7 @@ struct CommandContext {
     CommandContext(TP &&x, CommandOrigin *o) : CMD(std::forward<TP>(x)), Ori(o) {}
 };
 static_assert(offsetof(CommandContext, Ori) == 32);
+
 class MinecraftCommands;
 class MinecraftCommands {
   public:
@@ -95,6 +97,8 @@ struct RakPeer_t {
         return rv;
     }
 };
+
+
 class ServerPlayer;
 class ServerNetworkHandler {
   public:
@@ -139,4 +143,28 @@ class Minecraft {
             dlsym("?getServerNetworkHandler@Minecraft@@QEAAPEAVServerNetworkHandler@@XZ");
         return (this->*rv)();
     }
+    MCINLINE class NetworkHandler* getNetworkHandler() {
+        class NetworkHandler* (Minecraft::*fnp)() const;
+        *((void**)&fnp) = dlsym("?getNetworkHandler@Minecraft@@QEAAAEAVNetworkHandler@@XZ");
+        return (this->*fnp)();
+    }
+};
+
+class NetworkPeer {
+public:
+    enum class Reliability : int {};
+    enum class DataStatus : int { OK,
+                                  BUSY };
+    struct NetworkStatus {
+        int    level;
+        int    ping, avgping;
+        double packetloss, avgpacketloss;
+    };
+
+    virtual ~NetworkPeer();
+    virtual void          sendPacket(std::string, NetworkPeer::Reliability, int) = 0;
+    virtual DataStatus    receivePacket(std::string&)                            = 0;
+    virtual NetworkStatus getNetworkStatus()                                     = 0;
+    virtual void    update();
+    virtual void    flush(std::function<void(void)>&&);
 };

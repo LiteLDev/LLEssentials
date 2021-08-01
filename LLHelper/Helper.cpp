@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Helper.h"
 #include <unordered_map>
-#include "commad.h"
+#include "Command.h"
 
 
 #define _ver "210714"

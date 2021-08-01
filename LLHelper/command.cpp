@@ -1,7 +1,7 @@
 #include "pch.h"
-#include <api/Basic_Event.h>
-#include <api/commands.h>
-#include "commad.h"
+#include <api/basicEvent.h>
+#include <api/regCommandHelper.h>
+#include "Command.h"
 #include <stddef.h>
 #include <iostream>
 #include <string>
