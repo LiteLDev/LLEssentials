@@ -160,7 +160,6 @@
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Logger1.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="TickDo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BDS.cpp" />

@@ -38,7 +38,14 @@ inline std::string getXUIDStringByCert(Certificate *cert) {
 }
 
 inline xuid_t getXUID(Player *pl) {
-    return std::stoull(getXUIDStringByCert(offPlayer::getCert((Player *)pl)).c_str());
+    std::string xuidstr = getXUIDStringByCert(offPlayer::getCert((Player*)pl)).c_str();
+    if (xuidstr != "") {
+        return std::stoull(xuidstr);
+    }
+    else {
+        return 0;
+    }
+    
 }
 
 inline std::string getXUIDString(Player *pl) {
@@ -46,7 +53,13 @@ inline std::string getXUIDString(Player *pl) {
 }
 
 inline xuid_t getXUIDByCert(Certificate *cert) {
-    return std::stoull(getXUIDStringByCert(cert));
+    std::string xuidstr = getXUIDStringByCert(cert);
+    if (xuidstr != "") {
+        return std::stoull(xuidstr);
+    }
+    else {
+        return 0;
+    }
 }
 
 inline string getRealName(Player *pl) {
