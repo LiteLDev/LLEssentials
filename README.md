@@ -1,6 +1,7 @@
 # LiteLoaderPlugins
 <a href="https://github.com/LiteLDev/LiteLoaderPlugins/actions">![status](https://img.shields.io/github/workflow/status/LiteLDev/LiteLoaderPlugins/Build%20LiteLoaderPlugins?style=for-the-badge)</a>
 <a href="https://t.me/liteloader">![Telegram](https://img.shields.io/badge/telegram-LiteLoader-%232CA5E0?style=for-the-badge&logo=Telegram)</a>  
+English | [¼òÌåÖÐÎÄ](README-zh_cn.md)  
 Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 
 # Usage
@@ -11,7 +12,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | /ban <ban/unban/list> [player] [time(second)] | Ban/unban a player | OP |
 | /transfer <player> <IP> <port> | Transfer a player to another server | OP |
 | /hreload | Reload LLHelper.json | OP |
-| /skick <player>> | Force kick a player from server | OP |
+| /skick <player> | Force kick a player from server | OP |
 | /cname <set/rm> <player> [nickname] | Set nickname for a player | OP |
 | /vanish | invisibility(only effective for players who can see you) | OP |
 | /tpa <to/here/ac/de/cancel/toggle> [player]	| Teleport to a player's location/teleport the player to your location/accept the teleport/refuse the teleport/cancel the teleport/change the status of whether to accept the teleport | Player |
