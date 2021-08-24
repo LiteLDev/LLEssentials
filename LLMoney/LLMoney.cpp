@@ -63,6 +63,32 @@ bool oncmd_money(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> 
 	return true;
 }
 
+bool oncmd_money_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> op, optional<CommandSelector<Player>>& res) {
+	optional<xuid_t> dstid;
+	if (res.set && ori.getPermissionsLevel() > 0) {
+		if (!res.val().results(ori).empty()) {
+			dstid = XIDREG::str2id(offPlayer::getRealName(res.val().results(ori).begin().operator*()));
+		}
+	}
+	else {
+		dstid = XIDREG::str2id(ori.getName());
+	}
+	if (!dstid.Set()) {
+		outp.error(_TRS("money.no.target"));
+		return false;
+	}
+	switch (op)
+	{
+	case query:
+		outp.addMessage("Money: " + std::to_string(LLMoneyGet(dstid.val())));
+		break;
+	case hist:
+		outp.addMessage(LLMoneyGetHist(dstid.val()));
+		break;
+	}
+	return true;
+}
+
 bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_pay> op, string const& dst, int val) {
 	optional<xuid_t> dstxuid, myuid;
 	dstxuid = XIDREG::str2id(dst);
@@ -141,6 +167,90 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 	return true;
 }
 
+bool oncmd_money2_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_pay> op, CommandSelector<Player>& res, int val) {
+	if (res.results(ori).empty()) {
+		outp.error(_TRS("money.no.target"));
+		return false;
+	}
+	for (auto resu : res.results(ori)) {
+		optional<xuid_t> dstxuid, myuid;
+		dstxuid = XIDREG::str2id(offPlayer::getRealName(resu));
+		if (!dstxuid.Set()) {
+			outp.error(_TRS("money.no.target"));
+			return false;
+		}
+		switch (op)
+		{
+		case pay:
+		{
+			if (val <= 0) {
+				outp.error(_TRS("money.invalid.arg"));
+				return false;
+			}
+			myuid = XIDREG::str2id(ori.getName());
+			if (!myuid.Set()) {
+				outp.error(_TRS("money.no.target"));
+				return false;
+			}
+			if (LLMoneyTrans(myuid.val(), dstxuid.val(), val, "money pay")) {
+				money_t fee = (money_t)(val * MoneyFee);
+				if (fee)
+					LLMoneyTrans(dstxuid.val(), 0, fee, "money pay fee");
+				outp.success("pay success");
+				return true;
+			}
+			else {
+				outp.error(_TRS("money.not.enough"));
+				return false;
+			}
+		}
+		break;
+		case set:
+			if (ori.getPermissionsLevel() < 1) {
+				outp.error(_TRS("money.no.perm"));
+				return false;
+			}
+			if (LLMoneySet(dstxuid.val(), val)) {
+				outp.success("set success");
+				return true;
+			}
+			else {
+				outp.error(_TRS("money.invalid.arg"));
+				return false;
+			}
+			break;
+		case add:
+			if (ori.getPermissionsLevel() < 1) {
+				outp.error(_TRS("money.no.perm"));
+				return false;
+			}
+			if (LLMoneyTrans(0, dstxuid.val(), val, "money add")) {
+				outp.success("add success");
+				return true;
+			}
+			else {
+				outp.error(_TRS("money.invalid.arg"));
+				return false;
+			}
+			break;
+		case reduce:
+			if (ori.getPermissionsLevel() < 1) {
+				outp.error(_TRS("money.no.perm"));
+				return false;
+			}
+			if (LLMoneyTrans(dstxuid.val(), 0, val, "money reduce")) {
+				return true;
+			}
+			else {
+				outp.error(_TRS("money.invalid.arg"));
+				return false;
+			}
+			break;
+		}
+	}
+	return true;
+}
+
 bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_PURGE> op, optional<int>& difftime) {
 	if (ori.getPermissionsLevel() < 1) {
 		outp.error(_TRS("money.no.perm"));
@@ -163,12 +273,15 @@ void entry() {
 		Event::addEventListener([](RegCmdEV ev) {
 		CMDREG::SetCommandRegistry(ev.CMDRg);
 		MakeCommand("money", "money", 0);
+		MakeCommand("money_s", "money(CommandSelector)", 1);
 		CEnum<MONEYOP> _1("type", { "query","hist" });
 		CEnum<MONEYOP_pay> _2("type2", { "pay","set","add","reduce" });
 		CEnum<MONEYOP_PURGE> _3("mpurge", { "purge" });
 		CmdOverload(money, oncmd_money, "op", "target");
 		CmdOverload(money, oncmd_money2, "op", "target1", "money");
 		CmdOverload(money, oncmd_money3_p, "purge", "difftime");
+		CmdOverload(money_s, oncmd_money_sel, "op", "target");
+		CmdOverload(money_s, oncmd_money2_sel, "op", "target1", "money");
 		});
 	try {
 		ConfigJReader jr("plugins\\LLMoney\\money.json");
