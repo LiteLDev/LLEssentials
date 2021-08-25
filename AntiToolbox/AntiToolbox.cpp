@@ -4,7 +4,7 @@ Logger<stdio_commit> LOG(stdio_commit("[AntiToolbox] "));
 Logger1 LOG1("logs/toolbox_detected.log");
 Logger1 LOG2("logs/toolbox_cannot_detect.log");
 
-std::string Kick_message = "¡ìcDon't use toolbox!";
+std::string Kick_message = u8"¡ìcDon't use toolbox!";
 std::vector<std::string> Array;
 bool FakeNameDetection = true;
 std::vector<std::string> CmdArray;
@@ -107,7 +107,6 @@ void onPlayerLogin(JoinEV ev) {
 			else {
 				customCmdExe(real_name);
 			}
-			return;
 		}
 	}
 }
@@ -147,18 +146,23 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 		rapidjson::Document document;
 		document.Parse(pkt.c_str());
 		std::string device_model = document["DeviceModel"].GetString();
+		std::string player_name = offPlayer::getRealName(sp);
+		if (device_model == "") {
+			LOG1 << getLogger() << "Null model detected: " << offPlayer::getRealName(sp) << ", using Horion client?\n";
+			if (!EnableCustomCmd) {
+				WPlayer wp = WPlayer(*sp);
+				wp.kick(u8"¡ìcNull model");
+			}
+			else {
+				customCmdExe(player_name);
+			}
+			return original(thi, networkId, con_req, sp);
+		}
 		const char* spl = " ";
 		std::vector device_model_ = split(device_model, *spl);
 		std::string device_company = device_model_[0];
 		std::string device_company_ori = device_company;
-		if (device_company != "") {
-			std::transform(device_company.begin(), device_company.end(), device_company.begin(), ::toupper);
-		}
-		else {
-			LOG1 << getLogger() << "Null model detected: " << offPlayer::getRealName(sp) << "\n";
-			WPlayer wp = WPlayer(*sp);
-			wp.kick("¡ìcNull model");
-		}
+		std::transform(device_company.begin(), device_company.end(), device_company.begin(), ::toupper);
 		//std::cout << device_company << ":" << device_company_ori << "\n";
 		if (device_company_ori != device_company) { //Toolbox detected
 			for (std::string pl_name : Array) { // WhiteList detecting
@@ -171,7 +175,6 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 					return original(thi, networkId, con_req, sp);
 				}
 			}
-			std::string player_name = offPlayer::getRealName(sp);
 			LOG1 << getLogger() << "Toolbox detected: " << player_name << "\n";
 			if (!EnableCustomCmd) {
 				WPlayer wp = WPlayer(*sp);
