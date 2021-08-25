@@ -3,6 +3,6 @@
 
 class UnverifiedCertificate {
 public:
-    const WebToken                         rawToken;
+    //const WebToken                         rawToken;
     std::unique_ptr<UnverifiedCertificate> parentUnverified;
 };
