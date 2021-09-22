@@ -19,16 +19,14 @@ void onPlayerLeft(LeftEV e) {
 	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(e.Player) << " left server  Pos:(" << px << "," << py << "," << pz << "," << dim << ") xuid: " << offPlayer::getXUID(e.Player) << "\n";
 }
 
-THook(void*, "?onPlayerJoined@ServerScoreboard@@UEAAXAEBVPlayer@@@Z",
-	void* _this, Player* a2) {
-	auto n = (NetworkIdentifier*)((uintptr_t)a2 + 2712);
-	if (auto it = CNAME.find(offPlayer::getRealName(a2)); it != CNAME.end()) {
-		a2->setName(it->second);
-		optional<WPlayer> aa = WPlayer(*(ServerPlayer*)a2);
-		ORIG_NAME[aa.val().v] = offPlayer::getRealName(a2);
+void onPlayerJoin(JoinEV ev) {
+	Player* pl = ev.Player;
+	if (auto it = CNAME.find(offPlayer::getRealName(pl)); it != CNAME.end()) {
+		pl->setName(it->second);
+		optional<WPlayer> wp = WPlayer(*(ServerPlayer*)pl);
+		ORIG_NAME[wp.val().v] = offPlayer::getRealName(pl);
 	}
-	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(a2) << " joined server IP: " << liteloader::getIP(*n) << " xuid: " << offPlayer::getXUID(a2) << "\n";
-	return original(_this, a2);
+	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(pl) << " joined server IP: " << ev.IP << " xuid: " << ev.xuid << "\n";
 }
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",

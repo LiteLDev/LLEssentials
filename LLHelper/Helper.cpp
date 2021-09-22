@@ -4,7 +4,7 @@
 #include "Command.h"
 
 
-#define _ver "210824"
+#define _ver "210922"
 static Logger LOG(stdio_commit{ "[LLHelper] " });
 Logger1 LOG1(".\\logs\\LLHelper.log");
 std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
@@ -45,11 +45,13 @@ void loadCfg() {
 void onPlayerLeft(LeftEV);
 bool onPlayerChat(ChatEV);
 bool onPlayerCmd(PlayerUseCmdEV);
+void onPlayerJoin(JoinEV);
 
 void entry() {
 	Event::addEventListener(onPlayerLeft);
 	Event::addEventListener(onPlayerChat);
 	Event::addEventListener(onPlayerCmd);
+	Event::addEventListener(onPlayerJoin);
 	loadCfg();
 	REGCMD();
 	LOG("Loaded version: ", _ver);
