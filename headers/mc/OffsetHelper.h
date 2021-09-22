@@ -1,10 +1,17 @@
 #include <api/LiteloaderApi.h>
 #include <loader/Loader.h>
+#include <string>
+#ifdef EZMC
+#include <ezmc/Actor/Actor.h>
+#include <ezmc/Actor/Player.h>
+#include <ezmc/Block/Block.h>
+#include <ezmc/Block/BlockSource.h>
+#else
+#include <mc/Actor.h>
 #include <mc/Block.h>
 #include <mc/BlockSource.h>
-#include <mc\Actor.h>
-#include <mc\Player.h>
-#include <string>
+#include <mc/Player.h>
+#endif
 
 class Player;
 class Level;
@@ -27,7 +34,7 @@ inline Certificate *getCert(Player *pl) {
 }
 
 inline BlockSource *getBlockSource(Actor *ac) {
-    return dAccess<BlockSource *, 872>(ac);
+    return dAccess<BlockSource*, 864>(ac);
 }
 
 inline std::string getXUIDStringByCert(Certificate *cert) {
@@ -41,11 +48,9 @@ inline xuid_t getXUID(Player *pl) {
     std::string xuidstr = getXUIDStringByCert(offPlayer::getCert((Player*)pl)).c_str();
     if (xuidstr != "") {
         return std::stoull(xuidstr);
-    }
-    else {
+    } else {
         return 0;
     }
-    
 }
 
 inline std::string getXUIDString(Player *pl) {
@@ -56,8 +61,7 @@ inline xuid_t getXUIDByCert(Certificate *cert) {
     std::string xuidstr = getXUIDStringByCert(cert);
     if (xuidstr != "") {
         return std::stoull(xuidstr);
-    }
-    else {
+    } else {
         return 0;
     }
 }
