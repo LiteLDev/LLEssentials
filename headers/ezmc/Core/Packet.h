@@ -3,15 +3,16 @@
 #include "../dll.h"
 #include <cstdint>
 #include <string>
+#include <ezmc/Packet/MinecraftPacketIds.h>
 
-enum class PacketReliability { Relible,
-                               RelibleOrdered };
-enum class StreamReadResult {};
-enum class MinecraftPacketIds;
-struct ExtendedStreamReadResult {};
+enum class StreamReadResult;
+struct ExtendedStreamReadResult;
 class BinaryStream;
 class ReadOnlyBinaryStream;
-
+enum class PacketReliability {
+    Relible,
+    RelibleOrdered
+};
 class Packet {
 public:
     unsigned          unk2            = 2;                                 // 8
@@ -31,7 +32,7 @@ public:
     virtual MinecraftPacketIds getId() const              = 0;
     virtual std::string        getName() const            = 0;
     virtual void               write(BinaryStream&) const = 0;
-
+    //Packet::_read() Wrapper
     inline virtual StreamReadResult read(ReadOnlyBinaryStream& stream) {
         return _read(stream);
     }

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <liteloader.h>
 #include <string>
 #include <vector>
@@ -7,10 +7,14 @@
 #include <stl/useful.h>
 #include <stl/varint.h>
 
+#ifdef EZMC
+#include <ezmc/Actor/Actor.h>
+#include <ezmc/Actor/Player.h>
+#else
 #include <mc/Actor.h>
-#include <mc/Player.h>
+#include <mc/Block.h>
+#endif
 
-#include <api/LiteloaderApi.h>
 #include <api/myPacket.h>
 #include <loader/Loader.h>
 
@@ -19,7 +23,7 @@
 #endif
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-struct WPlayer;
+class Player;
 class NetworkIdentifier;
 namespace liteloader {
 using std::string;
@@ -31,6 +35,7 @@ LIAPI float getAvgPacketloss(Player*);
 LIAPI int getAvgPing(Player*);
 LIAPI std::vector<Player*> getAllPlayers();
 LIAPI std::vector<std::pair<std::wstring, HMODULE>> getAllLibs();
+LIAPI void sendAddItemEntityPacket(Player* pl, unsigned long long runtimeid, int itemid, int stacksize, short aux, Vec3 pos);
 
 template <typename T>
 static inline void APPEND(string &r, T &&x) {
