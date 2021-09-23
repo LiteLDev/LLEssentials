@@ -1,7 +1,7 @@
 ﻿// dllmain.cpp : 定义 DLL 应用程序的入口点。
 #include "pch.h"
 #include "framework.h"
-
+#include <mc/Player.h>
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -26,7 +26,7 @@ bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
     if (!Command::checkHasTargets(res, outp)) return false;
     WBStream ws;
     ws.apply(MCString(host), (unsigned short)P);
-    MyPkt<0x55, false> trpk(ws);
+    MyPkt<MinecraftPacketIds(0x55), false> trpk(ws);
     for (auto i : res) {
         ((ServerPlayer*)i)->sendNetworkPacket(trpk);
     }
