@@ -24,6 +24,9 @@
     <ClInclude Include="LLMoney.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -39,6 +42,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Compatibility.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

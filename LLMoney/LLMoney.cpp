@@ -141,7 +141,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			outp.error(_TRS("money.no.perm"));
 			return false;
 		}
-		if (LLMoneyTrans(0, dstxuid.val(), val, "money add")) {
+		if (LLMoneyAdd(dstxuid.val(), val)) {
 			outp.success("add success");
 			return true;
 		}
@@ -155,7 +155,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 			outp.error(_TRS("money.no.perm"));
 			return false;
 		}
-		if (LLMoneyTrans(dstxuid.val(), 0, val, "money reduce")) {
+		if (LLMoneyReduce(dstxuid.val(), val)) {
 			return true;
 		}
 		else {
@@ -224,7 +224,7 @@ bool oncmd_money2_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONE
 				outp.error(_TRS("money.no.perm"));
 				return false;
 			}
-			if (LLMoneyTrans(0, dstxuid.val(), val, "money add")) {
+			if (LLMoneyAdd(dstxuid.val(), val)) {
 				outp.success("add success");
 				return true;
 			}
@@ -238,7 +238,7 @@ bool oncmd_money2_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONE
 				outp.error(_TRS("money.no.perm"));
 				return false;
 			}
-			if (LLMoneyTrans(dstxuid.val(), 0, val, "money reduce")) {
+			if (LLMoneyReduce(dstxuid.val(), val)) {
 				return true;
 			}
 			else {

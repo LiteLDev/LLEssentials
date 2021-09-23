@@ -1,4 +1,6 @@
-﻿#ifdef LLMONEY_EXPORTS
+﻿#pragma once
+
+#ifdef LLMONEY_EXPORTS
 #define LLMONEY_API __declspec(dllexport)
 #else
 #define LLMONEY_API __declspec(dllimport)
@@ -8,6 +10,13 @@
 
 typedef long long money_t;
 typedef unsigned long long xuid_t;
+
+enum LLMoneyEvent
+{
+	Set,Add,Reduce,Trans
+};
+typedef bool (*LLMoneyCallback)(LLMoneyEvent type, xuid_t from, xuid_t to, money_t value);
+
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,6 +29,9 @@ extern "C" {
 
 	LLMONEY_API std::string LLMoneyGetHist(xuid_t xuid, int timediff = 24 * 60 * 60);
 	LLMONEY_API void LLMoneyClearHist(int difftime = 0);
+
+	LLMONEY_API void LLMoneyListenBeforeEvent(LLMoneyCallback callback);
+	LLMONEY_API void LLMoneyListenAfterEvent(LLMoneyCallback callback);
 #ifdef __cplusplus
 }
 #endif
