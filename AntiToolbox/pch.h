@@ -12,7 +12,7 @@
 #include <mc/Player.h>
 #include <api/basicEvent.h>
 #include <api/types/types.h>
-#include <LiteLoader.h>
+#include <LoaderApi.h>
 #include <stl/Logger.h>
 #include <ezmc/Core/ConnectionRequest.h>
 #include <vector>
