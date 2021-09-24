@@ -13,5 +13,5 @@ namespace loaderapi {
 LIAPI std::string getLoaderVersion();
 LIAPI unsigned short getLoaderVersionNum();
 LIAPI bool           isDebugMode();
+LIAPI std::string getServerVersion();
 };  // namespace loaderapi
-#define LITELOADER_VERSION_GITHUB LITELOADER_VERSION"-Ci-48996a3_1632310659"
