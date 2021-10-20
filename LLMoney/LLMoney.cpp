@@ -17,8 +17,7 @@
 #include<api/basicEvent.h>
 #include<api/xuidreg/xuidreg.h>
 #include "LLMoney.h"
-
-#define _ver "210922"
+#define _ver "211020"
 using namespace std;
 double MoneyFee;
 LangPack LangP("plugins\\LLMoney\\langpack\\money.json");

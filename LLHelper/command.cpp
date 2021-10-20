@@ -74,7 +74,7 @@ bool onCMD_BanList(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP_L
 				outp.addMessage(banned + " (" + (strname.set ? strname.val() : "") + ") " + std::to_string(*(time_t*)val.data()));
 			}
 		}
-		outp.success(_TRS("ban.list..success"));
+		outp.success(_TRS("ban.list.success"));
 		return true;
 		});
 	outp.success(_TRS("ban.list.success"));
@@ -91,7 +91,7 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 	}
 	case BANOP::ban: {
 		addBanEntry(S(XIDREG::str2id(entry).val()), time.set ? time.val() : 0);
-		liteloader::runcmdA("kick", QUOTE(entry));
+		liteloader::runcmdEx("skick "+QUOTE(entry));
 		outp.success(QUOTE(entry) + _TRS("ban.ban.success"));
 		return true;
 	}

@@ -3,6 +3,7 @@
 #include <loader/Loader.h>
 #include <mc/Core.h>
 #include <functional>
+#include <iostream>
 
 struct MCRESULT {
     unsigned char filler[4];
@@ -78,25 +79,32 @@ namespace Json {
 class Value;
 }
 
-struct RakAddr_t {
-    char filler[0x90];
+namespace RakNet {
+struct SystemAddress {
+    char           filler[17*8]; // uncertain?
     std::string toString() {
-        char buf[256];
-        SymCall("?ToString@SystemAddress@RakNet@@QEBAX_NPEADD@Z", void, void *, bool, char *, char)(
+        char buf[128];
+        SymCall("?ToString@SystemAddress@RakNet@@QEBAX_NPEADD@Z", void, void*, bool, char*, char)(
             this, true, buf, ':');
         return buf;
     }
 };
-struct RakPeer_t {
-    RakPeer_t(RakPeer_t const &) = delete;
-    RakPeer_t(RakPeer_t &&)      = delete;
-    RakAddr_t getAdr(NetworkIdentifier const &ni) {
-        RakAddr_t rv;
+struct RakNetGUID {
+    uint64_t unk;
+    short    unk8;
+};
+struct RakPeer {
+    RakPeer(RakPeer const&) = delete;
+    RakPeer(RakPeer&&)      = delete;
+    SystemAddress getAdr(NetworkIdentifier const& ni) {
+        SystemAddress rv;
+        RakNetGUID    guid = dAccess<RakNetGUID>(&ni, 8);
         SymCall("?GetSystemAddressFromGuid@RakPeer@RakNet@@UEBA?AUSystemAddress@2@URakNetGUID@2@@Z",
-                void, void *, RakAddr_t *, NetworkIdentifier const *)(this, &rv, &ni);
+                void, void*, SystemAddress*, RakNetGUID const*)(this, &rv, &guid);
         return rv;
     }
 };
+}
 
 
 class ServerPlayer;

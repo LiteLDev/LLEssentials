@@ -81,3 +81,11 @@ THook(void, "?init@Minecraft@@QEAAXXZ", void* self) {
 	mc = (Minecraft*)self;
 }
 */
+
+THook(string&, "?getNameTag@Actor@@UEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ", void* x) {
+	if (auto it = ORIG_NAME._map.find((ServerPlayer*)x); it != ORIG_NAME._map.end()) {
+		return it->second;
+	}
+	return original(x);
+}
+
