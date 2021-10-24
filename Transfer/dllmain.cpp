@@ -2,6 +2,8 @@
 #include "pch.h"
 #include "framework.h"
 #include <mc/Player.h>
+#define _ver "211023"
+
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved
@@ -34,6 +36,7 @@ bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 }
 
 void entry() {
+    loaderapi::registerPlugin("Transfer", "An Independence part of LLHelper", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
     LOG("plugin loaded");
     Event::addEventListener([](RegCmdEV e) {
         CMDREG::SetCommandRegistry(e.CMDRg);

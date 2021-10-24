@@ -1,4 +1,5 @@
 #include "pch.h"
+#define _ver "211023"
 
 Logger<stdio_commit> LOG(stdio_commit("[AntiToolbox] "));
 Logger1 LOG1("logs/toolbox_detected.log");
@@ -112,6 +113,7 @@ void onPlayerLogin(JoinEV ev) {
 }
 
 void entry() {
+	loaderapi::registerPlugin("AntiToolbox", "Stop toolbox player from joining your server", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	loadConfig();
 	Event::addEventListener(onPlayerLogin);
 	LOG("Loaded");

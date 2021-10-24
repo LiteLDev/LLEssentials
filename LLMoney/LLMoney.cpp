@@ -264,6 +264,7 @@ bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYO
 
 
 void entry() {
+	loaderapi::registerPlugin("LLMoney", "EconomyCore for LiteLoaderBDS", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	filesystem::create_directory("plugins\\LLMoney");
 	filesystem::create_directory("plugins\\LLMoney\\langpack");
 	if (!initDB()) {

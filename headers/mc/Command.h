@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <api/types/types.h>
 #include <loader/Loader.h>
 #include <mc/Core.h>
@@ -137,6 +137,7 @@ class CommandOrigin {
     virtual bool isSelectorExpansionAllowed() const                 = 0;
     virtual NetworkIdentifier getSourceId_net() const               = 0;
     virtual char getSourceSubId() const                             = 0;
+    virtual void unk3() const                                       = 0;
     virtual CommandOrigin *getOutputReceiver() const                = 0;
     virtual OriginType getOriginType() const                        = 0;
     virtual mce::UUID const &getUUID() const                        = 0;
