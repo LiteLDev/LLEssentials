@@ -156,6 +156,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="homeStorage.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Tpa.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

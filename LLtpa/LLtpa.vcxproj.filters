@@ -24,6 +24,9 @@
     <ClInclude Include="homeStorage.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Tpa.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

@@ -4,6 +4,8 @@
 #include "Logger1.h"
 #pragma warning(disable:4996)
 
+#define _ver "211020"
+
 extern std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 extern int FAKE_SEED, MAX_CHAT_LEN;
 extern std::unordered_set<short> logItems, banItems;

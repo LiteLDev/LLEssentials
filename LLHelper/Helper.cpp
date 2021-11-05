@@ -3,8 +3,6 @@
 #include <unordered_map>
 #include "Command.h"
 
-
-#define _ver "211020"
 static Logger LOG(stdio_commit{ "[LLHelper] " });
 Logger1 LOG1(".\\logs\\LLHelper.log");
 std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
@@ -48,7 +46,6 @@ bool onPlayerCmd(PlayerUseCmdEV);
 void onPlayerJoin(JoinEV);
 
 void entry() {
-	loaderapi::registerPlugin("LLHelper", "A part of LLEssentials", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	Event::addEventListener(onPlayerLeft);
 	Event::addEventListener(onPlayerChat);
 	Event::addEventListener(onPlayerCmd);

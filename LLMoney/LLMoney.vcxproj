@@ -156,6 +156,7 @@
     <ClInclude Include="Event.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="LLMoney.h" />
+    <ClInclude Include="Money.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>

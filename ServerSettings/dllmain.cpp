@@ -11,6 +11,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
+		loaderapi::registerPlugin("ServerSettings", "Add server settings menu for BDS", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 	case DLL_PROCESS_DETACH:
@@ -23,7 +24,6 @@ static Logger LOG(stdio_commit{ "[ServerSettings] " });
 std::string form = "";
 
 void entry() {
-	loaderapi::registerPlugin("ServerSettings", "Add server settings menu for BDS", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	LOG("Loaded");
 	std::ifstream fs;
 	fs.open("plugins/ServerSettings/config.json", std::ios::in);

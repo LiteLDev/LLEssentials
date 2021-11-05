@@ -12,6 +12,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
+        loaderapi::registerPlugin("Transfer", "An Independence part of LLHelper", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
@@ -36,7 +37,6 @@ bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 }
 
 void entry() {
-    loaderapi::registerPlugin("Transfer", "An Independence part of LLHelper", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
     LOG("plugin loaded");
     Event::addEventListener([](RegCmdEV e) {
         CMDREG::SetCommandRegistry(e.CMDRg);

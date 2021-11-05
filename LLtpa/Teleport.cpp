@@ -3,8 +3,8 @@
 
 #include "pch.h"
 #include "homeStorage.h"
+#include "Tpa.h"
 
-#define _ver "211020"
 std::unique_ptr<KVDBImpl> db;
 static Logger LOG(stdio_commit{ "[TPA] " });
 
@@ -494,7 +494,6 @@ void loadall() {
 	loadCfg();
 }
 void tpa_entry() {
-	loaderapi::registerPlugin("LLtpa", "A part of LLEssentials, provides teleport function", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	std::filesystem::create_directory("plugins\\LLtpa");
 	std::filesystem::create_directory("plugins\\LLtpa\\data");
 	std::filesystem::create_directory("plugins\\LLtpa\\langpack");

@@ -17,7 +17,8 @@
 #include<api/basicEvent.h>
 #include<api/xuidreg/xuidreg.h>
 #include "LLMoney.h"
-#define _ver "211020"
+#include "Money.h"
+
 using namespace std;
 double MoneyFee;
 LangPack LangP("plugins\\LLMoney\\langpack\\money.json");
@@ -264,7 +265,6 @@ bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYO
 
 
 void entry() {
-	loaderapi::registerPlugin("LLMoney", "EconomyCore for LiteLoaderBDS", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	filesystem::create_directory("plugins\\LLMoney");
 	filesystem::create_directory("plugins\\LLMoney\\langpack");
 	if (!initDB()) {
