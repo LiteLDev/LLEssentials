@@ -55,6 +55,3 @@ LLtpa:
     "SUICIDE_ENABLED": true//开启/suicide命令
 }
 ```
-
-# 注意
-如果你想要使用LLMoney，你需要下载`sqlite3.dll`，[点击下载](https://sqlite.org/2021/sqlite-dll-win64-x64-3340100.zip)

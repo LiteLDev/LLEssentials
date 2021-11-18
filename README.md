@@ -54,6 +54,3 @@ LLtpa:
     "SUICIDE_ENABLED": true//Enable /suicide command
 }
 ```
-
-# Notice
-You need to download `sqlite3.dll` if you want to use LLMoney, [click here](https://sqlite.org/2021/sqlite-dll-win64-x64-3340100.zip)
