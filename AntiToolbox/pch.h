@@ -18,5 +18,7 @@
 #include "base64.h"
 #include <MC/Level.hpp>
 #include <PlayerDB.h>
+#include <MC/NetworkIdentifier.hpp>
+#include <MC/ServerNetworkEventHandler.hpp>
 
 #endif //PCH_H

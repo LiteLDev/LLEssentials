@@ -110,12 +110,6 @@ void entry() {
 	Logger::Info("Loaded");
 }
 
-namespace ConnectionReq {
-	unsigned short getDeviceOS(void* con_req) {
-		return SymCall("?getDeviceOS@ConnectionRequest@@QEBA?AW4BuildPlatform@@XZ", unsigned short, void*)(con_req);
-	}
-}
-
 std::vector<string> split(const string& str, const char pattern)
 {
 	std::vector<string> res;
@@ -129,7 +123,7 @@ std::vector<string> split(const string& str, const char pattern)
 }
 
 THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdentifier@@AEBVConnectionRequest@@AEAVServerPlayer@@@Z", ServerNetworkHandler* thi, NetworkIdentifier* networkId, ConnectionRequest* con_req, ServerPlayer* sp) {
-	unsigned short device_os = ConnectionReq::getDeviceOS(con_req);
+	unsigned short device_os = con_req->getDeviceOS();
 	if (device_os == 1) {
 		std::string pkt = base64_decode(con_req->rawToken.get()->data);
 		/*std::ofstream of("packet.txt");
