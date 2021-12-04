@@ -23,6 +23,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 std::string form = "";
 
 void entry() {
+	Logger::setTitle("ServerSettings");
 	Logger::Info("Loaded");
 	std::ifstream fs;
 	fs.open("plugins/ServerSettings/config.json", std::ios::in);

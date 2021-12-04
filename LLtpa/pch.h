@@ -4,22 +4,27 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
-#include<lbpch.h>
-#include<loader/hash.h>
-#include<mc/Player.h>
-#include<api/regCommandHelper.h>
-#include<stl/Bstream.h>
-#include<stl/KVDB.h>
-#include<stl/langPack.h>
+#include <MC/Player.hpp>
+#include <regCommandAPI.h>
+#include <SendPacketAPI.h>
+#include <KVDBAPI.h>
+#include <TranslationAPI.h>
 //#include<stl/LRUMap.h>
 #include<ctime>
 
-#include<api/refl/playerMap.h>
-#include<api/xuidreg/xuidreg.h>
-#include<stl/viewhelper.h>
+#include <Utils/PlayerMap.h>
+#include <PlayerDB.h>
+#include <Utils/ViewHelper.h>
 #include<rapidjson/document.h>
 #include<rapidjson/error/en.h>
-#include<api/gui/gui.h>
+#include <MC/FormUI.hpp>
+#include <filesystem>
+#include <EventAPI.h>
+#include <Utils/Bstream.h>
+#include <JsonLoader.h>
+#include <MC/ServerPlayer.hpp>
+#include <MC/Level.hpp>
+#include <ScheduleAPI.h>
 using std::shared_ptr, std::pair;
 using std::make_shared;
 #endif //PCH_H

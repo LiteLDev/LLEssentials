@@ -5,8 +5,7 @@
 #include "homeStorage.h"
 #include "Tpa.h"
 
-std::unique_ptr<KVDBImpl> db;
-static Logger LOG(stdio_commit{ "[TPA] " });
+std::unique_ptr<KVDB> db;
 
 #pragma region structs
 enum direction :int {
@@ -28,7 +27,6 @@ struct TPASet {
 
 #pragma endregion
 #pragma region gvals
-static LangPack LangP("plugins\\LLtpa\\langpack\\tpa.json");
 #include<unordered_map>
 using std::unordered_map;
 static std::list<TPReq> reqs;
@@ -89,64 +87,65 @@ void LOWERSTRING(string& S) {
 		i = tolower(i);
 	}
 }
-#include<mc/OffsetHelper.h>
+
 bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
 	string playernamea = rq->A;
 	string playernameb = rq->B;
-	vector<Player*> plist = liteloader::getAllPlayers();
+	vector<Player*> plist = Level::getAllPlayers();
 	Player* fplA = nullptr;
 	Player* fplB = nullptr;
 	for (auto p : plist) {
-		if (offPlayer::getRealName(p) == playernamea) {
+		if (p->getRealName() == playernamea) {
 			fplA = p;
 			break;
 		}
 	}
 	for (auto p : plist) {
-		if (offPlayer::getRealName(p) == playernameb) {
+		if (p->getRealName() == playernameb) {
 			fplB = p;
 			break;
 		}
 	}
 	if (fplA && fplB) {
-	optional<WPlayer> A = WPlayer(*(ServerPlayer*)fplA);
-	optional<WPlayer> B = WPlayer(*(ServerPlayer*)fplB);
-	if (res == TPCloseReason::cancel) {
+		ServerPlayer* A = (ServerPlayer*)fplA;
+		ServerPlayer* B = (ServerPlayer*)fplB;
+		if (res == TPCloseReason::cancel) {
 			reqs.erase(rq);
-			return true;
-	}
-	if (res == TPCloseReason::accept) {
-		if (A.set && B.set) {
-			Vec4 AP{ (rq->dir == A_B ? B : A).value() };
-			AP.teleport((rq->dir == A_B ? A : B).value());
-			reqs.erase(rq);
-			A.value().sendText(_TRS("tpa.reason.accept"));
 			return true;
 		}
+		if (res == TPCloseReason::accept) {
+			if (A && B) {
+				Vec4 AP{ rq->dir == A_B ? B : A };
+				AP.teleport(rq->dir == A_B ? A : B);
+				reqs.erase(rq);
+				A->sendText(tr("tpa.reason.accept"), TextType::RAW);
+				return true;
+			}
+			reqs.erase(rq);
+			return false;
+		}
+		if (A) {
+			A->sendText(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+		}
+		if (B) {
+			A->sendText(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+		}
 		reqs.erase(rq);
-		return false;
+		return true;
 	}
-	if (A.set) {
-		A.value().sendText(res == TPCloseReason::deny ? _TRS("tpa.reason.deny") : _TRS("tpa.reason.timeout"));
-	}
-	if (B.set) {
-		A.value().sendText(res == TPCloseReason::deny ? _TRS("tpa.reason.deny") : _TRS("tpa.reason.timeout"));
-	}
-	reqs.erase(rq);
-	return true;
-     }
-     else {
+	else {
 		//no such player
-      }
+	}
 }
-void DoMakeReq(WPlayer _a, WPlayer _b, direction dir) {
-	auto a = offPlayer::getRealName(_a);
-	auto b = offPlayer::getRealName(_b);
+void DoMakeReq(ServerPlayer _a, ServerPlayer _b, direction dir) {
+	auto a = _a.getRealName();
+	auto b = _b.getRealName();
 	CHash A = do_hash(a.c_str()), B = do_hash(b.c_str());
 	tpaSetting[A].lastReq = clock();
 	reqs.emplace_back(dir, a, b, clock());
-	string prompt = a + (dir == A_B ? _TRS("tpa.req.A_B") : _TRS("tpa.req.B_A"));
-	_b.sendText(prompt);
+	string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
+	_b.sendText(prompt, TextType::RAW);
+	/*
 	using namespace GUI;
 	shared_ptr<RawFormBinder> x;
 	char buf[1024];
@@ -157,12 +156,11 @@ void DoMakeReq(WPlayer _a, WPlayer _b, direction dir) {
 			int idx = atoi(res);
 			wp.runcmdA("tpa",(idx == 0 ? "ac" : "de"));
 		}
-	} ,{} });
+	} ,{} });*/
 }
 
-#include <api/scheduler/scheduler.h>
 void schTask() {
-	Handler::schedule(RepeatingTask([] {
+	Schedule::repeat([] {
 		clock_t expire = clock() - TPexpire;
 		for (auto it = reqs.begin(); it != reqs.end();) {
 			if (it->time <= expire) {
@@ -172,33 +170,33 @@ void schTask() {
 			}
 			else break;
 		}
-		}, 10)); //5sec
+		}, 10);
 }
 
 bool oncmd_tpa(CommandOrigin const& ori, CommandOutput& outp, MyEnum<direction> dir, CommandSelector<Player>& target) {
 	auto res = target.results(ori);
 	if (!Command::checkHasTargets(res, outp) || (res.count() != 1)) return false;
-	WPlayer t{ **res.begin() };
-	auto reqres = CanMakeReq(ori.getName(), t.getName());
+	ServerPlayer* t = (ServerPlayer*)*res.begin();
+	auto reqres = CanMakeReq(ori.getName(), t->getName());
 	switch (reqres) {
 	case TPFailReason::success:
 	{
-		DoMakeReq({ *(ServerPlayer*)ori.getEntity() }, t, dir);
+		DoMakeReq({ *(ServerPlayer*)ori.getEntity() }, *t, dir);
 		return true;
 	}
 	break;
 	case TPFailReason::ratelimit: {
-		outp.error(_TRS("tp.fail.rate"));
+		outp.error(tr("tp.fail.rate"));
 		return false;
 	}
 								break;
 	case TPFailReason::inreq: {
-		outp.error(_TRS("tp.fail.inreq"));
+		outp.error(tr("tp.fail.inreq"));
 		return false;
 	}
 							break;
 	case TPFailReason::blocked: {
-		outp.error(_TRS("tp.fail.blocked"));
+		outp.error(tr("tp.fail.blocked"));
 		return false;
 	}
 							  break;
@@ -211,7 +209,7 @@ enum class TPAOP :int {
 };
 
 std::vector<string> playerList() {
-	auto plist = liteloader::getAllPlayers();
+	auto plist = Level::getAllPlayers();
 	std::vector<string> pl;
 	for (auto p : plist) {
 		pl.push_back(p->getNameTag());
@@ -255,22 +253,22 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 		break;
 	}
 	case TPAOP::gui: {
-		auto _wp = MakeWP(ori);
-		auto wp = _wp.val();
+		ServerPlayer* wp = ori.getPlayer();
+		/*
 		using namespace GUI;
 		auto fm = std::make_shared<FullForm>();
-		fm->title = _TRS("tpa.gui.title");
-		std::string guiLabel = _TRS("tpa.gui.label");
-		std::string guiDropdown1 = _TRS("tpa.gui.dropdown1");
-		std::string guiDropdown2 = _TRS("tpa.gui.dropdown2");
+		fm->title = tr("tpa.gui.title");
+		std::string guiLabel = tr("tpa.gui.label");
+		std::string guiDropdown1 = tr("tpa.gui.dropdown1");
+		std::string guiDropdown2 = tr("tpa.gui.dropdown2");
 		fm->addWidget({ GUILabel(guiLabel.c_str()) });
 		fm->addWidget({ GUIDropdown(guiDropdown1.c_str() ,{"to","here"}) });
 		fm->addWidget({ GUIDropdown(guiDropdown2.c_str() ,playerList()) });
 		sendForm(wp, FullFormBinder{ fm,{[](WPlayer P, FullFormBinder::DType data) {
 			if (!data.set) return;
 				auto& [d1,d2] = data.val();
-				liteloader::runcmdAs(P, "tpa " + d2[0] + " " + QUOTE(d2[1]));
-		}} });
+				Level::runcmdAs(P, "tpa " + d2[0] + " " + QUOTE(d2[1]));
+		}} });*/
 		break;
 	}
 	}
@@ -280,25 +278,25 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 
 #pragma region WARP
 
-shared_ptr<GUI::SimpleForm> WARPGUI;
+shared_ptr<Form::SimpleForm> WARPGUI;
 void reinitWARPGUI() {
-	using namespace GUI;
-	if (!WARPGUI) WARPGUI = make_shared<SimpleForm>();
-	WARPGUI->title = _TRS("warp.gui.title");
-	WARPGUI->content = _TRS("warp.gui.content");
-	WARPGUI->reset();
+	if (!WARPGUI) WARPGUI = make_shared<Form::SimpleForm>();
+	WARPGUI->title = tr("warp.gui.title");
+	WARPGUI->content = tr("warp.gui.content");
+	//WARPGUI->reset();
 	for (auto& [k, v] : warps) {
-		WARPGUI->addButton(GUIButton(string(k)));
+		WARPGUI->append(Form::Button(string(k)));
 	}
 }
 
-void sendWARPGUI(WPlayer wp) {
+void sendWARPGUI(ServerPlayer* wp) {
+	/*
 	using namespace GUI;
 	sendForm(wp, SimpleFormBinder(WARPGUI, [](WPlayer wp, SimpleFormBinder::DType d) {
 		if (d.set) {
 			wp.runcmdA("warp", "go", QUOTE(d.val().second));
 		}
-		}));
+		}));*/
 }
 
 void saveWarps() {
@@ -317,14 +315,13 @@ bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op
 	switch (op)
 	{
 	case gui: {
-		sendWARPGUI(MakeWP(ori).val());
+		sendWARPGUI(ori.getPlayer());
 		return true;
 		break;
 	}
 	case add: {
 		if (ori.getPermissionsLevel() < 1) return false;
-		WActor wa{ MakeWP(ori).val() };
-		warps.emplace(val.value(), wa);
+		warps.emplace(val.value(), ori.getPlayer());
 		saveWarps();
 
 		break;
@@ -346,10 +343,10 @@ bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op
 	case go: {
 		auto it = warps.find(val.value());
 		if (it == warps.end()) {
-			outp.error(_TRS("home.not.found"));
+			outp.error(tr("home.not.found"));
 			return false;
 		}
-		it->second.teleport(MakeWP(ori).val());
+		it->second.teleport(ori.getPlayer());
 
 		break;
 	}
@@ -367,17 +364,17 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	{
 	case HOMEOP::add: {
 		if (ori.getPermissionsLevel() == 0 && hm.data.size() >= MAX_HOMES) {
-			outp.error(_TRS("home.is.full"));
+			outp.error(tr("home.is.full"));
 			return false;
 		}
-		WPlayer wp = MakeWP(ori).val();
+		ServerPlayer* wp = ori.getPlayer();
 		Vec4 vc{ wp };
 		IVec2 startVc{ wp->getPos() };
 		IVec2 endVc{ wp->getPos() };
 		startVc += -HOME_DISTANCE_LAND;
 		endVc += HOME_DISTANCE_LAND;
 		/*if (!checkLandOwnerRange_stub(startVc, endVc, vc.dimid, wp.getXuid())) {
-			outp.error(_TRS("home.near.others.land"));
+			outp.error(tr("home.near.others.land"));
 			return false;
 		}*/
 		hm.data.emplace_back(val.value(), vc);
@@ -403,32 +400,28 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	case HOMEOP::go: {
 		for (auto& i : hm.data) {
 			if (i.name == val.value()) {
-				i.pos.teleport(MakeWP(ori).val());
+				i.pos.teleport(ori.getPlayer());
 				return true;
 			}
 		}
-		outp.error(_TRS("home.not.found"));
+		outp.error(tr("home.not.found"));
 		return false;
 		break;
 	}
 	case HOMEOP::gui: {
-		auto wp1 = MakeWP(ori);
-		WPlayer wp;
-		if (wp1.set) {
-			wp = wp1.val();
-		}
-		auto HomeGUI = make_shared<GUI::SimpleForm>();
-		HomeGUI->title = _TRS("home.gui.title");
-		HomeGUI->content = _TRS("home.gui.content");
-		HomeGUI->reset();
+		auto wp = ori.getPlayer();
+		auto HomeGUI = make_shared<Form::SimpleForm>();
+		HomeGUI->title = tr("home.gui.title");
+		HomeGUI->content = tr("home.gui.content");
 		for (auto& i : hm.data) {
-			HomeGUI->addButton(GUI::GUIButton(string(i.name)));
+			HomeGUI->append(Form::Button(string(i.name)));
 		}
-		GUI::sendForm(wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](WPlayer wp, GUI::SimpleFormBinder::DType d) {
+		/*
+		GUI::sendForm(wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer* wp, GUI::SimpleFormBinder::DType d) {
 			if (d.set) {
 				wp.runcmdA("home", "go", QUOTE(d.val().second));
 			}
-			}));
+			}));*/
 		break;
 	}
 	default:
@@ -437,31 +430,27 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	return true;
 }
 bool oncmd_home(CommandOrigin const& ori, CommandOutput& outp, MyEnum<HOMEOP> op, optional<string>& val) {
-	return generic_home(ori, outp, getHomeInCache(offPlayer::getXUID(&MakeWP(ori).val().get())), op, val);
+	return generic_home(ori, outp, getHomeInCache(ori.getPlayer()->getXuid()), op, val);
 }
 bool oncmd_homeAs(CommandOrigin const& ori, CommandOutput& outp, string const& target, MyEnum<HOMEOP> op, optional<string>& val) {
-	return generic_home(ori, outp, getHomeInCache(XIDREG::str2id(target).val()), op, val);
+	return generic_home(ori, outp, getHomeInCache(PlayerDB::getXuid(target)), op, val);
 }
 #pragma endregion
 #pragma region BACK
 bool oncmd_back(CommandOrigin const& ori, CommandOutput& outp) {
 	ServerPlayer* sp = (ServerPlayer*)ori.getEntity();
 	if (!deathPos._map.count(sp)) {
-		outp.error(_TRS("home.not.found"));
+		outp.error(tr("home.not.found"));
 		return false;
 	}
-	deathPos[sp].teleport({ *sp });
+	deathPos[sp].teleport({ sp });
 	deathPos._map.erase(sp);
 
 	return true;
 }
 #pragma endregion
 bool oncmd_suicide(CommandOrigin const& ori, CommandOutput& outp) {
-	auto wp = MakeWP(ori);
-	if (wp.set) {
-		wp.val().kill();
-
-	}
+	ori.getPlayer()->kill();
 	return true;
 }
 void loadCfg() {
@@ -477,7 +466,7 @@ void loadCfg() {
 		jr.bind("HOME_ENABLED", HOME_ENABLED, true);
 	}
 	catch (string e) {
-		LOG("JSON ERROR", e);
+		Logger::Error("JSON ERROR", e);
 		throw 0;
 	}
 }
@@ -497,12 +486,13 @@ void tpa_entry() {
 	std::filesystem::create_directory("plugins\\LLtpa");
 	std::filesystem::create_directory("plugins\\LLtpa\\data");
 	std::filesystem::create_directory("plugins\\LLtpa\\langpack");
-	db = MakeKVDB("plugins\\LLtpa\\data", true, 8);
+	db = std::make_unique<KVDB>("plugins\\LLtpa\\data", true, 8);
+	Translation::load("plugins/LLtpa/langpack/tpa.json");
+	Logger::setTitle("TPA");
 	loadall();
 	reinitWARPGUI();
 	schTask();
 	Event::addEventListener([](RegCmdEV e) {
-		CMDREG::SetCommandRegistry(e.CMDRg);
 		CEnum<direction> _1("tpdir", { "to","here" });
 		CEnum<WARPOP> _2("warpop", { "go","add","ls","del","gui" });
 		CEnum<HOMEOP> _4("homeop", { "go","add","ls","del", "gui" });
@@ -533,11 +523,10 @@ void tpa_entry() {
 		});
 	if (BACK_ENABLED) {
 		Event::addEventListener([](PlayerDeathEV  ev) {
-			auto sp = ev.Player;
-			auto p = WPlayer(*(ServerPlayer*)sp);
-			deathPos[p.v] = Vec4{ p };
-			p.sendText(_TRS("tpa.back.use"));
+			ServerPlayer* sp = ev.Player;
+			deathPos[sp] = Vec4{ sp };
+			sp->sendText(tr("tpa.back.use"), TextType::RAW);
 			});
 	}
-	LOG("Loaded version: ",_ver);
+	Logger::Info("Loaded version: ", _ver);
 }

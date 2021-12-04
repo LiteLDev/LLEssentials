@@ -50,6 +50,7 @@ void entry() {
 	Event::addEventListener(onPlayerJoin);
 	loadCfg();
 	REGCMD();
+	Logger::setTitle("Helper");
 	Logger::setFile("logs/LLHelper.log");
 	Logger::Info("Loaded version: ", _ver);
 }

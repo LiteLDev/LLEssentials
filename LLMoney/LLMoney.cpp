@@ -263,6 +263,7 @@ void entry() {
 	if (!initDB()) {
 		exit(1);
 	}
+	Logger::setTitle("Money");
 	Translation::load("plugins\\LLMoney\\langpack\\money.json");
 	Event::addEventListener([](RegCmdEV ev) {
 		MakeCommand("money", "money", 0);

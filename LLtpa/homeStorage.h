@@ -1,8 +1,6 @@
 #pragma once
 #include "pch.h"
-#include<stl\LRUMap.h>
-#include <stl\viewhelper.h>
-extern std::unique_ptr<KVDBImpl> db;
+extern std::unique_ptr<KVDB> db;
 struct Vec4 {
 	Vec3 vc;
 	char dimid;
@@ -16,18 +14,13 @@ struct Vec4 {
 	void unpack(RBStream& rs) {
 		rs.apply(vc, dimid);
 	}
-	void teleport(WPlayer wp) {
-		wp.teleport(vc, dimid);
+	void teleport(ServerPlayer* wp) {
+		wp->teleport(vc, dimid);
 	}
-	Vec4(WActor wp) {
+	Vec4(ServerPlayer* wp) {
 		vc = wp->getPos();
 		vc.y -= 1.5;
-		dimid = wp.getDimID();
-	}
-	Vec4(WPlayer wp) {
-		vc = wp->getPos();
-		vc.y -= 1.5;
-		dimid = wp.getDimID();
+		dimid = wp->getDimensionId();
 	}
 	Vec4(Vec3 x, int dim) :vc(x), dimid(dim) {}
 	Vec4() {}
@@ -37,7 +30,7 @@ struct Homes {
 		Vec4 pos;
 		string name;
 		Home() {}
-		Home(string const& b, WActor ac) :name(b), pos(ac) {
+		Home(string const& b, ServerPlayer ac) :name(b), pos(&ac) {
 		}
 		Home(string const& b, Vec4 const& ac) :name(b), pos(ac) {
 		}
@@ -62,13 +55,13 @@ struct Homes {
 	}
 	Homes(string_view own) {
 		string val;
-		auto x = XIDREG::str2id(own);
-		if (x.Set()) {
-			if (db->get(to_view(x.val()), val)) {
+		auto x = PlayerDB::getXuid((std::string)own);
+		if (x != "") {
+			if (db->get(to_view(x), val)) {
 				RBStream rs{ val };
 				rs.apply(data);
 			}
-			owner = x.val();
+			owner = x;
 		}
 	}
 	template<typename _TP>
@@ -81,7 +74,7 @@ struct Homes {
 	void save() {
 		WBStream ws;
 		ws.apply(*this);
-		if (owner)
+		if (owner != "")
 			db->put(to_view(owner), ws);
 	}
 };
