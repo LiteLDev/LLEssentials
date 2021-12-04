@@ -19,11 +19,18 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1
      
+    - name: Download Lib from server
+      run: |
+        curl -L -o D:/lib.zip https://github.com/LiteLDev/Resources/raw/main/lib.zip
+        unzip D:/lib.zip -d Lib/
+        rm D:/lib.zip
+      shell: bash
+     
     - name: Download Libraries
       run: |
-        curl -L -o D:/lib.zip https://sqlite.org/2021/sqlite-dll-win64-x64-3340100.zip
+        curl -L -o D:/plugin-lib.zip https://sqlite.org/2021/sqlite-dll-win64-x64-3340100.zip
         mkdir D:/lib
-        unzip D:/lib.zip -d D:/lib
+        unzip D:/plugin-lib.zip -d D:/lib
         rm D:/lib.zip
       shell: bash
 
