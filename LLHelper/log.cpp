@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Helper.h"
+#include <Global.h>
 #include <MC/Vec3.hpp>
 #include <MC/Block.hpp>
 #include <MC/GameMode.hpp>
