@@ -42,10 +42,10 @@ struct Homes {
 			rs.apply(pos, name);
 		}
 	};
-	xuid_t owner = 0;
+	unsigned long long owner = 0;
 	std::list<Home> data;
 	Homes() {}
-	Homes(xuid_t xid) {
+	Homes(unsigned long long xid) {
 		string val;
 		if (db->get(to_view(xid), val)) {
 			RBStream rs{ val };
@@ -55,8 +55,8 @@ struct Homes {
 	}
 	Homes(string_view own) {
 		string val;
-		auto x = PlayerDB::getXuid((std::string)own);
-		if (x != "") {
+		auto x = std::stoull(PlayerDB::getXuid((std::string)own));
+		if (x != 0) {
 			if (db->get(to_view(x), val)) {
 				RBStream rs{ val };
 				rs.apply(data);
@@ -74,8 +74,8 @@ struct Homes {
 	void save() {
 		WBStream ws;
 		ws.apply(*this);
-		if (owner != "")
+		if (owner != 0)
 			db->put(to_view(owner), ws);
 	}
 };
-Homes& getHomeInCache(xuid_t xid);
+Homes& getHomeInCache(unsigned long long xid);

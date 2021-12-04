@@ -430,10 +430,10 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	return true;
 }
 bool oncmd_home(CommandOrigin const& ori, CommandOutput& outp, MyEnum<HOMEOP> op, optional<string>& val) {
-	return generic_home(ori, outp, getHomeInCache(ori.getPlayer()->getXuid()), op, val);
+	return generic_home(ori, outp, getHomeInCache(std::stoull(ori.getPlayer()->getXuid())), op, val);
 }
 bool oncmd_homeAs(CommandOrigin const& ori, CommandOutput& outp, string const& target, MyEnum<HOMEOP> op, optional<string>& val) {
-	return generic_home(ori, outp, getHomeInCache(PlayerDB::getXuid(target)), op, val);
+	return generic_home(ori, outp, getHomeInCache(std::stoull(PlayerDB::getXuid(target))), op, val);
 }
 #pragma endregion
 #pragma region BACK
