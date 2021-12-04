@@ -5,7 +5,7 @@
 template <typename T>
 class CommandSelector : public CommandSelectorBase {
 public:
-    LIAPI CommandSelector() : CommandSelectorBase(std::is_same_v<T, Player>) {}
+    LIAPI CommandSelector() : CommandSelectorBase() {}
 
     inline CommandSelectorResults<T> results(CommandOrigin const& a0)
     {

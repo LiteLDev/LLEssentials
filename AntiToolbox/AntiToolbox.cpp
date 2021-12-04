@@ -1,7 +1,7 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include <filesystem>
 
-std::string Kick_message = u8"¡ìcDon't use toolbox!";
+std::string Kick_message = u8"ï¿½ï¿½cDon't use toolbox!";
 std::vector<std::string> Array;
 bool FakeNameDetection = true;
 std::vector<std::string> CmdArray;
@@ -16,7 +16,7 @@ void loadConfig() {
 		std::filesystem::create_directory("plugins/AntiToolbox");
 		std::ofstream of(config_file);
 		if (of) {
-			of << "{\n  \"KickMessage\": \"¡ìcDon't use toolbox!\",\n  \"WhiteList\": [\"Notch\", \"Jeb_\"],\n  \"FakeNameDetection\": true,\n  \"EnableCustomCmd\": false,\n  \"CustomCmd\": [\"ban ban %player%\", \"say Toolbox Detected: %player%\"]\n}";
+			of << "{\n  \"KickMessage\": \"Â§cDon't use toolbox!\",\n  \"WhiteList\": [\"Notch\", \"Jeb_\"],\n  \"FakeNameDetection\": true,\n  \"EnableCustomCmd\": false,\n  \"CustomCmd\": [\"ban ban %player%\", \"say Toolbox Detected: %player%\"]\n}";
 		}
 		else {
 			Logger::Error("Configuration file creation failed");
@@ -104,7 +104,7 @@ void onPlayerLogin(JoinEV ev) {
 
 void entry() {
 	Logger::setTitle("AntiToolbox");
-	Logger::setFile("logs/toolbox.log");
+	//Logger::setFile("logs/toolbox.log");
 	loadConfig();
 	Event::addEventListener(onPlayerLogin);
 	Logger::Info("Loaded");
@@ -137,7 +137,7 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 		if (device_model == "") {
 			Logger::Info("Null model detected: {}, using Horion client?", player_name);
 			if (!EnableCustomCmd) {
-				sp->kick(u8"¡ìcNull model");
+				sp->kick(u8"Â§cNull model");
 			}
 			else {
 				customCmdExe(player_name);

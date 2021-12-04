@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Helper.h"
 #include <unordered_map>
-#include "Command.h"
 
 std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
@@ -39,19 +38,16 @@ void loadCfg() {
 }
 
 void onPlayerLeft(LeftEV);
-bool onPlayerChat(ChatEV);
-bool onPlayerCmd(PlayerUseCmdEV);
 void onPlayerJoin(JoinEV);
+void RegisterCommands();
 
 void entry() {
 	Event::addEventListener(onPlayerLeft);
-	Event::addEventListener(onPlayerChat);
-	Event::addEventListener(onPlayerCmd);
 	Event::addEventListener(onPlayerJoin);
 	loadCfg();
-	REGCMD();
+	RegisterCommands();
 	Logger::setTitle("Helper");
-	Logger::setFile("logs/LLHelper.log");
+	//Logger::setFile("logs/LLHelper.log");
 	Logger::Info("Loaded version: ", _ver);
 }
 

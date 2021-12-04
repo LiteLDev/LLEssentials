@@ -1,7 +1,5 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Helper.h"
-#include <Global.h>
-#include <MC/Vec3.hpp>
 #include <MC/Block.hpp>
 #include <MC/GameMode.hpp>
 
@@ -12,7 +10,7 @@ void onPlayerLeft(LeftEV e) {
 	if (px < 0)px = px - 1;
 	if (pz < 0)pz = pz - 1;
 	auto dim = e.Player->getDimensionId();
-	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.Player->getRealName(), px, py, pz, dim, e.xuid);
+	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.Player->getRealName(), px, py, pz, (short)dim, e.xuid);
 }
 
 void onPlayerJoin(JoinEV ev) {

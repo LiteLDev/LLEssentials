@@ -156,7 +156,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Command.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>

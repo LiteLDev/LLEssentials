@@ -1,6 +1,5 @@
 #include "pch.h"
 #include <EventAPI.h>
-#include "Command.h"
 #include <stddef.h>
 #include <iostream>
 #include <string>
@@ -15,7 +14,7 @@ playerMap<string> ORIG_NAME;
 std::unordered_map<string, string> CNAME;
 
 void loadCNAME() {
-	db = std::make_unique<KVDB>("plugins\\LLHelper\\data", false);
+	db = std::make_unique<KVDB>("plugins/LLHelper/data", false);
 	db->iter([](string_view k, string_view v) {
 		if (!k._Starts_with("b_"))
 			CNAME.emplace(k, v);
@@ -260,7 +259,7 @@ bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
 	}*/
 }
 
-void REGCMD() {
+void RegisterCommands() {
 	loadCNAME();
 	Translation::load("plugins\\LLHelper\\langpack\\helper.json");
 	Event::addEventListener([](RegCmdEV e) {
