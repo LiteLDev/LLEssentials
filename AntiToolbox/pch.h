@@ -8,19 +8,15 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
-#include <iostream>
-#include <mc/Player.h>
-#include <api/basicEvent.h>
-#include <api/types/types.h>
-#include <LoaderApi.h>
-#include <stl/Logger.h>
-#include <ezmc/Core/ConnectionRequest.h>
+#include <MC/Player.hpp>
+#include <MC/ServerPlayer.hpp>
+#include <EventAPI.h>
+#include <LoggerAPI.h>
+#include <MC/ConnectionRequest.hpp>
 #include <vector>
-#include <rapidjson/document.h>
+#include <third-party/rapidjson/document.h>
 #include "base64.h"
-#include <mc/OffsetHelper.h>
-#include "Logger1.h"
-#include <api/xuidreg/xuidreg.h>
-#include <api/basicEvent.h>
+#include <MC/Level.hpp>
+#include <PlayerDB.h>
 
 #endif //PCH_H

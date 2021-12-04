@@ -9,11 +9,14 @@
 
 // 添加要在此处预编译的标头
 #include <iostream>
-#include <stl/Logger.h>
-#include <stl\Bstream.h>
-#include <stl\varint.h>
-#include <api\myPacket.h>
-#include <api/scheduler/scheduler.h>
-#include <mc/Player.h>
+#include <LoggerAPI.h>
+#include <SendPacketAPI.h>
+#include <Utils/VarInt.h>
+#include <ScheduleAPI.h>
+#include <MC/Player.hpp>
+#include <MC/ServerPlayer.hpp>
+#include <LLAPI.h>
+#include <MC/Level.hpp>
+#include <MC/NetworkIdentifier.hpp>
 
 #endif //PCH_H

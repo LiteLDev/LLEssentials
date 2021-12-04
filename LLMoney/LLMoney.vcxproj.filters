@@ -52,8 +52,23 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\lib\LiteLoader.lib" />
-    <Library Include="..\lib\sqlite3.lib" />
-    <Library Include="..\lib\SQLiteCpp.lib" />
+    <Library Include="..\lib\sqlite3.lib">
+      <Filter>资源文件</Filter>
+    </Library>
+    <Library Include="..\lib\SQLiteCpp.lib">
+      <Filter>资源文件</Filter>
+    </Library>
+    <Library Include="..\Lib\bedrock_server_var.lib">
+      <Filter>资源文件</Filter>
+    </Library>
+    <Library Include="..\Lib\LiteLoader.lib">
+      <Filter>资源文件</Filter>
+    </Library>
+    <Library Include="..\Lib\SymDBHelper.lib">
+      <Filter>资源文件</Filter>
+    </Library>
+    <Library Include="..\Lib\bedrock_server_api.lib">
+      <Filter>资源文件</Filter>
+    </Library>
   </ItemGroup>
 </Project>

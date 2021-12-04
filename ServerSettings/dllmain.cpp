@@ -11,7 +11,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	switch (ul_reason_for_call)
 	{
 	case DLL_PROCESS_ATTACH:
-		loaderapi::registerPlugin("ServerSettings", "Add server settings menu for BDS", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
+		LL::registerPlugin("ServerSettings", "Add server settings menu for BDS", _ver, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 	case DLL_PROCESS_DETACH:
@@ -20,11 +20,10 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	return TRUE;
 }
 
-static Logger LOG(stdio_commit{ "[ServerSettings] " });
 std::string form = "";
 
 void entry() {
-	LOG("Loaded");
+	Logger::Info("Loaded");
 	std::ifstream fs;
 	fs.open("plugins/ServerSettings/config.json", std::ios::in);
 	if (fs) {
@@ -34,7 +33,7 @@ void entry() {
 		}
 	}
 	else {
-		LOG("Read config.json failed");
+		Logger::Error("Read config.json failed");
 		form = "{\"type\":\"custom_form\",\"title\":\"LiteLoaderBDS Settings\",\"icon\":{\"type\":\"url\",\"data\":\"https://forum.litebds.com/assets/logo-6pndg21x.png\"},\"content\":[{\"type\":\"label\",\"text\":\"Hello Bedrock Dedicated Server\\nHello LiteLoaderBDS!\"}]}";
 	}
 }
@@ -42,13 +41,13 @@ void entry() {
 THook(void, "?handle@?$PacketHandlerDispatcherInstance@VServerSettingsRequestPacket@@$0A@@@UEBAXAEBVNetworkIdentifier@@AEAVNetEventCallback@@AEAV?$shared_ptr@VPacket@@@std@@@Z", void* a0, NetworkIdentifier ni, void* a1, void* a2) {
 	WBStream wb;
 	wb.apply((VarInts<int>)5928, (MCString)form);
-	MyPkt<MinecraftPacketIds(0x67)> pkt(wb);
-	Handler::schedule(DelayedTask([pkt]() {
-		for (Player* pl : liteloader::getAllPlayers()) {
+	MyPkt<0x67> pkt(wb);
+	Schedule::repeat([pkt]() {
+		for (Player* pl : Level::getAllPlayers()) {
 			ServerPlayer* sp = (ServerPlayer*)pl;
 			sp->sendNetworkPacket((Packet&)pkt);
 		}
-		}, 20));
+		}, 20);
 	return original(a0, ni, a1, a2);
 }
 

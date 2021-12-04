@@ -1,50 +1,45 @@
 #include "pch.h"
 #include "Helper.h"
+#include <MC/Vec3.hpp>
+#include <MC/Block.hpp>
+#include <MC/GameMode.hpp>
 
 bool onPlayerCmd(PlayerUseCmdEV e) {
 	if (LOG_CMD) {
-		LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(e.Player) << " CMD " << e.cmd << "\n";
+		Logger::Info("CMD {} {}",e.Player->getRealName(), e.cmd);
 	}
 	return true;
 }
 
 void onPlayerLeft(LeftEV e) {
-	Vec3 player_pos = e.Player->getPos();
-	int px = (int)player_pos.x;
-	int py = (int)player_pos.y;
-	int pz = (int)player_pos.z;
+	int px = e.Player->getPos().x;
+	int py = e.Player->getPos().y;
+	int pz = e.Player->getPos().z;
 	if (px < 0)px = px - 1;
 	if (pz < 0)pz = pz - 1;
 	auto dim = e.Player->getDimensionId();
-	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(e.Player) << " left server  Pos:(" << px << "," << py << "," << pz << "," << dim << ") xuid: " << offPlayer::getXUID(e.Player) << "\n";
+	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.Player->getRealName(), px, py, pz, dim, e.xuid);
 }
 
 void onPlayerJoin(JoinEV ev) {
 	Player* pl = ev.Player;
-	if (auto it = CNAME.find(offPlayer::getRealName(pl)); it != CNAME.end()) {
+	if (auto it = CNAME.find(pl->getRealName()); it != CNAME.end()) {
 		pl->setName(it->second);
-		optional<WPlayer> wp = WPlayer(*(ServerPlayer*)pl);
-		ORIG_NAME[wp.val().v] = offPlayer::getRealName(pl);
+		ORIG_NAME[ev.Player] = pl->getRealName();
 	}
-	LOG1 << "[" << gettime() << u8" INFO][BH] " << offPlayer::getRealName(pl) << " joined server IP: " << ev.IP << " xuid: " << ev.xuid << "\n";
+	Logger::Info("{} joined server IP: {} xuid: {}", pl->getRealName(), ev.IP, ev.xuid);
 }
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
-	void* self, ItemStack* item, BlockPos* bpos, uchar a1, Vec3* plpos, Block* block) {
-	const BlockLegacy* b = offBlock::getLegacyBlock(block);
-	std::string blockname = dAccess<std::string, 128>(b);
-	Player* sp = dAccess<Player*, 8>(self);
-	auto itemid = item->getId();
+	GameMode* self, ItemStack* item, BlockPos* bpos, unsigned char a1, Vec3* plpos, Block* block) {
+	std::string blockname = block->getNameString();
+	Player* sp = self->getPlayer();
+	short itemid = item->getId();
 	if (logItems.count(itemid)) {
-		LOG1 << "[" << gettime() << u8" INFO][ItemLog] "
-			<< offPlayer::getRealName(sp)
-			<< " used logitem(" << item->getName() << ")"
-			<< " on " << blockname
-			<< "(" << bpos->toString() << ")"
-			<< "\n";
+		Logger::Info("[ItemLog] {} used logitem({}) on ({})", sp->getRealName(), item->getName(), blockname, bpos->toString());
 	}
 	if (banItems.count(itemid)) {
-		forceKick(sp);
+		sp->kick("Don't use banned item");
 	}
 	return original(self, item, bpos, a1, plpos, block);
 }
@@ -53,5 +48,5 @@ bool onPlayerChat(ChatEV e) {
 	if (e.msg.length() >= MAX_CHAT_LEN) {
 		return false;
 	}
-	LOG1 << "[" << gettime() << u8" INFO][BH] <" << offPlayer::getRealName(e.pl) << "> " << e.msg << "\n";
+	Logger::Info("[Chat] {} > {}", e.pl->getRealName(), e.msg);
 }

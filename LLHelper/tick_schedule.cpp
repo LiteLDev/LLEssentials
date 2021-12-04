@@ -6,7 +6,7 @@ long long ticks;
 void ScheduleCheck() {
 	for (auto& i : CMDSCHEDULE) {
 		if (!(ticks % std::atoi(i.first.c_str()))) {
-			liteloader::runcmdEx(i.second);
+			Level::runcmdEx(i.second);
 		}
 	}
 }

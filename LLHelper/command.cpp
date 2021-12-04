@@ -1,21 +1,21 @@
 #include "pch.h"
-#include <api/basicEvent.h>
-#include <api/regCommandHelper.h>
+#include <EventAPI.h>
 #include "Command.h"
 #include <stddef.h>
 #include <iostream>
 #include <string>
-#include "BDS.h"
 #include "Helper.h"
 #include <string_view>
+#include <MC/ExtendedCertificate.hpp>
+#include <MC/NetworkIdentifier.hpp>
+#include <MC/ServerNetworkHandler.hpp>
 
-LangPack LangP("plugins\\LLHelper\\langpack\\helper.json");
-unique_ptr<KVDBImpl> db;
+std::unique_ptr<KVDB> db;
 playerMap<string> ORIG_NAME;
 std::unordered_map<string, string> CNAME;
 
 void loadCNAME() {
-	db = MakeKVDB("plugins\\LLHelper\\data", false);
+	db = std::make_unique<KVDB>("plugins\\LLHelper\\data", false);
 	db->iter([](string_view k, string_view v) {
 		if (!k._Starts_with("b_"))
 			CNAME.emplace(k, v);
@@ -26,9 +26,9 @@ bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 	auto res = s.results(ori);
 	if (!Command::checkHasTargets(res, outp)) return false;
 	for (auto i : res) {
-		setPlayerGameType(i, mode);
+		i->setPlayerGameType(mode);
 	}
-	outp.success(_TRS("gmode.success"));
+	outp.success(tr("gmode.success"));
 	return true;
 }
 
@@ -70,14 +70,13 @@ bool onCMD_BanList(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP_L
 				xuid_t xid;
 				std::stringstream ss{ banned };
 				ss >> xid;
-				auto strname = XIDREG::id2str(xid);
-				outp.addMessage(banned + " (" + (strname.set ? strname.val() : "") + ") " + std::to_string(*(time_t*)val.data()));
+				outp.addMessage(banned + " (" + PlayerDB::fromXuid(xid) + ") " + std::to_string(*(time_t*)val.data()));
 			}
 		}
-		outp.success(_TRS("ban.list.success"));
+		outp.success(tr("ban.list.success"));
 		return true;
 		});
-	outp.success(_TRS("ban.list.success"));
+	outp.success(tr("ban.list.success"));
 	return true;
 }
 bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, string& entry, optional<int>& time) {
@@ -86,30 +85,30 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 	{
 	case BANOP::banip: {
 		addBanEntry(entry, time.set ? time.val() : 0);
-		outp.success(QUOTE(entry) + _TRS("ban.banip.success"));
+		outp.success(entry + tr("ban.banip.success"));
 		return true;
 	}
 	case BANOP::ban: {
-		addBanEntry(S(XIDREG::str2id(entry).val()), time.set ? time.val() : 0);
-		liteloader::runcmdEx("skick "+QUOTE(entry));
-		outp.success(QUOTE(entry) + _TRS("ban.ban.success"));
+		addBanEntry(PlayerDB::getXuid(entry), time.set ? time.val() : 0);
+		Level::runcmdEx("skick "+ entry);
+		outp.success(entry + tr("ban.ban.success"));
 		return true;
 	}
 				   break;
 	case BANOP::unban: {
 		if (getBanEntry(entry).set) {
 			removeBanEntry(entry);
-			outp.success(QUOTE(entry) + _TRS("ban.unban.success"));
+			outp.success(entry + tr("ban.unban.success"));
 			return true;
 		}
 		else {
-			auto XID = XIDREG::str2id(entry);
-			if (!XID.set) {
-				outp.error(_TRS("ban.unban.error"));
+			std::string XID = PlayerDB::getXuid(entry);
+			if (XID == "") {
+				outp.error(tr("ban.unban.error"));
 				return false;
 			}
 			else {
-				removeBanEntry(S(XID.val()));
+				removeBanEntry(XID);
 				return true;
 			}
 		}
@@ -123,17 +122,17 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 
 bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) {
 	string playername = target;
-	std::vector<Player*> plist = liteloader::getAllPlayers();
+	std::vector<Player*> plist = Level::getAllPlayers();
 	Player* A = nullptr;
 	for (auto p : plist) {
-		if (offPlayer::getRealName(p) == playername) {
+		if (p->getRealName() == playername) {
 			A = p;
 			break;
 		}
 	}
 	if (A) {
-		forceKick(A);
-		outp.addMessage(target + _TRS("skick.success"));
+		A->kick("You are kicked by admin");
+		outp.addMessage(target + tr("skick.success"));
 		return true;
 	}
 	else
@@ -143,20 +142,19 @@ bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) 
 }
 
 bool oncmd_vanish(CommandOrigin const& ori, CommandOutput& outp) {
-	auto wp = MakeWP(ori).val();
-	auto sp = MakeSP(ori);
-	VarULong ul(ZigZag(wp->getUniqueID().id));
+	auto sp = ori.getPlayer();
+	VarULong ul(ZigZag(sp->getUniqueID().id));
 	WBStream ws;
 	ws.apply(ul);
-	MyPkt<MinecraftPacketIds(14)> pk{ ws };
-	std::vector<Player*> plist = liteloader::getAllPlayers();
+	MyPkt<14> pk{ ws };
+	std::vector<Player*> plist = Level::getAllPlayers();
 	for (auto p : plist) {
 		if (p != sp) {
 			auto spp = (ServerPlayer*)p;
 			spp->sendNetworkPacket(pk);
 		}
 	}
-	outp.addMessage(_TRS("vanish.success"));
+	outp.addMessage(tr("vanish.success"));
 	return true;
 }
 
@@ -166,17 +164,17 @@ enum class CNAMEOP :int {
 };
 
 bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, string& src, optional<string>& name) {
-	std::vector<Player*> pList = liteloader::getAllPlayers();
+	std::vector<Player*> pList = Level::getAllPlayers();
 	Player* player = nullptr;
 	for (auto p : pList) {
-		if (offPlayer::getRealName(p) == src) {
+		if (p->getRealName() == src) {
 			player = p;
 			break;
 		}
 	}
 	if (op == CNAMEOP::set) {
 		if (!name.set) {
-			p.error(_TRS("cname.set.null"));
+			p.error(tr("cname.set.null"));
 			return false;
 		}
 		std::string& str = name.val();
@@ -186,33 +184,31 @@ bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op,
 		CNAME[src] = str;
 		db->put(src, str);
 		if (!player) {
-			p.success(_TRS("cname.set.notonline"));
+			p.success(tr("cname.set.notonline"));
 			return false;
 		}
-		optional<WPlayer> wPlayer = WPlayer(*player);
-		if (!wPlayer.set) {
-			p.success(_TRS("cname.set.notonline"));
+		if (!player) {
+			p.success(tr("cname.set.notonline"));
 			return false;
 		}
-		p.success(_TRS("cname.set.success"));
-		wPlayer.val()->setName(str);
-		ORIG_NAME[wPlayer.val().v] = wPlayer.val().getName().c_str();
+		p.success(tr("cname.set.success"));
+		player->setName(str);
+		ORIG_NAME[(ServerPlayer*)player] = player->getName().c_str();
 	}
 	if (op == CNAMEOP::remove) {
 		CNAME.erase(src);
 		db->del(src);
 		if (!player) {
-			p.success(_TRS("cname.rm.notonline"));
+			p.success(tr("cname.rm.notonline"));
 			return false;
 		}
-		optional<WPlayer> wPlayer = WPlayer(*player);
-		if (!wPlayer.set) {
-			p.success(_TRS("cname.rm.notonline"));
+		if (!player) {
+			p.success(tr("cname.rm.notonline"));
 			return false;
 		}
-		p.success(_TRS("cname.rm.success"));
-		wPlayer.val()->setName(src);
-		ORIG_NAME._map.erase(wPlayer.val().v);
+		p.success(tr("cname.rm.success"));
+		player->setName(src);
+		ORIG_NAME._map.erase((ServerPlayer*)player);
 	}
 	return true;
 }
@@ -223,7 +219,7 @@ bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 	if (!Command::checkHasTargets(res, outp)) return false;
 	WBStream ws;
 	ws.apply(MCString(host), (unsigned short)P);
-	MyPkt<MinecraftPacketIds(0x55), false> trpk(ws);
+	MyPkt<0x55, false> trpk(ws);
 	for (auto i : res) {
 		((ServerPlayer*)i)->sendNetworkPacket(trpk);
 	}
@@ -232,7 +228,7 @@ bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<
 
 static bool onReload(CommandOrigin const& ori, CommandOutput& outp) {
 	loadCfg();
-	outp.success(_TRS("hreload.success"));
+	outp.success(tr("hreload.success"));
 	return true;
 }
 
@@ -243,14 +239,14 @@ void getItemName(const Item* item, string* str) {
 
 bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
 	//if (ori.getOriginType() == OriginType::Player) {
-	auto wp = MakeWP(ori);
-	if (wp.set && wp.val()) {
-		ItemStack item = wp.val().get().getCarriedItem();
+	ServerPlayer* wp = ori.getPlayer();
+	if (wp) {
+		const ItemStack* item = &wp->getCarriedItem();
 		std::string itemName = "Air";
-		if (item.getId() != 0) {
-			getItemName(item.getItem(), &itemName);
+		if (item->getId() != 0) {
+			getItemName(item->getItem(), &itemName);
 		}
-		outp.success(itemName + " " + std::to_string(item.getId()));
+		outp.success(itemName + " " + std::to_string(item->getId()));
 		return true;
 	}
 	else {
@@ -266,8 +262,8 @@ bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
 
 void REGCMD() {
 	loadCNAME();
+	Translation::load("plugins\\LLHelper\\langpack\\helper.json");
 	Event::addEventListener([](RegCmdEV e) {
-		CMDREG::SetCommandRegistry(e.CMDRg);
 		CEnum<BANOP> _1("banop", { "ban","unban","banip" });
 		CEnum<BANOP_LIST> _2("banoplist", { "list" });
 		CEnum<CNAMEOP> _3("cnameop", { "set","rm" });
@@ -295,7 +291,7 @@ THook(void, "?_onClientAuthenticated@ServerNetworkHandler@@AEAAXAEBVNetworkIdent
 	original(snh, neti, cert);
 	auto xuid = ExtendedCertificate::getXuid(cert);
 	auto be1 = getBanEntry(xuid);
-	auto IP = liteloader::getIP(neti);
+	auto IP = neti.getIP();
 	auto be2 = getBanEntry(IP);
 	//auto nh = mc->getServerNetworkHandler();
 	if (be1.set) {
@@ -303,7 +299,7 @@ THook(void, "?_onClientAuthenticated@ServerNetworkHandler@@AEAAXAEBVNetworkIdent
 			removeBanEntry(xuid);
 		}
 		else {
-			snh->onDisconnect(neti);
+			snh->disconnectClient(neti, "You are banned", true);
 		}
 	}
 	if (be2.set) {
@@ -311,7 +307,7 @@ THook(void, "?_onClientAuthenticated@ServerNetworkHandler@@AEAAXAEBVNetworkIdent
 			removeBanEntry(IP);
 		}
 		else {
-			snh->onDisconnect(neti);
+			snh->disconnectClient(neti, "You are banned", true);
 		}
 	}
 }

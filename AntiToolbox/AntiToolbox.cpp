@@ -1,33 +1,25 @@
 #include "pch.h"
-
-Logger<stdio_commit> LOG(stdio_commit("[AntiToolbox] "));
-Logger1 LOG1("logs/toolbox_detected.log");
-Logger1 LOG2("logs/toolbox_cannot_detect.log");
+#include <filesystem>
 
 std::string Kick_message = u8"¡ìcDon't use toolbox!";
 std::vector<std::string> Array;
 bool FakeNameDetection = true;
 std::vector<std::string> CmdArray;
 bool EnableCustomCmd = false;
-std::vector<std::string> Cantdetect_devices = { "OPPO","HUAWEI","MEIZU","HONOR","VIVO", "ZTE","IQOO" };
-
-std::string getLogger() {
-	return "[" + gettime() + " INFO][AntiToolbox] ";
-}
 
 void loadConfig() {
 	std::string   config_file = "plugins/AntiToolbox/config.json";
 	std::ifstream fs;
 	fs.open(config_file, std::ios::in);
 	if (!fs) {
-		LOG(config_file, " not found, creating configuration file");
+		Logger::Info("{} not found, creating configuration file", config_file);
 		std::filesystem::create_directory("plugins/AntiToolbox");
 		std::ofstream of(config_file);
 		if (of) {
 			of << "{\n  \"KickMessage\": \"¡ìcDon't use toolbox!\",\n  \"WhiteList\": [\"Notch\", \"Jeb_\"],\n  \"FakeNameDetection\": true,\n  \"EnableCustomCmd\": false,\n  \"CustomCmd\": [\"ban ban %player%\", \"say Toolbox Detected: %player%\"]\n}";
 		}
 		else {
-			LOG("Configuration file creation failed");
+			Logger::Error("Configuration file creation failed");
 		}
 	}
 	else {
@@ -42,7 +34,7 @@ void loadConfig() {
 			Kick_message = document["KickMessage"].GetString();
 		}
 		else {
-			LOG("Config KickMessage not found");
+			Logger::Warn("Config KickMessage not found");
 		}
 		if (document.HasMember("WhiteList")) {
 			auto arraylist = document["WhiteList"].GetArray();
@@ -51,19 +43,19 @@ void loadConfig() {
 			}
 		}
 		else {
-			LOG("Config WhiteList not found");
+			Logger::Warn("Config WhiteList not found");
 		}
 		if (document.HasMember("FakeNameDetection")) {
 			FakeNameDetection = document["FakeNameDetection"].GetBool();
 		}
 		else {
-			LOG("Config FakeNameDetection not found");
+			Logger::Warn("Config FakeNameDetection not found");
 		}
 		if (document.HasMember("EnableCustomCmd")) {
 			EnableCustomCmd = document["EnableCustomCmd"].GetBool();
 		}
 		else {
-			LOG("Config EnableCustomCmd not found");
+			Logger::Warn("Config EnableCustomCmd not found");
 		}
 		if (document.HasMember("CustomCmd")) {
 			auto arraylist = document["CustomCmd"].GetArray();
@@ -72,7 +64,7 @@ void loadConfig() {
 			}
 		}
 		else {
-			LOG("Config CmdArray not found");
+			Logger::Warn("Config CmdArray not found");
 		}
 	}
 }
@@ -90,19 +82,18 @@ void customCmdExe(std::string player_name) {
 			cmd.replace(position, 9, player_name);
 		}
 		//std::cout << cmd << "\n";
-		liteloader::runcmdEx(cmd);
+		Level::runcmdEx(cmd);
 	}
 }
 
 void onPlayerLogin(JoinEV ev) {
 	if (FakeNameDetection) {
-		std::string real_name = offPlayer::getRealName(ev.Player);
+		std::string real_name = ev.Player->getRealName();
 		std::string player_name = ev.Player->getNameTag();
 		if (real_name != player_name) {
-			LOG1 << getLogger() << "Fake Nametag detected: " << player_name << " RealName: " << real_name << "\n";
+			Logger::Info("Fake Nametag detected: {} RealName: {}", player_name, real_name);
 			if (!EnableCustomCmd) {
-				WPlayer wp = WPlayer(*ev.Player);
-				wp.kick(Kick_message);
+				ev.Player->kick(Kick_message);
 			}
 			else {
 				customCmdExe(real_name);
@@ -112,9 +103,11 @@ void onPlayerLogin(JoinEV ev) {
 }
 
 void entry() {
+	Logger::setTitle("AntiToolbox");
+	Logger::setFile("logs/toolbox_detected.log");
 	loadConfig();
 	Event::addEventListener(onPlayerLogin);
-	LOG("Loaded");
+	Logger::Info("Loaded");
 }
 
 namespace ConnectionReq {
@@ -146,12 +139,11 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 		rapidjson::Document document;
 		document.Parse(pkt.c_str());
 		std::string device_model = document["DeviceModel"].GetString();
-		std::string player_name = offPlayer::getRealName(sp);
+		std::string player_name = sp->getRealName();
 		if (device_model == "") {
-			LOG1 << getLogger() << "Null model detected: " << offPlayer::getRealName(sp) << ", using Horion client?\n";
+			Logger::Info("Null model detected: {}, using Horion client?", player_name);
 			if (!EnableCustomCmd) {
-				WPlayer wp = WPlayer(*sp);
-				wp.kick(u8"¡ìcNull model");
+				sp->kick(u8"¡ìcNull model");
 			}
 			else {
 				customCmdExe(player_name);
@@ -166,30 +158,19 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 		//std::cout << device_company << ":" << device_company_ori << "\n";
 		if (device_company_ori != device_company) { //Toolbox detected
 			for (std::string pl_name : Array) { // WhiteList detecting
-				auto xuids = XIDREG::str2id(pl_name);
-				xuid_t xuid = 1145141919;
-				if (xuids.set) {
-					xuid = xuids.val();
-				}
-				if (xuid == offPlayer::getXUID(sp)) { // WhiteList detected
+				std::string xuid = PlayerDB::getXuid(pl_name);
+				if (xuid == sp->getXuid()) { // WhiteList detected
 					return original(thi, networkId, con_req, sp);
 				}
 			}
-			LOG1 << getLogger() << "Toolbox detected: " << player_name << "\n";
+			Logger::Info("Toolbox detected: {}", player_name);
 			if (!EnableCustomCmd) {
-				WPlayer wp = WPlayer(*sp);
-				wp.kick(Kick_message);
+				sp->kick(Kick_message);
 			}
 			else {
 				customCmdExe(player_name);
 			}
 			return original(thi, networkId, con_req, sp);
-		}
-		for (std::string device_ : Cantdetect_devices) {
-			if (device_company == device_) {
-				LOG2 << getLogger() << "Cannot detect: " << offPlayer::getRealName(sp) << "\n";
-				return original(thi, networkId, con_req, sp);
-			}
 		}
 	}
 	return original(thi, networkId, con_req, sp);

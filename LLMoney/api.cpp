@@ -2,9 +2,8 @@
 #include "llmoney.h"
 #include <memory>
 #include <vector>
-#include <api\xuidreg\xuidreg.h>
 #include "Event.h"
-#define LOGE printf
+#include <LoggerAPI.h>
 static std::unique_ptr<SQLite::Database> db;
 money_t DEF_MONEY = 0;
 
@@ -20,19 +19,20 @@ struct cleanSTMT {
 };
 bool initDB() {
 	try {
+		Logger::setTitle("Money");
 		db = std::make_unique<SQLite::Database>("plugins\\LLMoney\\money.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
 		db->exec("PRAGMA journal_mode = MEMORY");
 		db->exec("PRAGMA synchronous = NORMAL");
 		db->exec("CREATE TABLE IF NOT EXISTS money ( \
-			XUID  BLOB(8) PRIMARY KEY \
+			XUID  TEXT PRIMARY KEY \
 			UNIQUE \
 			NOT NULL, \
 			Money NUMERIC NOT NULL \
 		) \
 			WITHOUT ROWID; ");
 		db->exec("CREATE TABLE IF NOT EXISTS mtrans ( \
-			tFrom BLOB(8)  NOT NULL, \
-			tTo   BLOB(8)  NOT NULL, \
+			tFrom TEXT  NOT NULL, \
+			tTo   TEXT  NOT NULL, \
 			Money NUMERIC  NOT NULL, \
 			Time  NUMERIC NOT NULL \
 			DEFAULT(strftime('%s', 'now')), \
@@ -43,7 +43,7 @@ bool initDB() {
 		); ");
 	}
 	catch (std::exception const& e) {
-		LOGE("DB err %s\n", e.what());
+		Logger::Error("DB err %s\n", e.what());
 		return false;
 	}
 	return true;
@@ -72,7 +72,7 @@ LLMONEY_API money_t LLMoneyGet(xuid_t xuid) {
 		return rv;
 	}
 	catch (std::exception const& e) {
-		LOGE("[Money] DB err %s\n", e.what());
+		Logger::Error("DB err %s\n", e.what());
 		return -1;
 	}
 }
@@ -92,7 +92,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 	try {
 		db->exec("begin");
 		static SQLite::Statement set{ *db,"update money set Money=? where XUID=?" };
-		if (from != 0) {
+		if (from != "") {
 			auto fmoney = LLMoneyGet(from);
 			if (fmoney < val) {
 				db->exec("rollback");
@@ -108,7 +108,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 				set.clearBindings();
 			}
 		}
-		if (to != 0) {
+		if (to != "") {
 			auto tmoney = LLMoneyGet(to);
 			tmoney += val;
 			if (tmoney < 0) {
@@ -141,7 +141,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 	}
 	catch (std::exception const& e) {
 		db->exec("rollback");
-		LOGE("[Money] DB err %s\n", e.what());
+		Logger::Error("DB err %s\n", e.what());
 		return false;
 	}
 }
@@ -177,13 +177,13 @@ LLMONEY_API bool LLMoneySet(xuid_t xuid, money_t money)
 	money_t now = LLMoneyGet(xuid), diff;
 	xuid_t from, to;
 	if (money >= now) {
-		from = 0;
+		from = "";
 		to = xuid;
 		diff = money - now;
 	}
 	else {
 		from = xuid;
-		to = 0;
+		to = "";
 		diff = now - money;
 	}
 
@@ -204,17 +204,17 @@ LLMONEY_API string LLMoneyGetHist(xuid_t xuid, int timediff)
 		get.bindNoCopy(2, &xuid, sizeof xuid);
 		get.bindNoCopy(3, &xuid, sizeof xuid);
 		while (get.executeStep()) {
-			auto from = XIDREG::id2str(*(xuid_t*)get.getColumn(0).getBlob());
-			auto to = XIDREG::id2str(*(xuid_t*)get.getColumn(1).getBlob());
-			if (from.set && to.set)
-				rv += from.val() + " -> " + to.val() + " " + std::to_string((money_t)get.getColumn(2).getInt64()) + " " + get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
+			auto from = PlayerDB::fromXuid(*(xuid_t*)get.getColumn(0).getBlob());
+			auto to = PlayerDB::fromXuid(*(xuid_t*)get.getColumn(1).getBlob());
+			if (from != "" && to != "")
+				rv += from + " -> " + to + " " + std::to_string((money_t)get.getColumn(2).getInt64()) + " " + get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
 		}
 		get.reset();
 		get.clearBindings();
 		return rv;
 	}
 	catch (std::exception const& e) {
-		LOGE("[Money] DB err %s\n", e.what());
+		Logger::Error("DB err %s\n", e.what());
 		return "failed";
 	}
 }

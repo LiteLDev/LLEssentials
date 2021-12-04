@@ -3,8 +3,6 @@
 #include <unordered_map>
 #include "Command.h"
 
-static Logger LOG(stdio_commit{ "[LLHelper] " });
-Logger1 LOG1(".\\logs\\LLHelper.log");
 std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
 std::unordered_set<short> logItems, banItems;
@@ -52,7 +50,8 @@ void entry() {
 	Event::addEventListener(onPlayerJoin);
 	loadCfg();
 	REGCMD();
-	LOG("Loaded version: ", _ver);
+	Logger::setFile("logs/LLHelper.log");
+	Logger::Info("Loaded version: ", _ver);
 }
 
 THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",
@@ -60,8 +59,8 @@ THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",
 	std::string id = std::to_string(item->getId());
 	if (CMDMAP.count(id)) {
 		Player* pl = dAccess<Player*, 8>(self);
-		std::cout << offPlayer::getRealName(pl) << "\n";
-		liteloader::runcmdAs(pl, CMDMAP[id]);
+		std::cout << pl->getRealName() << "\n";
+		Level::runcmdAs(pl, CMDMAP[id]);
 	}
 	return original(self, item);
 }

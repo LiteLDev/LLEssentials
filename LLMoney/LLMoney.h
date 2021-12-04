@@ -9,7 +9,6 @@
 #include <string>
 
 typedef long long money_t;
-typedef unsigned long long xuid_t;
 
 enum LLMoneyEvent
 {

@@ -10,7 +10,7 @@
 // 添加要在此处预编译的标头
 
 #include <iostream>
-#include<lbpch.h>
 #include<SQLiteCpp/SQLiteCpp.h>
-#include<stl/langPack.h>
+#include <PlayerDB.h>
+#include <TranslationAPI.h>
 #endif //PCH_H
