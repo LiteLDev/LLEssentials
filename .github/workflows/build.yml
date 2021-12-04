@@ -31,7 +31,7 @@ jobs:
         curl -L -o D:/plugin-lib.zip https://sqlite.org/2021/sqlite-dll-win64-x64-3340100.zip
         mkdir D:/lib
         unzip D:/plugin-lib.zip -d D:/lib
-        rm D:/lib.zip
+        rm D:/plugin-lib.zip
       shell: bash
 
     - name: Build
