@@ -12,7 +12,7 @@ void loadConfig() {
 	std::ifstream fs;
 	fs.open(config_file, std::ios::in);
 	if (!fs) {
-		Logger::Info("{} not found, creating configuration file", config_file);
+		Logger::Warn("{} not found, creating configuration file", config_file);
 		std::filesystem::create_directory("plugins/AntiToolbox");
 		std::ofstream of(config_file);
 		if (of) {
@@ -104,7 +104,7 @@ void onPlayerLogin(JoinEV ev) {
 
 void entry() {
 	Logger::setTitle("AntiToolbox");
-	Logger::setFile("logs/toolbox_detected.log");
+	Logger::setFile("logs/toolbox.log");
 	loadConfig();
 	Event::addEventListener(onPlayerLogin);
 	Logger::Info("Loaded");

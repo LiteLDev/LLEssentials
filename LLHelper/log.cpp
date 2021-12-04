@@ -4,13 +4,6 @@
 #include <MC/Block.hpp>
 #include <MC/GameMode.hpp>
 
-bool onPlayerCmd(PlayerUseCmdEV e) {
-	if (LOG_CMD) {
-		Logger::Info("CMD {} {}",e.Player->getRealName(), e.cmd);
-	}
-	return true;
-}
-
 void onPlayerLeft(LeftEV e) {
 	int px = e.Player->getPos().x;
 	int py = e.Player->getPos().y;
@@ -42,11 +35,4 @@ THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@
 		sp->kick("Don't use banned item");
 	}
 	return original(self, item, bpos, a1, plpos, block);
-}
-
-bool onPlayerChat(ChatEV e) {
-	if (e.msg.length() >= MAX_CHAT_LEN) {
-		return false;
-	}
-	Logger::Info("[Chat] {} > {}", e.pl->getRealName(), e.msg);
 }
