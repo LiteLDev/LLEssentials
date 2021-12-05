@@ -262,7 +262,7 @@ bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
 void RegisterCommands() {
 	loadCNAME();
 	Translation::load("plugins\\LLHelper\\langpack\\helper.json");
-	Event::addEventListener([](RegCmdEV e) {
+	Event::addEventListener([](RegCmdEvent e) {
 		CEnum<BANOP> _1("banop", { "ban","unban","banip" });
 		CEnum<BANOP_LIST> _2("banoplist", { "list" });
 		CEnum<CNAMEOP> _3("cnameop", { "set","rm" });

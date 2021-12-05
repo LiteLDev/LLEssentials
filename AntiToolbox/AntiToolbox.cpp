@@ -86,7 +86,7 @@ void customCmdExe(std::string player_name) {
 	}
 }
 
-void onPlayerLogin(JoinEV ev) {
+void onPlayerLogin(JoinEvent ev) {
 	if (FakeNameDetection) {
 		std::string real_name = ev.Player->getRealName();
 		std::string player_name = ev.Player->getNameTag();

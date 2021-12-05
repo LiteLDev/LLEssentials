@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "homeStorage.h"
 #include "Tpa.h"
+#include <MC/FormUI.hpp>
 
 std::unique_ptr<KVDB> db;
 
@@ -118,17 +119,17 @@ bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
 				Vec4 AP{ rq->dir == A_B ? B : A };
 				AP.teleport(rq->dir == A_B ? A : B);
 				reqs.erase(rq);
-				A->sendText(tr("tpa.reason.accept"), TextType::RAW);
+				A->sendTextPacket(tr("tpa.reason.accept"), TextType::RAW);
 				return true;
 			}
 			reqs.erase(rq);
 			return false;
 		}
 		if (A) {
-			A->sendText(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+			A->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
 		}
 		if (B) {
-			A->sendText(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+			A->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
 		}
 		reqs.erase(rq);
 		return true;
@@ -144,7 +145,7 @@ void DoMakeReq(ServerPlayer _a, ServerPlayer _b, direction dir) {
 	tpaSetting[A].lastReq = clock();
 	reqs.emplace_back(dir, a, b, clock());
 	string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
-	_b.sendText(prompt, TextType::RAW);
+	_b.sendTextPacket(prompt, TextType::RAW);
 	using namespace Form;
 	char buf[1024];
 	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str())};
@@ -492,7 +493,7 @@ void tpa_entry() {
 	loadall();
 	reinitWARPGUI();
 	schTask();
-	Event::addEventListener([](RegCmdEV e) {
+	Event::addEventListener([](RegCmdEvent e) {
 		CEnum<direction> _1("tpdir", { "to","here" });
 		CEnum<WARPOP> _2("warpop", { "go","add","ls","del","gui" });
 		CEnum<HOMEOP> _4("homeop", { "go","add","ls","del", "gui" });
@@ -522,10 +523,10 @@ void tpa_entry() {
 		}
 		});
 	if (BACK_ENABLED) {
-		Event::addEventListener([](PlayerDeathEV  ev) {
+		Event::addEventListener([](PlayerDeathEvent  ev) {
 			ServerPlayer* sp = ev.Player;
 			deathPos[sp] = Vec4{ sp };
-			sp->sendText(tr("tpa.back.use"), TextType::RAW);
+			sp->sendTextPacket(tr("tpa.back.use"), TextType::RAW);
 			});
 	}
 	Logger::Info("Loaded version: ", _ver);

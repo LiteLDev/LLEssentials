@@ -3,7 +3,7 @@
 #include <MC/Block.hpp>
 #include <MC/GameMode.hpp>
 
-void onPlayerLeft(LeftEV e) {
+void onPlayerLeft(LeftEvent e) {
 	int px = e.Player->getPos().x;
 	int py = e.Player->getPos().y;
 	int pz = e.Player->getPos().z;
@@ -13,7 +13,7 @@ void onPlayerLeft(LeftEV e) {
 	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.Player->getRealName(), px, py, pz, (short)dim, e.xuid);
 }
 
-void onPlayerJoin(JoinEV ev) {
+void onPlayerJoin(JoinEvent ev) {
 	Player* pl = ev.Player;
 	if (auto it = CNAME.find(pl->getRealName()); it != CNAME.end()) {
 		pl->setName(it->second);

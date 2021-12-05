@@ -21,13 +21,14 @@ struct ObjectHandle;
 struct PropertyGetSet;
 class Reflection {
 public:
-    class IFunction {};
-    class IPropertyGetter {};
+    class IFunction;
+    class IPropertyGetter;
 };
 template <typename T>
 class Result;
+class ResultAny;
 class StrongObjectHandle;
-class JSON;
+struct JSON;
 template <typename T>
 class TypedScriptClosure;
 class RuntimeUserData;
@@ -44,5 +45,5 @@ class WeakLifetimeScope;
 class WeakObjectHandle;
 template <typename T>
 class WeakTypedObjectHandle;
-
+class ResultAny;
 #endif

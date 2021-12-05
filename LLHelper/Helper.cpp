@@ -37,8 +37,8 @@ void loadCfg() {
 	}
 }
 
-void onPlayerLeft(LeftEV);
-void onPlayerJoin(JoinEV);
+void onPlayerLeft(LeftEvent);
+void onPlayerJoin(JoinEvent);
 void RegisterCommands();
 
 void entry() {

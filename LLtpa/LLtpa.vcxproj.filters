@@ -35,7 +35,7 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="HomeStorage.cpp">
+    <ClCompile Include="homeStorage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Teleport.cpp">
@@ -49,10 +49,10 @@
     <Library Include="..\Lib\bedrock_server_var.lib">
       <Filter>资源文件</Filter>
     </Library>
-    <Library Include="..\Lib\SymDBHelper.lib">
+    <Library Include="..\Lib\LiteLoader.lib">
       <Filter>资源文件</Filter>
     </Library>
-    <Library Include="..\Lib\LiteLoader.lib">
+    <Library Include="..\Lib\SymDBHelper.lib">
       <Filter>资源文件</Filter>
     </Library>
   </ItemGroup>

@@ -265,7 +265,7 @@ void entry() {
 	}
 	Logger::setTitle("Money");
 	Translation::load("plugins\\LLMoney\\langpack\\money.json");
-	Event::addEventListener([](RegCmdEV ev) {
+	Event::addEventListener([](RegCmdEvent ev) {
 		MakeCommand("money", "money", 0);
 		MakeCommand("money_s", "money(CommandSelector)", 1);
 		CEnum<MONEYOP> _1("type", { "query","hist" });
