@@ -147,7 +147,7 @@ void DoMakeReq(ServerPlayer _a, ServerPlayer _b, direction dir) {
 	_b.sendText(prompt, TextType::RAW);
 	using namespace Form;
 	char buf[1024];
-	string FM{ buf,(size_t)snprintf(buf,1024,trc("tpa.form"), prompt.c_str()) };
+	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str())};
 	CustomForm form(FM);
 	form.sendTo(&_b, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
 
@@ -258,7 +258,7 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 	case TPAOP::gui: {
 		ServerPlayer* wp = ori.getPlayer();
 		using namespace Form;
-		auto fm = std::make_shared<CustomForm>();
+		CustomForm* fm;
 		fm->title = tr("tpa.gui.title");
 		std::string guiLabel = tr("tpa.gui.label");
 		std::string guiDropdown1 = tr("tpa.gui.dropdown1");
@@ -283,12 +283,10 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 
 #pragma region WARP
 
-shared_ptr<Form::SimpleForm> WARPGUI;
+Form::SimpleForm* WARPGUI;
 void reinitWARPGUI() {
-	if (!WARPGUI) WARPGUI = make_shared<Form::SimpleForm>();
 	WARPGUI->title = tr("warp.gui.title");
 	WARPGUI->content = tr("warp.gui.content");
-	//WARPGUI->reset();
 	for (auto& [k, v] : warps) {
 		WARPGUI->append(Form::Button(string(k)));
 	}
@@ -412,7 +410,7 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	}
 	case HOMEOP::gui: {
 		auto wp = ori.getPlayer();
-		auto HomeGUI = make_shared<Form::SimpleForm>();
+		Form::SimpleForm* HomeGUI;
 		HomeGUI->title = tr("home.gui.title");
 		HomeGUI->content = tr("home.gui.content");
 		for (auto& i : hm.data) {

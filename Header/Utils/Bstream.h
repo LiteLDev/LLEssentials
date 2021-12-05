@@ -85,7 +85,7 @@ class RBStream {
             data += sizeof(T);
             DO_BUF_CHK();
         } else {
-            x.unpack(*this);
+            //x.unpack(*this);
         }
     }
 
@@ -144,7 +144,7 @@ class WBStreamImpl {
         if constexpr (is_safe_obj<T>()) {
             data.append((const char *)&x, sizeof(T));
         } else {
-            x.pack(*this);
+            //x.pack(*this);
         }
     }
 
