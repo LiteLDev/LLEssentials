@@ -1,7 +1,6 @@
 ﻿#include "pch.h"
 #include "Helper.h"
 #include <MC/Block.hpp>
-#include <MC/GameMode.hpp>
 
 void onPlayerLeft(LeftEvent e) {
 	int px = e.Player->getPos().x;

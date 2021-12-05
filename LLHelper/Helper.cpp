@@ -52,12 +52,11 @@ void entry() {
 }
 
 THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",
-	void* self, ItemStack* item) {
+	GameMode* self, ItemStack* item) {
 	std::string id = std::to_string(item->getId());
 	if (CMDMAP.count(id)) {
-		Player* pl = dAccess<Player*, 8>(self);
-		std::cout << pl->getRealName() << "\n";
-		Level::runcmdAs(pl, CMDMAP[id]);
+		Player* pl = self->getPlayer();
+		pl->runcmd(CMDMAP[id]);
 	}
 	return original(self, item);
 }

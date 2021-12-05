@@ -38,4 +38,5 @@
 #include <MC/ItemStack.hpp>
 #include <EventAPI.h>
 #include <MC/ServerPlayer.hpp>
+#include <MC/GameMode.hpp>
 #endif //PCH_H
