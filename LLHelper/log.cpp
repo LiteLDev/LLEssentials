@@ -3,22 +3,22 @@
 #include <MC/Block.hpp>
 
 void onPlayerLeft(LeftEvent e) {
-	int px = e.Player->getPos().x;
-	int py = e.Player->getPos().y;
-	int pz = e.Player->getPos().z;
+	int px = e.player->getPos().x;
+	int py = e.player->getPos().y;
+	int pz = e.player->getPos().z;
 	if (px < 0)px = px - 1;
 	if (pz < 0)pz = pz - 1;
-	auto dim = e.Player->getDimensionId();
-	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.Player->getRealName(), px, py, pz, (short)dim, e.xuid);
+	auto dim = e.player->getDimensionId();
+	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.player->getRealName(), px, py, pz, (short)dim, e.xuid);
 }
 
-void onPlayerJoin(JoinEvent ev) {
-	Player* pl = ev.Player;
+bool onPlayerJoin(PreJoinEvent ev) {
+	Player* pl = ev.player;
 	if (auto it = CNAME.find(pl->getRealName()); it != CNAME.end()) {
 		pl->setName(it->second);
-		ORIG_NAME[ev.Player] = pl->getRealName();
+		ORIG_NAME[ev.player] = pl->getRealName();
 	}
-	Logger::Info("{} joined server IP: {} xuid: {}", pl->getRealName(), ev.IP, ev.xuid);
+	Logger::Info("{} joined server IP: {} xuid: {}", pl->getRealName(), ev.ip, ev.xuid);
 }
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",

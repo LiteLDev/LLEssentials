@@ -21,7 +21,7 @@ void loadCNAME() {
 		return true;
 		});
 }
-bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player>& s, int mode) {
+bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player> s, int mode) {
 	auto res = s.results(ori);
 	if (!Command::checkHasTargets(res, outp)) return false;
 	for (auto i : res) {
@@ -78,7 +78,7 @@ bool onCMD_BanList(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP_L
 	outp.success(tr("ban.list.success"));
 	return true;
 }
-bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, string& entry, optional<int>& time) {
+bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, std::string entry, const optional<int>& time) {
 	LOWERSTRING(entry);
 	switch (op.val)
 	{
@@ -119,7 +119,7 @@ bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, 
 	return false;
 }
 
-bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, string& target) {
+bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, std::string target) {
 	string playername = target;
 	std::vector<Player*> plist = Level::getAllPlayers();
 	Player* A = nullptr;
@@ -162,7 +162,7 @@ enum class CNAMEOP :int {
 	remove = 2
 };
 
-bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, string& src, optional<string>& name) {
+bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, std::string src, const optional<string>& name) {
 	std::vector<Player*> pList = Level::getAllPlayers();
 	Player* player = nullptr;
 	for (auto p : pList) {
@@ -176,7 +176,7 @@ bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op,
 			p.error(tr("cname.set.null"));
 			return false;
 		}
-		std::string& str = name.val();
+		std::string str = name.val();
 		for (int i = 0; i < str.size(); ++i) {
 			if (str[i] == '^') str[i] = '\n';
 		}
@@ -212,7 +212,7 @@ bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op,
 	return true;
 }
 
-bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player>& p, string& host, optional<int> port) {
+bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player> p, std::string host, const optional<int> port) {
 	int P = port.set ? port.val() : 19132;
 	auto res = p.results(ori);
 	if (!Command::checkHasTargets(res, outp)) return false;

@@ -38,7 +38,7 @@ void loadCfg() {
 }
 
 void onPlayerLeft(LeftEvent);
-void onPlayerJoin(JoinEvent);
+bool onPlayerJoin(PreJoinEvent);
 void RegisterCommands();
 
 void entry() {

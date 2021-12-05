@@ -32,7 +32,7 @@ enum MONEYOP_pay :int {
 enum MONEYOP_PURGE :int {
 	purge = 1
 };
-bool oncmd_money(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> op, optional<string>& dst) {
+bool oncmd_money(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> op, optional<string> dst) {
 	optional<xuid_t> dstid;
 	if (dst.set && ori.getPermissionsLevel() > 0) {
 		dstid = PlayerDB::getXuid(dst.val());
@@ -56,7 +56,7 @@ bool oncmd_money(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> 
 	return true;
 }
 
-bool oncmd_money_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> op, optional<CommandSelector<Player>>& res) {
+bool oncmd_money_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> op, optional<CommandSelector<Player>> res) {
 	optional<xuid_t> dstid;
 	if (res.set && ori.getPermissionsLevel() > 0) {
 		if (!res.val().results(ori).empty()) {
@@ -82,7 +82,7 @@ bool oncmd_money_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEY
 	return true;
 }
 
-bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_pay> op, string const& dst, int val) {
+bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_pay> op, std::string dst, int val) {
 	optional<xuid_t> dstxuid, myuid;
 	dstxuid = PlayerDB::getXuid(dst);
 	if (!dstxuid.Set()) {
@@ -160,7 +160,7 @@ bool oncmd_money2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_
 	return true;
 }
 
-bool oncmd_money2_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_pay> op, CommandSelector<Player>& res, int val) {
+bool oncmd_money2_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_pay> op, CommandSelector<Player> res, int val) {
 	if (res.results(ori).empty()) {
 		outp.error(tr("money.no.target"));
 		return false;
@@ -244,7 +244,7 @@ bool oncmd_money2_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONE
 	return true;
 }
 
-bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_PURGE> op, optional<int>& difftime) {
+bool oncmd_money3_p(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP_PURGE> op, optional<int> difftime) {
 	if (ori.getPermissionsLevel() < 1) {
 		outp.error(tr("money.no.perm"));
 		return false;

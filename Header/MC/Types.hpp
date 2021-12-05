@@ -86,22 +86,7 @@ public:
     inline Vec3 operator-(const Vec3& b) { return { this->x - b.x, this->y - b.y, this->z - b.z }; }
 };
 
-
-class AABB {
-public:
-    Vec3 p1{};
-    Vec3 p2{};
-
-    AABB(Vec3 _p1, Vec3 _p2) {
-        p1 = _p1;
-        p2 = _p2;
-    }
-
-    inline Vec3 getCenter() {
-        return (p1 + p2) * 0.5;
-    }
-};
-
+#include "AABB.hpp"
 class BoundingBox {
 public:
     BlockPos bpos1;
@@ -179,11 +164,6 @@ public:
     inline operator unsigned long long() { return id; }
 };
 static_assert(std::is_pod_v<ActorRuntimeID>);
-
-class MinecraftEventing {
-public:
-    enum POIBlockInteractionType;
-};
 
 class RelativeFloat {
 public:
@@ -280,6 +260,9 @@ struct FeatureLoading {
     struct ConcreteFeatureHolder;
 };
 
+template <typename T1, typename T2>
+class OperationNode;
+
 struct OperationNodeDetails {
     template <typename T1, typename T2>
     class WorkingData;
@@ -313,6 +296,7 @@ struct GameEventConfig {
 };
 
 class IMinecraftEventing{
+public:
     enum StructureBlockActionType;
 };
 
@@ -327,16 +311,19 @@ enum PruneType;
 //Templates
 template <typename T, typename T2, int unk>
 class TypedServerNetId {
+public:
     T2 netId;
 };
 
 template <typename T, typename T2, int unk>
 class TypedClientNetId {
+public:
     T2 netId;
 };
 
 template <typename T, typename T2, int unk>
 class TypedRuntimeId {
+public:
     T2 netId;
 };
 
@@ -352,13 +339,13 @@ class BlockDataFetchResult;
 template <typename T>
 class CommandSelectorResults;
 
-template <typename T>
+template <typename ...T>
 class Factory;
 
 template <typename T>
 class InheritanceTree;
 
-template <typename T, typename T2, int unk>
+template <typename T, int unk>
 class ItemStackRequestActionCraft;
 
 template <typename T>
@@ -366,6 +353,9 @@ class ItemStateVariant;
 
 template <typename T>
 class LevelChunkGridAreaElement;
+
+template <typename T>
+class GridArea;
 
 template <typename T>
 class OwnerPtrT;
@@ -400,6 +390,9 @@ struct IDType;
 template <typename T>
 class ToFloatFunction;
 
+template <typename T>
+class TypedScreenCapabilities {};
+
 template <typename T, typename T2, typename T3, typename T4 = class UNK>
 class ViewedEntityContextT;
 
@@ -417,6 +410,30 @@ class buffer_span_mut;
 
 template <typename T>
 class optional_ref;
+
+template <int a>
+class DividedPos2d;
+
+//template <typename T>
+//struct GameplayHandlerResult;
+
+template <int a>
+struct GameplayHandlerResult;
+
+template <int a /*enum BiomeTemperatureCategory*/>
+class ItemStackRequestActionDataless;
+
+template <int a /*enum BiomeTemperatureCategory*/>
+class OperationGraphResult;
+
+template <typename T1, typename T2>
+class SmallSet;
+
+template <typename T1>
+struct TaskStartInfoEx;
+
+template <typename T1>
+class WildcardCommandSelector;
 
 //enum
 enum class ContainerType : unsigned char {

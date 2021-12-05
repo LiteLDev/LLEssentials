@@ -23,6 +23,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <queue>
 #include <variant>
 #include <mutex>
 
@@ -35,7 +36,6 @@
 #include "utils/optional.h"
 #include "Utils/GlobalService.h"
 #include "Utils/Json.h"
-
 using std::map;
 using std::string;
 using std::vector;

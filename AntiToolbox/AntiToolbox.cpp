@@ -88,12 +88,12 @@ void customCmdExe(std::string player_name) {
 
 void onPlayerLogin(JoinEvent ev) {
 	if (FakeNameDetection) {
-		std::string real_name = ev.Player->getRealName();
-		std::string player_name = ev.Player->getNameTag();
+		std::string real_name = ev.player->getRealName();
+		std::string player_name = ev.player->getNameTag();
 		if (real_name != player_name) {
 			Logger::Info("Fake Nametag detected: {} RealName: {}", player_name, real_name);
 			if (!EnableCustomCmd) {
-				ev.Player->kick(Kick_message);
+				ev.player->kick(Kick_message);
 			}
 			else {
 				customCmdExe(real_name);

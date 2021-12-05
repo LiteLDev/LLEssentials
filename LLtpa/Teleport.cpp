@@ -177,7 +177,7 @@ void schTask() {
 		}, 10);
 }
 
-bool oncmd_tpa(CommandOrigin const& ori, CommandOutput& outp, MyEnum<direction> dir, CommandSelector<Player>& target) {
+bool oncmd_tpa(CommandOrigin const& ori, CommandOutput& outp, MyEnum<direction> dir, CommandSelector<Player> target) {
 	auto res = target.results(ori);
 	if (!Command::checkHasTargets(res, outp) || (res.count() != 1)) return false;
 	ServerPlayer* t = (ServerPlayer*)*res.begin();
@@ -312,7 +312,7 @@ enum WARPOP :int {
 enum class HOMEOP :int {
 	go = 1, add = 2, ls = 3, del = 4, gui = 5
 };
-bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op, optional<string>& val) {
+bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op, optional<string> val) {
 	switch (op)
 	{
 	case gui: {
@@ -360,7 +360,7 @@ bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op
 
 #pragma region HOME
 
-bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEnum<HOMEOP> op, optional<string>& val) {
+bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEnum<HOMEOP> op, optional<string> val) {
 	switch (op)
 	{
 	case HOMEOP::add: {
@@ -430,10 +430,10 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	}
 	return true;
 }
-bool oncmd_home(CommandOrigin const& ori, CommandOutput& outp, MyEnum<HOMEOP> op, optional<string>& val) {
+bool oncmd_home(CommandOrigin const& ori, CommandOutput& outp, MyEnum<HOMEOP> op, optional<string> val) {
 	return generic_home(ori, outp, getHomeInCache(std::stoull(ori.getPlayer()->getXuid())), op, val);
 }
-bool oncmd_homeAs(CommandOrigin const& ori, CommandOutput& outp, string const& target, MyEnum<HOMEOP> op, optional<string>& val) {
+bool oncmd_homeAs(CommandOrigin const& ori, CommandOutput& outp, std::string target, MyEnum<HOMEOP> op, optional<string> val) {
 	return generic_home(ori, outp, getHomeInCache(std::stoull(PlayerDB::getXuid(target))), op, val);
 }
 #pragma endregion
@@ -524,7 +524,7 @@ void tpa_entry() {
 		});
 	if (BACK_ENABLED) {
 		Event::addEventListener([](PlayerDeathEvent  ev) {
-			ServerPlayer* sp = ev.Player;
+			ServerPlayer* sp = (ServerPlayer*)ev.player;
 			deathPos[sp] = Vec4{ sp };
 			sp->sendTextPacket(tr("tpa.back.use"), TextType::RAW);
 			});
