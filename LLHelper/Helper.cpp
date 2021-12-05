@@ -47,7 +47,7 @@ void entry() {
 	loadCfg();
 	RegisterCommands();
 	Logger::setTitle("Helper");
-	//Logger::setFile("logs/LLHelper.log");
+	Logger::setFile("logs/Helper.log");
 	Logger::Info("Loaded version: ", _ver);
 }
 

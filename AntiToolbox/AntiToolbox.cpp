@@ -104,7 +104,7 @@ void onPlayerLogin(JoinEvent ev) {
 
 void entry() {
 	Logger::setTitle("AntiToolbox");
-	//Logger::setFile("logs/toolbox.log");
+	Logger::setFile("logs/toolbox.log");
 	loadConfig();
 	Event::addEventListener(onPlayerLogin);
 	Logger::Info("Loaded");

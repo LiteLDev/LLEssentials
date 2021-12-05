@@ -139,8 +139,8 @@ bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
 	}
 }
 void DoMakeReq(ServerPlayer _a, ServerPlayer _b, direction dir) {
-	auto a = _a.getRealName();
-	auto b = _b.getRealName();
+	std::string a = _a.getRealName();
+	std::string b = _b.getRealName();
 	CHash A = do_hash(a.c_str()), B = do_hash(b.c_str());
 	tpaSetting[A].lastReq = clock();
 	reqs.emplace_back(dir, a, b, clock());
