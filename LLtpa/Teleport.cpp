@@ -297,7 +297,7 @@ void reinitWARPGUI() {
 void sendWARPGUI(ServerPlayer* wp) {
 	using namespace Form;
 	WARPGUI->sendTo(wp, [wp](int i) { //working
-		wp->runcmdA("warp", "go", i);
+		wp->runcmd("warp go" + std::to_string(i));
 		});
 }
 
