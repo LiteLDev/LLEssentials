@@ -145,11 +145,14 @@ void DoMakeReq(ServerPlayer _a, ServerPlayer _b, direction dir) {
 	reqs.emplace_back(dir, a, b, clock());
 	string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
 	_b.sendText(prompt, TextType::RAW);
-	/*
-	using namespace GUI;
-	shared_ptr<RawFormBinder> x;
+	using namespace Form;
 	char buf[1024];
-	string FM{ buf,(size_t)snprintf(buf,1024,_TR("tpa.form"), prompt.c_str()) };
+	string FM{ buf,(size_t)snprintf(buf,1024,trc("tpa.form"), prompt.c_str()) };
+	CustomForm form(FM);
+	form.sendTo(&_b, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
+
+		});
+	/*
 	sendForm(_b, RawFormBinder{ FM,[](WPlayer wp,RawFormBinder::DType i) {
 		auto [clicked,res,list] = i;
 		if (clicked) {
@@ -254,17 +257,19 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 	}
 	case TPAOP::gui: {
 		ServerPlayer* wp = ori.getPlayer();
-		/*
-		using namespace GUI;
-		auto fm = std::make_shared<FullForm>();
+		using namespace Form;
+		auto fm = std::make_shared<CustomForm>();
 		fm->title = tr("tpa.gui.title");
 		std::string guiLabel = tr("tpa.gui.label");
 		std::string guiDropdown1 = tr("tpa.gui.dropdown1");
 		std::string guiDropdown2 = tr("tpa.gui.dropdown2");
-		fm->addWidget({ GUILabel(guiLabel.c_str()) });
-		fm->addWidget({ GUIDropdown(guiDropdown1.c_str() ,{"to","here"}) });
-		fm->addWidget({ GUIDropdown(guiDropdown2.c_str() ,playerList()) });
-		sendForm(wp, FullFormBinder{ fm,{[](WPlayer P, FullFormBinder::DType data) {
+		fm->append({ Label("", guiLabel.c_str())});
+		fm->append({ Dropdown("", guiDropdown1.c_str() ,{"to","here"})});
+		fm->append({ Dropdown("", guiDropdown2.c_str() ,playerList())});
+		fm->sendTo(wp, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
+
+			});
+		/*sendForm(wp, FullFormBinder{fm,{[](WPlayer P, FullFormBinder::DType data) {
 			if (!data.set) return;
 				auto& [d1,d2] = data.val();
 				Level::runcmdAs(P, "tpa " + d2[0] + " " + QUOTE(d2[1]));
@@ -290,13 +295,10 @@ void reinitWARPGUI() {
 }
 
 void sendWARPGUI(ServerPlayer* wp) {
-	/*
-	using namespace GUI;
-	sendForm(wp, SimpleFormBinder(WARPGUI, [](WPlayer wp, SimpleFormBinder::DType d) {
-		if (d.set) {
-			wp.runcmdA("warp", "go", QUOTE(d.val().second));
-		}
-		}));*/
+	using namespace Form;
+	WARPGUI->sendTo(wp, [wp](int i) { //working
+		wp->runcmdA("warp", "go", i);
+		});
 }
 
 void saveWarps() {
