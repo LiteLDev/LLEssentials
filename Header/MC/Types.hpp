@@ -1,15 +1,20 @@
 #pragma once
+#include "HookAPI.h"
 #include "../Global.h"
+#include "ChunkPos.hpp"
 #include <string>
 
 typedef std::string xuid_t;
 typedef unsigned long long QWORD;
 
 namespace mce {
-    class UUID;
-    class Color;
+class UUID {
+    uint64_t a, b;
+};
+class Color;
 }; // namespace mce
 
+class Vec3;
 class BlockPos {
 public:
     int x, y, z;
@@ -17,39 +22,48 @@ public:
     inline bool operator==(BlockPos const& b) const {
         return x == b.x && y == b.y && z == b.z;
     }
+
     inline bool operator!=(BlockPos const& b) const {
         return x != b.x || y != b.y || z != b.z;
     }
+
     inline BlockPos operator+(BlockPos const& b) const {
         return {x + b.x, y + b.y, z + b.z};
     }
+
     inline BlockPos operator-(BlockPos const& b) const {
         return {x - b.x, y - b.y, z - b.z};
     }
+
     inline std::string toString() {
         return std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z);
     }
+
     inline BlockPos add(int dx) {
         return {x + dx, y, z};
     }
+
     inline BlockPos add(int dx, int dy) {
         return {x + dx, y + dy, z};
     }
+
     inline BlockPos add(int dx, int dy, int dz) {
         return {x + dx, y + dy, z + dz};
     }
+
+    LIAPI Vec3 toVec3();
 };
 
 
-struct MCRESULT {
-    unsigned char filler[4];
-    operator bool() {
-        return filler[0];
-    }
-    bool isSuccess() {
-        return operator bool();
-    }
-};
+//struct MCRESULT {
+//    unsigned char filler[4];
+//    operator bool() {
+//        return filler[0];
+//    }
+//    bool isSuccess() {
+//        return operator bool();
+//    }
+//};
 
 class Vec3 {
 public:
@@ -58,18 +72,8 @@ public:
     inline std::string toString() {
         return std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z);
     }
-    inline BlockPos toBlockPos() {
-        auto px = (int)x;
-        auto py = (int)y;
-        auto pz = (int)z;
-        if (px < 0 && px != x)
-            px = px - 1;
-        if (py < 0 && py != y)
-            py = py - 1;
-        if (pz < 0 && pz != z)
-            pz = pz - 1;
-        return { px, py, pz };
-    }
+
+    LIAPI BlockPos toBlockPos();
 
     inline Vec3 add(float dx, float dy, float dz) {
         return {x + dx, y, z};
@@ -96,20 +100,7 @@ public:
         return { (bpos1.x + bpos2.x) / 2, (bpos1.y + bpos2.y) / 2, (bpos1.z + bpos2.z) / 2 };
     }
 
-    inline AABB toAABB()
-    {
-        Vec3 vec1 = { (float)bpos1.x, (float)bpos1.y, (float)bpos1.z };
-        Vec3 vec2 = { (float)bpos1.x, (float)bpos1.y, (float)bpos1.z };
-        return { vec1, vec2 + Vec3{1, 1, 1} };
-    }
-
-
-};
-
-class ChunkPos {
-public:
-    int x, z;
-
+    LIAPI AABB toAABB();
 };
 
 struct IVec2 {
@@ -140,11 +131,6 @@ public:
     inline operator T() { return id; }
 };
 
-struct Tick {
-    unsigned long long t;
-};
-
-
 struct ActorUniqueID {
     long long id;
 
@@ -154,7 +140,7 @@ public:
     inline long long get() { return id; }
     inline operator long long() { return id; }
 };
-static_assert(!std::is_pod_v<ActorUniqueID>);
+//static_assert(!std::is_pod_v<ActorUniqueID>);
 
 
 class ActorRuntimeID {
@@ -163,48 +149,49 @@ public:
     inline unsigned long long get() { return id; }
     inline operator unsigned long long() { return id; }
 };
-static_assert(std::is_pod_v<ActorRuntimeID>);
+//static_assert(std::is_pod_v<ActorRuntimeID>);
 
-class RelativeFloat {
-public:
-    float value;
-    bool is_relative;
+#include "../MC/RelativeFloat.hpp"
+//class RelativeFloat {
+//public:
+//    float value;
+//    bool is_relative;
+//
+//    RelativeFloat(float value)
+//        : value(value)
+//        , is_relative(true) {
+//    }
+//
+//    inline float getFloat(float center) const {
+//        if (is_relative)
+//            return center + value;
+//        return value;
+//    }
+//};
 
-    RelativeFloat(float value)
-        : value(value)
-        , is_relative(true) {
-    }
-
-    inline float getFloat(float center) const {
-        if (is_relative)
-            return center + value;
-        return value;
-    }
-};
-
-namespace Core {
-
-class PathPart {
-public:
-    std::string data;
-};
-
-class Path : public PathPart {
-public:
-};
-
-template <typename T>
-class PathBuffer {
-    T value;
-    operator T&() noexcept {
-        return value;
-    }
-    operator T const &() const noexcept {
-        return value;
-    }
-};
-
-}; // namespace Core
+//namespace Core {
+//
+//class PathPart {
+//public:
+//    std::string data;
+//};
+//
+//class Path : public PathPart {
+//public:
+//};
+//
+//template <typename T>
+//class PathBuffer {
+//    T value;
+//    operator T&() noexcept {
+//        return value;
+//    }
+//    operator T const &() const noexcept {
+//        return value;
+//    }
+//};
+//
+//}; // namespace Core
 
 namespace gametest{
     class BaseGameTestBatchRunner;
@@ -229,15 +216,13 @@ public:
     class Command;
 };
 
-class Automation {
-public:
-    class AutomationClient;
-};
+#include "../MC/Automation.hpp"
 
 class ClientBlobCache {
 public:
     struct Server {
         class TransferBuilder;
+        class ActiveTransfersManager;
     };
 };
 
@@ -295,10 +280,7 @@ struct GameEventConfig {
     enum GameEvents;
 };
 
-class IMinecraftEventing{
-public:
-    enum StructureBlockActionType;
-};
+#include "IMinecraftEventing.hpp"
 
 struct OperationNodeValues{
     enum Terrain;
@@ -417,16 +399,16 @@ class DividedPos2d;
 //template <typename T>
 //struct GameplayHandlerResult;
 
-template <int a>
+template <typename T>
 struct GameplayHandlerResult;
 
-template <int a /*enum BiomeTemperatureCategory*/>
+template <int T>
 class ItemStackRequestActionDataless;
 
-template <int a /*enum BiomeTemperatureCategory*/>
+template <typename T>
 class OperationGraphResult;
 
-template <typename T1, typename T2>
+template <typename T1>
 class SmallSet;
 
 template <typename T1>
@@ -666,10 +648,10 @@ enum class FaceID : char {
     East = 5,
 };
 
-class CommandVersion {
-public:
-    int Min = 1, Max = 0x7FFFFFFF;
-};
+//class CommandVersion {
+//public:
+//    int Min = 1, Max = 0x7FFFFFFF;
+//};
 
 template <typename T>
 struct InvertableFilter {
@@ -697,18 +679,20 @@ public:
     auto empty() const { return data->empty(); }
 };
 
+#pragma warning(disable:26495)
+
 class FakeDataItem {
 public:
     DataItemType type;
-    uint16_t id;
-    int8_t byte;
-    int16_t shorts;
-    int32_t ints;
-    float floats;
-    std::string strings;
-    BlockPos bpos;
-    Vec3 vec3;
-    int64_t longs;
+    uint16_t id { 0 };
+    int8_t byte { 0 };
+    int16_t shorts { 0 };
+    int32_t ints { 0 };
+    float floats { 0.0 };
+    std::string strings { "" };
+    BlockPos bpos {};
+    Vec3 vec3 {};
+    int64_t longs { 0 };
 
     FakeDataItem(uint16_t a1, DataItemType a3, int8_t a2)
         : id(a1)

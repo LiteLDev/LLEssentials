@@ -148,7 +148,7 @@ void DoMakeReq(ServerPlayer _a, ServerPlayer _b, direction dir) {
 	_b.sendTextPacket(prompt, TextType::RAW);
 	using namespace Form;
 	char buf[1024];
-	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str())};
+	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str()) };
 	CustomForm form(FM);
 	form.sendTo(&_b, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
 
@@ -264,9 +264,9 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 		std::string guiLabel = tr("tpa.gui.label");
 		std::string guiDropdown1 = tr("tpa.gui.dropdown1");
 		std::string guiDropdown2 = tr("tpa.gui.dropdown2");
-		fm->append({ Label("", guiLabel.c_str())});
-		fm->append({ Dropdown("", guiDropdown1.c_str() ,{"to","here"})});
-		fm->append({ Dropdown("", guiDropdown2.c_str() ,playerList())});
+		fm->append({ Label("", guiLabel.c_str()) });
+		fm->append({ Dropdown("", guiDropdown1.c_str() ,{"to","here"}) });
+		fm->append({ Dropdown("", guiDropdown2.c_str() ,playerList()) });
 		fm->sendTo(wp, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
 
 			});

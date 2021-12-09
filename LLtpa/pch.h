@@ -4,7 +4,6 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
-#include <MC/Player.hpp>
 #include <regCommandAPI.h>
 #include <SendPacketAPI.h>
 #include <KVDBAPI.h>
@@ -20,7 +19,6 @@
 #include <filesystem>
 #include <EventAPI.h>
 #include <JsonLoader.h>
-#include <MC/Player.hpp>
 #include <MC/ServerPlayer.hpp>
 #include <MC/Level.hpp>
 #include <ScheduleAPI.h>

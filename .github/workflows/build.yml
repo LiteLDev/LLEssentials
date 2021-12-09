@@ -19,20 +19,24 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1
      
-    - name: Download Lib from server
+    - name: Download Server
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        curl -L -o D:/lib.zip https://github.com/LiteLDev/Resources/raw/main/lib.zip
-        unzip D:/lib.zip -d Lib/
-        rm D:/lib.zip
+        mkdir D:/BDS
+        ServerLink=$(cat 'LINK.txt')
+        curl -L -o D:/BDS/server.zip "$ServerLink"
+        unzip D:/BDS/server.zip -d D:/BDS > /dev/null
       shell: bash
-     
-    - name: Download Libraries
+
+    - name: Build Library
+      working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        curl -L -o D:/plugin-lib.zip https://sqlite.org/2021/sqlite-dll-win64-x64-3340100.zip
-        mkdir D:/lib
-        unzip D:/plugin-lib.zip -d D:/lib
-        rm D:/plugin-lib.zip
-      shell: bash
+        cd Tools
+        LibraryBuilder.exe D:/BDS
+      shell: cmd
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -47,7 +51,6 @@ jobs:
         mkdir D:/out/sdk/lib
         mkdir D:/out/sdk/headers
         mkdir D:/out/plugins
-        mkdir D:/out/plugins/lib
     
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -57,7 +60,6 @@ jobs:
         cp x64/Release/*.pdb D:/out/plugins
         cp headers/LLMoney.h D:/out/sdk/headers
         cp -r plugins/* D:/out/plugins
-        cp D:/lib/*.dll D:/out/plugins/lib
       shell: bash
 
     - name: Upload plugins
