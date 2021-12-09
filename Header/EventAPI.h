@@ -1,6 +1,11 @@
 #pragma once
 #include "Global.h"
+#include "LoggerAPI.h"
+#include "MC/BlockInstance.hpp"
+#include "MC/MCRESULT.hpp"
 #include <functional>
+#include <iterator>
+#include <list>
 #include <string>
 using std::function;
 using std::string;
@@ -10,251 +15,488 @@ class ServerPlayer;
 class Player;
 class Block;
 class Mob;
+struct ActorDefinitionIdentifier;
 class ItemStack;
 class ActorDamageSource;
 class Certificate;
 class CommandRegistry;
 class MobEffectInstance;
+class Container;
+class WitherBoss;
+class ArmStand;
+class Objective;
+struct ScoreboardId;
 
-class PreJoinEvent {
+namespace Event {
+///////////////////////////// Impl /////////////////////////////
+
+constexpr bool Ok = true;
+constexpr bool Cancel = false;
+
+template <typename ListenersContainer>
+class EventListener {
+private:
+    using Iterator = typename ListenersContainer::const_iterator;
+    ListenersContainer* listeners;
+    Iterator _this;
+    bool deleted = false;
+
 public:
-    ServerPlayer* player;
-    string ip;
-    string xuid;
+    EventListener(ListenersContainer* listeners, Iterator _this)
+        : listeners(listeners)
+        , _this(_this) {
+    }
+
+    void remove() {
+        if (!deleted) {
+            listeners->erase(_this);
+            deleted = true;
+        }
+    }
 };
 
-class JoinEvent {
+template <typename EVENT>
+class EventTemplate {
 public:
-    ServerPlayer* player;
+    using Callback = std::function<bool(const EVENT&)>;
+    using ListenersContainer = std::list<Callback>;
+    using Listener = EventListener<ListenersContainer>;
+
+protected:
+    LIAPI static ListenersContainer listeners;
+
+public:
+    static Listener subscribe(Callback callback) {
+        listeners.emplace_back(callback);
+        return Listener(&listeners, --listeners.end());
+    }
+
+    static void unsubscribe(const Listener& listener) {
+        listener.remove();
+    }
+
+    static bool hasListener() {
+        return !listeners.empty();
+    }
+
+    bool call() {
+        bool passToBDS = true;
+        try {
+            for (auto& callback : listeners) {
+                if (!callback(*(EVENT*)this))
+                    passToBDS = false;
+            }
+            return passToBDS;
+        } catch (const seh_exception& e) {
+            Logger::Error("Uncaught SEH Exception in Event({})!", typeid(EVENT).name());
+        } catch (const std::exception& e) {
+            Logger::Error("Uncaught Exception in Event({})!", typeid(EVENT).name());
+        }
+        return passToBDS;
+    }
 };
 
-class LeftEvent {
+
+///////////////////////////// Player Events /////////////////////////////
+
+class PlayerPreJoinEvent : public EventTemplate<PlayerPreJoinEvent> {
 public:
-    ServerPlayer* player;
-    string xuid;
+    ServerPlayer* mPlayer;
+    string mIP;
+    string mXUID;
 };
 
-class PlayerRespawnEvent {
+class PlayerJoinEvent : public EventTemplate<PlayerJoinEvent> {
 public:
-    ServerPlayer* player;
+    ServerPlayer* mPlayer;
 };
 
-class ChatEvent {
+class PlayerLeftEvent : public EventTemplate<PlayerLeftEvent> {
 public:
-    Player* player;
-    string msg;
+    ServerPlayer* mPlayer;
+    string mXUID;
 };
 
-class ChangeDimEvent {
+class PlayerRespawnEvent : public EventTemplate<PlayerRespawnEvent> {
 public:
-    Player* player;
+    ServerPlayer* mPlayer;
 };
 
-class PlayerJumpEvent {
+class PlayerUseItemEvent : public EventTemplate<PlayerUseItemEvent> {
 public:
-    Player* player;
+    ServerPlayer* mPlayer;
+    ItemStack* mItemStack;
 };
 
-class PlayerSneakEvent {
+class PlayerUseItemOnEvent : public EventTemplate<PlayerUseItemOnEvent> {
 public:
-    Player* player;
-    bool isSneaking;
+    ServerPlayer* mPlayer;
+    ItemStack* mItemStack;
+    BlockInstance mBlockInstance;
+    unsigned char mFace;
 };
 
-class PlayerAttackEvent {
+class PlayerChatEvent : public EventTemplate<PlayerChatEvent> {
 public:
-    Player* attacker;
-    Actor* victim;
-    int damage;
+    Player* mPlayer;
+    string mMessage;
 };
 
-class PlayerTakeItemEvent {
+class PlayerChangeDimEvent : public EventTemplate<PlayerChangeDimEvent> {
 public:
-    Player* player;
-    Actor* itemEntity;
-    ItemStack* itemStack;
+    Player* mPlayer;
 };
 
-class PlayerDropItemEvent {
+class PlayerJumpEvent : public EventTemplate<PlayerJumpEvent> {
 public:
-    Player* player;
-    ItemStack* itemStack;
+    Player* mPlayer;
 };
 
-class PlayerEatEvent {
+class PlayerSneakEvent : public EventTemplate<PlayerSneakEvent> {
 public:
-    Player* player;
-    ItemStack* eating;
+    Player* mPlayer;
+    bool mIsSneaking;
 };
 
-class PlayerConsumeTotemEvent {
+class PlayerAttackEvent : public EventTemplate<PlayerAttackEvent> {
 public:
-    Player* player;
+    Player* mPlayer;
+    Actor* mTarget;
+    int mAttackDamage;
 };
 
-class PlayerCmdEvent {
+class PlayerDeathEvent : public EventTemplate<PlayerDeathEvent> {
 public:
-    Player* player;
-    string cmd;
-    MCRESULT mc_result;
+    ServerPlayer* mPlayer;
 };
 
-class PlayerEffectChangedEvent {
+class PlayerTakeItemEvent : public EventTemplate<PlayerTakeItemEvent> {
 public:
-    enum class EventType { Add, Remove, Update };
-
-    Player* player;
-    EventType type;
-    MobEffectInstance* effect;
+    Player* mPlayer;
+    Actor* mItemEntity;
+    ItemStack* mItemStack;
 };
 
-class PlayerStartDestroyBlockEvent {
+class PlayerDropItemEvent : public EventTemplate<PlayerDropItemEvent> {
 public:
-    Player* player;
-    BlockPos blockPos;
+    Player* mPlayer;
+    ItemStack* mItemStack;
 };
 
-class CmdBlockExecuteEvent {
+class PlayerEatEvent : public EventTemplate<PlayerEatEvent> {
 public:
-    string cmd;
-    BlockPos blockPos;
+    Player* mPlayer;
+    ItemStack* mFoodItem;
 };
 
-class ServerStartedEvent {};
-
-class PostInitEvent {};
-
-class PlayerDeathEvent {
+class PlayerConsumeTotemEvent : public EventTemplate<PlayerConsumeTotemEvent> {
 public:
-    ServerPlayer* player;
+    Player* mPlayer;
 };
 
-class RegCmdEvent {
+class PlayerCmdEvent : public EventTemplate<PlayerCmdEvent> {
 public:
-    CommandRegistry* CMDRg;
+    Player* mPlayer;
+    string mCommand;
+    MCRESULT* mResult;
 };
 
-class PlayerDestroyEvent {
+class PlayerEffectChangedEvent : public EventTemplate<PlayerEffectChangedEvent> {
 public:
-    Player* player;
-    BlockPos blockPos;
-    Block* block;
+    enum class EventType { Add,
+                           Remove,
+                           Update };
+    Player* mPlayer;
+    EventType mEventType;
+    MobEffectInstance* mEffect;
 };
 
-class PlayerUseItemOnEvent {
+class PlayerStartDestroyBlockEvent : public EventTemplate<PlayerStartDestroyBlockEvent> {
 public:
-    ServerPlayer* player;
-    ItemStack* itemStack;
-    BlockPos blockPos;
-    unsigned char side;
+    Player* mPlayer;
+    BlockInstance mBlockInstance;
 };
 
-class MobHurtedEvent {
+class PlayerDestroyBlockEvent : public EventTemplate<PlayerDestroyBlockEvent> {
 public:
-    Mob* mob;
-    ActorDamageSource* actorDamageSource;
-    int damage;
+    Player* mPlayer;
+    BlockInstance mBlockInstance;
 };
 
-class PlayerUseItemEvent {
+class PlayerPlaceBlockEvent : public EventTemplate<PlayerPlaceBlockEvent> {
 public:
-    ServerPlayer* player;
-    ItemStack* itemStack;
+    Player* mPlayer;
+    BlockInstance mBlockInstance;
 };
 
-class MobDieEvent {
+class PlayerOpenContainerEvent : public EventTemplate<PlayerOpenContainerEvent> {
 public:
-    Mob* mob;
-    Actor* damageSource;
+    Player* mPlayer;
+    BlockInstance mBlockInstance;
+    Container* mContainer;
 };
 
-class ItemUseOnActorEvent {
+class PlayerCloseContainerEvent : public EventTemplate<PlayerCloseContainerEvent> {
 public:
-    ActorRuntimeID actorRuntimeID;
-    int interactiveMode;
+    Player* mPlayer;
+    BlockInstance mBlockInstance;
+    Container* mContainer;
 };
 
-namespace Event
-{
-    using PostInitEventCallback = function<void(PostInitEvent)>;
-    LIAPI void addEventListener(function<void(PostInitEvent)> callback);
+class PlayerInventoryChangeEvent : public EventTemplate<PlayerInventoryChangeEvent> {
+public:
+    Player* mPlayer;
+    int mSlot;
+    ItemStack* mPreviousItemStack;
+    ItemStack* mNewItemStack;
+};
 
-    using PreJoinEventCallback = function<bool(PreJoinEvent)>;
-    LIAPI void addEventListener(function<bool(PreJoinEvent)> callback);
+class PlayerMoveEvent : public EventTemplate<PlayerMoveEvent> {
+public:
+    Player* mPlayer;
+    Vec3 mPos;
+};
 
-    using JoinEventCallback = function<void(JoinEvent)>;
-    LIAPI void addEventListener(function<void(JoinEvent)> callback);
+class PlayerSprintEvent : public EventTemplate<PlayerSprintEvent> {
+public:
+    Player* mPlayer;
+    bool mIsSprinting;
+};
 
-    using LeftEventCallback = function<void(LeftEvent)>;
-    LIAPI void addEventListener(function<void(LeftEvent)> callback);
+class PlayerSetArmorEvent : public EventTemplate<PlayerSetArmorEvent> {
+public:
+    Player* mPlayer;
+    int mSlot;
+    ItemStack* mArmorItem;
+};
 
-    using PlayerRespawnEventCallback = function<void(PlayerRespawnEvent)>;
-    LIAPI void addEventListener(function<void(PlayerRespawnEvent)> callback);
+class PlayerUseRespawnAnchorEvent : public EventTemplate<PlayerUseRespawnAnchorEvent> {
+public:
+    Player* mPlayer;
+    BlockInstance mBlockInstance;
+};
 
-    using PlayerJumpEventCallback = function<void(PlayerJumpEvent)>;
-    LIAPI void addEventListener(function<void(PlayerJumpEvent)> callback);
+class PlayerOpenContainerScreenEvent : public EventTemplate<PlayerOpenContainerScreenEvent> {
+public:
+    Player* mPlayer;
+};
 
-    using PlayerSneakEventCallback = function<void(PlayerSneakEvent)>;
-    LIAPI void addEventListener(function<void(PlayerSneakEvent)> callback);
+class PlayerUseFrameBlockEvent : public EventTemplate<PlayerUseFrameBlockEvent> {
+public:
+    enum class Type { Use,
+                      Attack };
+    Type mType;
+    Player* mPlayer;
+    BlockInstance mBlockInstance;
+};
 
-    using PlayerAttackEventCallback = function<bool(PlayerAttackEvent)>;
-    LIAPI void addEventListener(function<bool(PlayerAttackEvent)> callback);
+class PlayerScoreChangedEvent : public EventTemplate<PlayerScoreChangedEvent> {
+public:
+    Player* mPlayer;
+    int mScore;
+    Objective* mObjective;
+    ScoreboardId* mScoreboardId;
+};
 
-    using PlayerTakeItemEventCallback = function<bool(PlayerTakeItemEvent)>;
-    LIAPI void addEventListener(function<bool(PlayerTakeItemEvent)> callback);
 
-    using PlayerDropItemEventCallback = function<bool(PlayerDropItemEvent)>;
-    LIAPI void addEventListener(function<bool(PlayerDropItemEvent)> callback);
+///////////////////////////// Block Events /////////////////////////////
 
-    using PlayerEatEventCallback = function<bool(PlayerEatEvent)>;
-    LIAPI void addEventListener(function<bool(PlayerEatEvent)> callback);
+class BlockInteractedEvent : public EventTemplate<BlockInteractedEvent> {
+public:
+    BlockInstance mBlockInstance;
+    Player* mPlayer;
+};
 
-    using PlayerConsumeTotemEventCallback = function<bool(PlayerConsumeTotemEvent)>;
-    LIAPI void addEventListener(function<bool(PlayerConsumeTotemEvent)> callback);
+class BlockChangedEvent : public EventTemplate<BlockChangedEvent> {
+public:
+    BlockInstance mPerviousBlockInstance;
+    BlockInstance mNewBlockInstance;
+};
 
-    using PlayerEffectChangedEventCallback = function<bool(PlayerEffectChangedEvent)>;
-    LIAPI void addEventListener(function<bool(PlayerEffectChangedEvent)> callback);
+class RespawnAnchorExplodeEvent : public EventTemplate<RespawnAnchorExplodeEvent> {
+public:
+    BlockInstance mBlockInstance;
+    Player* mPlayer;
+};
 
-    using PlayerStartDestroyBlockEventCallback = function<bool(PlayerStartDestroyBlockEvent)>;
-    LIAPI void addEventListener(function<bool(PlayerStartDestroyBlockEvent)> callback);
+class BlockExplodedEvent : public EventTemplate<BlockExplodedEvent> {
+public:
+    BlockInstance mBlockInstance;
+    Actor* mExplodeSource;
+};
 
-    using ChatEventCallback = function<bool(ChatEvent)>;
-    LIAPI void addEventListener(function<bool(ChatEvent)> callback);
+class FireSpreadEvent : public EventTemplate<FireSpreadEvent> {
+public:
+    BlockInstance mBlockInstance;
+};
 
-    using ChangeDimEventCallback = function<void(ChangeDimEvent)>;
-    LIAPI void addEventListener(function<void(ChangeDimEvent)> callback);
+class ContainerChangeEvent : public EventTemplate<ContainerChangeEvent> {
+public:
+    Player* mPlayer;
+    BlockInstance mBlockInstance;
+    Container* mContainer;
+    int mSlot;
+    ItemStack* mPerviousItemStack;
+    ItemStack* mNewItemStack;
+};
 
-    using ServerStartedEventCallback = function<void(ServerStartedEvent)>;
-    LIAPI void addEventListener(function<void(ServerStartedEvent)> callback);
+class ProjectileHitBlockEvent : public EventTemplate<ProjectileHitBlockEvent> {
+public:
+    BlockInstance mBlockInstance;
+    Actor* mSource;
+};
 
-    using PlayerCmdCallback = function<bool(PlayerCmdEvent)>;
-    LIAPI void addEventListener(function<bool(PlayerCmdEvent)> callback);
+class RedStoneUpdateEvent : public EventTemplate<RedStoneUpdateEvent> {
+public:
+    BlockInstance mBlockInstance;
+    int mRedStonePower;
+    bool mIsActivated;
+};
 
-    using CmdBlockExecuteEventCallback = function<bool(CmdBlockExecuteEvent)>;
-    LIAPI void addEventListener(function<bool(CmdBlockExecuteEvent)> callback);
+class HopperBlockSearchItemEvent : public EventTemplate<HopperBlockSearchItemEvent> {
+public:
+    BlockInstance mBlockInstance;
+};
 
-    using RegCmdEventCallback = function<void(RegCmdEvent)>;
-    LIAPI void addEventListener(function<void(RegCmdEvent)> callback);
+class MinecartHopperSearchItemEvent : public EventTemplate<MinecartHopperSearchItemEvent> {
+public:
+    Vec3 mPos;
+    int mDimensionId;
+};
 
-    using PlayerDeathEventCallback = function<void(PlayerDeathEvent)>;
-    LIAPI void addEventListener(function<void(PlayerDeathEvent)> callback);
+class HopperPushOutEvent : public EventTemplate<HopperPushOutEvent> {
+public:
+    Vec3 mPos;
+    int mDimensionId;
+};
 
-    using PlayerDestroyEventCallback = function<void(PlayerDestroyEvent)>;
-    LIAPI void addEventListener(function<void(PlayerDestroyEvent)> callback);
+class PistonPushEvent : public EventTemplate<PistonPushEvent> {
+public:
+    BlockInstance mPistonBlockInstance;
+    BlockInstance mTargetBlockInstance;
+};
 
-    using PlayerUseItemOnEventCallback = function<void(PlayerUseItemOnEvent)>;
-    LIAPI void addEventListener(function<void(PlayerUseItemOnEvent)> callback);
+class FarmLandDecayEvent : public EventTemplate<FarmLandDecayEvent> {
+public:
+    BlockInstance mBlockInstance;
+    Actor* mActor;
+};
 
-    using MobHurtedEventCallback = function<void(MobHurtedEvent)>;
-    LIAPI void addEventListener(function<void(MobHurtedEvent)> callback);
+class LiquidFlowEvent : public EventTemplate<LiquidFlowEvent> {
+public:
+    BlockInstance mBlockInstance;
+    BlockPos mTarget;
+    int mDimensionId;
+};
 
-    using PlayerUseItemEventCallback = function<void(PlayerUseItemEvent)>;
-    LIAPI void addEventListener(function<void(PlayerUseItemEvent)> callback);
+class CmdBlockExecuteEvent : public EventTemplate<CmdBlockExecuteEvent> {
+public:
+    string mCommand;
+    BlockInstance mBlockInstance;
+};
 
-    using MobDieEventCallback = function<void(MobDieEvent)>;
-    LIAPI void addEventListener(function<void(MobDieEvent)> callback);
+class BlockExplodeEvent : public EventTemplate<BlockExplodeEvent> {
+public:
+    BlockInstance mBlockInstance;
+};
 
-    using ItemUseOnActorEventCallback = function<void(ItemUseOnActorEvent)>;
-    LIAPI void addEventListener(function<void(ItemUseOnActorEvent)> callback);
 
+///////////////////////////// Entity Events /////////////////////////////
+
+class EntityExplodeEvent : public EventTemplate<EntityExplodeEvent> {
+public:
+    Actor* mActor;
+    Vec3 mPos;
+    int mDimensionId;
+    float mRadius;
+    float mRange;
+    bool mIsDestroyed;
+    bool mIsOnFire;
+};
+
+class MobHurtEvent : public EventTemplate<MobHurtEvent> {
+public:
+    Mob* mMob;
+    ActorDamageSource* mDamageSource;
+    int mDamage;
+};
+
+class MobDieEvent : public EventTemplate<MobDieEvent> {
+public:
+    Mob* mMob;
+    Actor* mSource;
+};
+
+class ProjectileHitEntityEvent : public EventTemplate<ProjectileHitEntityEvent> {
+public:
+    Actor* mTarget;
+    Actor* mSource;
+};
+
+class WitherBossDestroyEvent : public EventTemplate<WitherBossDestroyEvent> {
+public:
+    WitherBoss* mWitherBoss;
+    AABB mDestroyRange = {{}, {}};
+};
+
+class EntityRideEvent : public EventTemplate<EntityRideEvent> {
+public:
+    Actor* mRider;
+    Actor* mVehicle;
+};
+
+class EntityStepOnPressurePlateEvent : public EventTemplate<EntityStepOnPressurePlateEvent> {
+public:
+    Actor* mActor;
+    BlockInstance mBlockInstance;
+};
+
+class NpcCmdEvent : public EventTemplate<NpcCmdEvent> {
+public:
+    Actor* mNpc;
+    std::string mCommand;
+    Player* mPlayer;
+};
+
+class ProjectileSpawnEvent : public EventTemplate<ProjectileSpawnEvent> {
+public:
+    Actor* mShooter;
+    ActorDefinitionIdentifier* mIdentifier;
+    std::string mType;
+};
+
+
+class ArmorStandChangeEvent : public EventTemplate<ArmorStandChangeEvent> {
+public:
+    ArmStand* mArmorStand;
+    Player* mPlayer;
+    int mSlot;
+};
+
+class ItemUseOnActorEvent : public EventTemplate<ItemUseOnActorEvent> {
+public:
+    ActorRuntimeID mTarget;
+    int mInteractiveMode;
+};
+
+///////////////////////////// Other Events /////////////////////////////
+
+class PostInitEvent : public EventTemplate<PostInitEvent> {};
+
+class ServerStartedEvent : public EventTemplate<ServerStartedEvent> {};
+
+class ConsoleCmdEvent : public EventTemplate<ConsoleCmdEvent> {
+public:
+    std::string mCommand;
+};
+
+class RegCmdEvent : public EventTemplate<RegCmdEvent> {
+public:
+    CommandRegistry* mCommandRegistry;
+};
+
+class ConsoleOutputEvent : public EventTemplate<ConsoleOutputEvent> {
+public:
+    std::string mOutput;
+};
 }; // namespace Event

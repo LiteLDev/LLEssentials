@@ -1,8 +1,11 @@
 #pragma once
-#include "Global.h"
 #include <string>
 #include <unordered_map>
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif // ! WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include "Global.h"
 #include "Utils/WinHelper.h"
 #include "LoggerAPI.h"
 
@@ -39,14 +42,14 @@ namespace LL {
 
         LIAPI bool operator<(Version b);
         LIAPI bool operator==(Version b);
-        LIAPI bool operator<=(Version b);
-        LIAPI bool operator>(Version b);
-        LIAPI bool operator>=(Version b);
 
         LIAPI std::string toString(bool needStatus = false);
         LIAPI static Version parse(const std::string& str);
     };
 }
+inline bool operator<=(LL::Version a, LL::Version b) { return a < b || a == b; }
+inline bool operator>(LL::Version a, LL::Version b) { return b < a; }
+inline bool operator>=(LL::Version a, LL::Version b) { return b < a || b == a; }
 
 // Loader APIs
 namespace LL
@@ -57,6 +60,8 @@ namespace LL
     LIAPI Version getLoaderVersion();
     // @return 是否为调试模式
     LIAPI bool isDebugMode();
+
+    LIAPI std::string getDataPath(const std::string& myPluginName);
 
     // @param name 插件名
     // @param introduction 插件介绍
@@ -84,24 +89,3 @@ namespace LL
 
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//For compatibility
-LIAPI std::string GetDataPath(const std::string& myname);
