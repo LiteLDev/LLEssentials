@@ -17,6 +17,7 @@ struct cleanSTMT {
 		get.clearBindings();
 	}
 };
+
 bool initDB() {
 	try {
 		Logger::setTitle("Money");
@@ -164,7 +165,7 @@ LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money)
 		return false;
 
 	isRealTrans = false;
-	bool res = LLMoneyTrans(xuid, 0, money, "reduce " + std::to_string(money));
+	bool res = LLMoneyTrans(xuid, "", money, "reduce " + std::to_string(money));
 	if (res)
 		CallAfterEvent(LLMoneyEvent::Reduce, "", xuid, money);
 	return res;
