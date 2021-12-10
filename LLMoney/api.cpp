@@ -18,6 +18,7 @@ struct cleanSTMT {
 	}
 };
 
+void ConvertData();
 bool initDB() {
 	try {
 		Logger::setTitle("Money");
@@ -44,9 +45,10 @@ bool initDB() {
 		); ");
 	}
 	catch (std::exception const& e) {
-		Logger::Error("DB err %s\n", e.what());
+		Logger::Error("DB err %s", e.what());
 		return false;
 	}
+	ConvertData();
 	return true;
 }
 
@@ -226,5 +228,34 @@ LLMONEY_API void LLMoneyClearHist(int difftime) {
 	}
 	catch (std::exception&) {
 
+	}
+}
+
+void ConvertData() {
+	if (std::filesystem::exists("plugins\\LLMoney\\money.db")) {
+		Logger::Info("Old money data detected, try to convert old data to new data");
+		try {
+			std::unique_ptr<SQLite::Database> db2 = std::make_unique<SQLite::Database>("plugins\\LLMoney\\money.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
+			SQLite::Statement get{ *db2, "select * from money" };
+			SQLite::Statement set{ *db,"insert into money values (?,?)" };
+			while (get.executeStep()) {
+				const void* bolb = get.getColumn(0).getBlob();
+				// not working correctly
+				unsigned long long xuid =(unsigned long long)&bolb;
+				long long money = get.getColumn(1).getInt64();
+				Logger::Info("{} {}", xuid, money);
+				set.bindNoCopy(1, std::to_string(xuid));
+				set.bind(2, money);
+				set.exec();
+				set.reset();
+				set.clearBindings();
+			}
+			get.reset();
+		}
+		catch (std::exception& e) {
+			Logger::Info("{}", e.what());
+		}
+		std::filesystem::rename("plugins\\LLMoney\\money.db", "plugins\\LLMoney\\money_old.db");
+		Logger::Info("Conversion completed");
 	}
 }
