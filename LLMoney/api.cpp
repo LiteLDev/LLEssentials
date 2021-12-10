@@ -20,7 +20,7 @@ struct cleanSTMT {
 bool initDB() {
 	try {
 		Logger::setTitle("Money");
-		db = std::make_unique<SQLite::Database>("plugins\\LLMoney\\money.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
+		db = std::make_unique<SQLite::Database>("plugins\\LLMoney\\economy.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
 		db->exec("PRAGMA journal_mode = MEMORY");
 		db->exec("PRAGMA synchronous = NORMAL");
 		db->exec("CREATE TABLE IF NOT EXISTS money ( \
@@ -52,7 +52,7 @@ bool initDB() {
 LLMONEY_API money_t LLMoneyGet(xuid_t xuid) {
 	try {
 		static SQLite::Statement get{ *db,"select Money from money where XUID=?" };
-		get.bindNoCopy(1, &xuid, sizeof(xuid));
+		get.bindNoCopy(1, xuid);
 		money_t rv = DEF_MONEY;
 		bool fg = false;
 		while (get.executeStep()) {
@@ -63,7 +63,7 @@ LLMONEY_API money_t LLMoneyGet(xuid_t xuid) {
 		get.clearBindings();
 		if (!fg) {
 			static SQLite::Statement set{ *db,"insert into money values (?,?)" };
-			set.bindNoCopy(1, &xuid, sizeof xuid);
+			set.bindNoCopy(1, xuid);
 			set.bind(2, DEF_MONEY);
 			set.exec();
 			set.reset();
@@ -101,7 +101,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 			fmoney -= val;
 			{
 
-				set.bindNoCopy(2, &from, sizeof from);
+				set.bindNoCopy(2, from);
 				set.bind(1, fmoney);
 				set.exec();
 				set.reset();
@@ -116,7 +116,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 				return false;
 			}
 			{
-				set.bindNoCopy(2, &to, sizeof to);
+				set.bindNoCopy(2, to);
 				set.bind(1, tmoney);
 				set.exec();
 				set.reset();
@@ -125,8 +125,8 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 		}
 		{
 			static SQLite::Statement addTrans{ *db,"insert into mtrans (tFrom,tTo,Money,Note) values (?,?,?,?)" };
-			addTrans.bindNoCopy(1, &from, sizeof from);
-			addTrans.bindNoCopy(2, &to, sizeof to);
+			addTrans.bindNoCopy(1, from);
+			addTrans.bindNoCopy(2, to);
 			addTrans.bind(3, val);
 			addTrans.bindNoCopy(4, note);
 			addTrans.exec();
@@ -152,9 +152,9 @@ LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money)
 		return false;
 
 	isRealTrans = false;
-	bool res = LLMoneyTrans(0, xuid, money, "add " + std::to_string(money));
+	bool res = LLMoneyTrans("", xuid, money, "add " + std::to_string(money));
 	if(res)
-		CallAfterEvent(LLMoneyEvent::Add, 0, xuid, money);
+		CallAfterEvent(LLMoneyEvent::Add, "", xuid, money);
 	return res;
 }
 
@@ -166,7 +166,7 @@ LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money)
 	isRealTrans = false;
 	bool res = LLMoneyTrans(xuid, 0, money, "reduce " + std::to_string(money));
 	if (res)
-		CallAfterEvent(LLMoneyEvent::Reduce, 0, xuid, money);
+		CallAfterEvent(LLMoneyEvent::Reduce, "", xuid, money);
 	return res;
 }
 
@@ -201,8 +201,8 @@ LLMONEY_API string LLMoneyGetHist(xuid_t xuid, int timediff)
 		static SQLite::Statement get{ *db,"select tFrom,tTo,Money,datetime(Time,'unixepoch', 'localtime'),Note from mtrans where strftime('%s','now')-time<? and (tFrom=? OR tTo=?) ORDER BY Time DESC" };
 		string rv;
 		get.bind(1, timediff);
-		get.bindNoCopy(2, &xuid, sizeof xuid);
-		get.bindNoCopy(3, &xuid, sizeof xuid);
+		get.bindNoCopy(2, xuid);
+		get.bindNoCopy(3, xuid);
 		while (get.executeStep()) {
 			auto from = PlayerDB::fromXuid(*(xuid_t*)get.getColumn(0).getBlob());
 			auto to = PlayerDB::fromXuid(*(xuid_t*)get.getColumn(1).getBlob());
