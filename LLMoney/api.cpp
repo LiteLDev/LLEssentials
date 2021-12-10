@@ -148,7 +148,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 
 LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money)
 {
-	if (!CallBeforeEvent(LLMoneyEvent::Add, 0, xuid, money))
+	if (!CallBeforeEvent(LLMoneyEvent::Add, "", xuid, money))
 		return false;
 
 	isRealTrans = false;
@@ -160,7 +160,7 @@ LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money)
 
 LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money)
 {
-	if (!CallBeforeEvent(LLMoneyEvent::Reduce, 0, xuid, money))
+	if (!CallBeforeEvent(LLMoneyEvent::Reduce, "", xuid, money))
 		return false;
 
 	isRealTrans = false;
@@ -172,7 +172,7 @@ LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money)
 
 LLMONEY_API bool LLMoneySet(xuid_t xuid, money_t money)
 {
-	if (!CallBeforeEvent(LLMoneyEvent::Set, 0, xuid, money))
+	if (!CallBeforeEvent(LLMoneyEvent::Set, "", xuid, money))
 		return false;
 	money_t now = LLMoneyGet(xuid), diff;
 	xuid_t from, to;
@@ -190,7 +190,7 @@ LLMONEY_API bool LLMoneySet(xuid_t xuid, money_t money)
 	isRealTrans = false;
 	bool res = LLMoneyTrans(from, to, diff, "set to " + std::to_string(money));
 	if (res)
-		CallAfterEvent(LLMoneyEvent::Reduce, 0, xuid, money);
+		CallAfterEvent(LLMoneyEvent::Reduce, "", xuid, money);
 	return res;
 }
 

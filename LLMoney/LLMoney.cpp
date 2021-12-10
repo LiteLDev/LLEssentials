@@ -23,7 +23,7 @@ extern money_t DEF_MONEY;
 
 /*
 bool oncmd_money_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONEYOP> op, optional<CommandSelector<Player>> res) {
-	optional<xuid_t> dstid;
+	optional<std::string> dstid;
 	if (res.set && ori.getPermissionsLevel() > 0) {
 		if (!res.val().results(ori).empty()) {
 			dstid = PlayerDB::getXuid(res.val().results(ori).begin().operator*()->getRealName());
@@ -56,7 +56,7 @@ bool oncmd_money2_sel(CommandOrigin const& ori, CommandOutput& outp, MyEnum<MONE
 		return false;
 	}
 	for (auto resu : res.results(ori)) {
-		optional<xuid_t> dstxuid, myuid;
+		optional<std::string> dstxuid, myuid;
 		dstxuid = PlayerDB::getXuid(resu->getRealName());
 		if (!dstxuid.Set()) {
 			outp.error(tr("money.no.target"));
@@ -153,8 +153,8 @@ class MoneyCommand : public Command {
 	int difftime;
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
-		optional<xuid_t> dstid;
-		optional<xuid_t> dstxuid, myuid;
+		std::string dstid;
+		std::string dstxuid, myuid;
 		switch (op)
 		{
 		case query:
@@ -165,7 +165,7 @@ public:
 			else {
 				dstid = PlayerDB::getXuid(ori.getName());
 			}
-			if (!dstid.Set()) {
+			if (dstid == "") {
 				outp.error(tr("money.no.target"));
 				return;
 			}
@@ -175,7 +175,7 @@ public:
 		case add:
 		case reduce:
 			dstxuid = PlayerDB::getXuid(dst);
-			if (!dstxuid.Set()) {
+			if (dstxuid == "") {
 				outp.error(tr("money.no.target"));
 				return;
 			}
@@ -190,10 +190,10 @@ public:
 		switch (op)
 		{
 		case query:
-			outp.addMessage("Money: " + std::to_string(LLMoneyGet(dstid.val())));
+			outp.addMessage("Money: " + std::to_string(LLMoneyGet(dstid)));
 			break;
 		case hist:
-			outp.addMessage(LLMoneyGetHist(dstid.val()));
+			outp.addMessage(LLMoneyGetHist(dstid));
 			break;
 		case pay:
 		{
@@ -201,13 +201,13 @@ public:
 				outp.error(tr("money.invalid.arg"));
 			}
 			myuid = PlayerDB::getXuid(ori.getName());
-			if (!myuid.Set()) {
+			if (myuid == "") {
 				outp.error(tr("money.no.target"));
 			}
-			if (LLMoneyTrans(myuid.val(), dstxuid.val(), moneynum, "money pay")) {
+			if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
 				money_t fee = (money_t)(moneynum * MoneyFee);
 				if (fee)
-					LLMoneyTrans(dstxuid.val(), 0, fee, "money pay fee");
+					LLMoneyTrans(dstxuid, 0, fee, "money pay fee");
 				outp.success("pay success");
 			}
 			else {
@@ -219,7 +219,7 @@ public:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
 			}
-			if (LLMoneySet(dstxuid.val(), moneynum)) {
+			if (LLMoneySet(dstxuid, moneynum)) {
 				outp.success("set success");
 			}
 			else {
@@ -230,7 +230,7 @@ public:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
 			}
-			if (LLMoneyAdd(dstxuid.val(), moneynum)) {
+			if (LLMoneyAdd(dstxuid, moneynum)) {
 				outp.success("add success");
 			}
 			else {
@@ -241,7 +241,7 @@ public:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
 			}
-			if (LLMoneyReduce(dstxuid.val(), moneynum)) {
+			if (LLMoneyReduce(dstxuid, moneynum)) {
 			}
 			else {
 				outp.error(tr("money.invalid.arg"));

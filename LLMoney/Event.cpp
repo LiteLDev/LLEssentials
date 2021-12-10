@@ -6,7 +6,7 @@ using namespace std;
 
 vector<LLMoneyCallback> beforeCallbacks, afterCallbacks;
 
-bool CallBeforeEvent(LLMoneyEvent event, xuid_t from, xuid_t to, money_t value)
+bool CallBeforeEvent(LLMoneyEvent event, std::string from, std::string to, money_t value)
 {
 	bool isCancelled = false;
 	for (auto& callback : beforeCallbacks)
@@ -20,7 +20,7 @@ bool CallBeforeEvent(LLMoneyEvent event, xuid_t from, xuid_t to, money_t value)
 	return !isCancelled;
 }
 
-void CallAfterEvent(LLMoneyEvent event, xuid_t from, xuid_t to, money_t value)
+void CallAfterEvent(LLMoneyEvent event, std::string from, std::string to, money_t value)
 {
 	for (auto& callback : afterCallbacks)
 	{
