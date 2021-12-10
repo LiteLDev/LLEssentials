@@ -269,16 +269,160 @@ public:
 		registry->registerOverload<MoneyCommand>(
 			"money",
 			makeMandatory<CommandParameterDataType::ENUM>(&MoneyCommand::op, "optional", "MoneyOP1"),
-			makeOptional(&MoneyCommand::dst, "target", &MoneyCommand::dst_isSet));
+			makeOptional(&MoneyCommand::dst, "PlayerName", &MoneyCommand::dst_isSet));
 		registry->registerOverload<MoneyCommand>(
 			"money",
 			makeMandatory<CommandParameterDataType::ENUM>(&MoneyCommand::op, "optional", "MoneyOP2"),
-			makeMandatory(&MoneyCommand::dst, "target"),
+			makeMandatory(&MoneyCommand::dst, "PlayerName"),
 			makeMandatory(&MoneyCommand::moneynum, "num"));
 		registry->registerOverload<MoneyCommand>(
 			"money",
 			makeMandatory<CommandParameterDataType::ENUM>(&MoneyCommand::op, "optional", "MoneyOP3"),
 			makeOptional(&MoneyCommand::difftime, "time", &MoneyCommand::difftime_isSet));
+	}
+};
+
+class MoneySCommand : public Command {
+	enum MoneyOP :int {
+		query = 1,
+		hist = 2,
+		pay = 3,
+		set = 4,
+		add = 5,
+		reduce = 6,
+	} op;
+	CommandSelector<Player> player;
+	bool dst_isSet;
+	bool difftime_isSet;
+	int moneynum;
+	int difftime;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		std::string dstid;
+		std::string dstxuid, myuid;
+		switch (op)
+		{
+		case query:
+		case hist:
+			if (dst_isSet) {
+				if (ori.getPermissionsLevel() > 0) {
+					if (!player.results(ori).empty()) {
+						dstid = PlayerDB::getXuid(player.results(ori).begin().operator*()->getRealName());
+					}
+				}
+				else {
+					dstid = PlayerDB::getXuid(ori.getName());
+				}
+				if (dstid == "") {
+					outp.error(tr("money.no.target"));
+					return;
+				}
+				break;
+			}
+			return;
+		case pay:
+		case set:
+		case add:
+		case reduce:
+			if (player.results(ori).empty()) {
+				outp.error(tr("money.no.target"));
+				return;
+			}
+			for (auto resu : player.results(ori)) {
+				optional<std::string> dstxuid, myuid;
+				dstxuid = PlayerDB::getXuid(resu->getRealName());
+				if (!dstxuid.Set()) {
+					outp.error(tr("money.no.target"));
+					return;
+				}
+			}
+			break;
+		}
+		switch (op)
+		{
+		case query:
+			outp.addMessage("Money: " + std::to_string(LLMoneyGet(dstid)));
+			break;
+		case hist:
+			outp.addMessage(LLMoneyGetHist(dstid));
+			break;
+		case pay:
+		{
+			if (moneynum <= 0) {
+				outp.error(tr("money.invalid.arg"));
+			}
+			myuid = PlayerDB::getXuid(ori.getName());
+			if (myuid == "") {
+				outp.error(tr("money.no.target"));
+			}
+			if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
+				money_t fee = (money_t)(moneynum * MoneyFee);
+				if (fee)
+					LLMoneyTrans(dstxuid, 0, fee, "money pay fee");
+				outp.success("pay success");
+			}
+			else {
+				outp.error(tr("money.not.enough"));
+			}
+		}
+		break;
+		case set:
+			if (ori.getPermissionsLevel() < 1) {
+				outp.error(tr("money.no.perm"));
+			}
+			if (LLMoneySet(dstxuid, moneynum)) {
+				outp.success("set success");
+			}
+			else {
+				outp.error(tr("money.invalid.arg"));
+			}
+			break;
+		case add:
+			if (ori.getPermissionsLevel() < 1) {
+				outp.error(tr("money.no.perm"));
+			}
+			if (LLMoneyAdd(dstxuid, moneynum)) {
+				outp.success("add success");
+			}
+			else {
+				outp.error(tr("money.invalid.arg"));
+			}
+			break;
+		case reduce:
+			if (ori.getPermissionsLevel() < 1) {
+				outp.error(tr("money.no.perm"));
+			}
+			if (LLMoneyReduce(dstxuid, moneynum)) {
+			}
+			else {
+				outp.error(tr("money.invalid.arg"));
+			}
+			break;
+		}
+		return;
+	}
+	static void setup(CommandRegistry* registry) {
+		//registerCommand
+		registry->registerCommand(
+			"money_s", "money system", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		//addEnum
+		registry->addEnum<MoneyOP>("MoneyOP1", { { "query",MoneyOP::query},{ "hist",MoneyOP::hist} });
+		registry->addEnum<MoneyOP>("MoneyOP2", { { "add",MoneyOP::add},{ "pay",MoneyOP::pay },{"reduce",MoneyOP::reduce},{"set",MoneyOP::set} });
+
+		//registerOverload
+		registry->registerOverload<MoneyCommand>(
+			"money_s",
+			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP1"),
+			makeOptional(&MoneySCommand::player, "PlayerName", &MoneySCommand::dst_isSet));
+		registry->registerOverload<MoneyCommand>(
+			"money_s",
+			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP2"),
+			makeMandatory(&MoneySCommand::player, "PlayerName"),
+			makeMandatory(&MoneySCommand::moneynum, "num"));
+		registry->registerOverload<MoneyCommand>(
+			"money_s",
+			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP3"),
+			makeOptional(&MoneySCommand::difftime, "time", &MoneySCommand::difftime_isSet));
 	}
 };
 
