@@ -207,7 +207,7 @@ public:
 			if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
 				money_t fee = (money_t)(moneynum * MoneyFee);
 				if (fee)
-					LLMoneyTrans(dstxuid, 0, fee, "money pay fee");
+					LLMoneyTrans(dstxuid, "", fee, "money pay fee");
 				outp.success("pay success");
 			}
 			else {
@@ -358,7 +358,7 @@ public:
 			if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
 				money_t fee = (money_t)(moneynum * MoneyFee);
 				if (fee)
-					LLMoneyTrans(dstxuid, 0, fee, "money pay fee");
+					LLMoneyTrans(dstxuid, "", fee, "money pay fee");
 				outp.success("pay success");
 			}
 			else {
