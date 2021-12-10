@@ -8,6 +8,8 @@
 #include <MC/ExtendedCertificate.hpp>
 #include <MC/NetworkIdentifier.hpp>
 #include <MC/ServerNetworkHandler.hpp>
+#include <MC/Item.hpp>
+#include <SendPacketAPI.h>
 
 std::unique_ptr<KVDB> db;
 playerMap<string> ORIG_NAME;
@@ -212,29 +214,48 @@ bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op,
 	return true;
 }
 
-bool onCMD_Trans(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player> p, std::string host, const optional<int> port) {
-	int P = port.set ? port.val() : 19132;
-	auto res = p.results(ori);
-	if (!Command::checkHasTargets(res, outp)) return false;
-	WBStream ws;
-	ws.apply(MCString(host), (unsigned short)P);
-	MyPkt<0x55, false> trpk(ws);
-	for (auto i : res) {
-		((ServerPlayer*)i)->sendNetworkPacket(trpk);
+class TransferCommand : public Command {
+	CommandSelector<Player> p;
+	std::string host;
+	int port;
+	bool port_isSet;
+
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+		int P = port_isSet ? port : 19132;
+		auto res = p.results(ori);
+		if (!Command::checkHasTargets(res, outp)) return;
+		WBStream ws;
+		ws.apply(MCString(host), (unsigned short)P);
+		NetworkPacket<0x55, false> trpk(ws);
+		for (auto i : res) {
+			((ServerPlayer*)i)->sendNetworkPacket(trpk);
+		}
 	}
-	return true;
-}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("transfer", "Transfer player to another server", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<TransferCommand>("transfer", makeMandatory(&TransferCommand::host, "IP"), makeOptional(&TransferCommand::port, "port", &TransferCommand::port_isSet));
+	}
+};
 
-static bool onReload(CommandOrigin const& ori, CommandOutput& outp) {
-	loadCfg();
-	outp.success(tr("hreload.success"));
-	return true;
-}
+class HelperCommand : public Command {
+	// enum action: { reload }
 
-void getItemName(const Item* item, string* str) {
-	SymCall("?getSerializedName@Item@@QEBA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ",
-		void, const Item*, string*)(item, str);
-}
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+		// if action == reload
+		loadCfg();
+		outp.success(tr("hreload.success"));
+	}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("helper", "LLHelper", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<HelperCommand>("helper", makeMandatory(&HelperCommand::action, "action"));
+	}
+};
 
 bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
 	//if (ori.getOriginType() == OriginType::Player) {
@@ -243,7 +264,7 @@ bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
 		const ItemStack* item = &wp->getCarriedItem();
 		std::string itemName = "Air";
 		if (item->getId() != 0) {
-			getItemName(item->getItem(), &itemName);
+			itemName = item->getItem()->getSerializedName();
 		}
 		outp.success(itemName + " " + std::to_string(item->getId()));
 		return true;
@@ -262,6 +283,12 @@ bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
 void RegisterCommands() {
 	loadCNAME();
 	Translation::load("plugins\\LLHelper\\langpack\\helper.json");
+	Event::RegCmdEvent::subscribe([](Event::RegCmdEvent e) {
+		TransferCommand::setup(e.mCommandRegistry);
+		HelperCommand::setup(e.mCommandRegistry);
+		return true;
+		});
+	/*
 	Event::addEventListener([](RegCmdEvent e) {
 		CEnum<BANOP> _1("banop", { "ban","unban","banip" });
 		CEnum<BANOP_LIST> _2("banoplist", { "list" });
@@ -284,6 +311,7 @@ void RegisterCommands() {
 		MakeCommand("item", "show item info on hand", 0);
 		CmdOverload(item, oncmd_item);
 		});
+		*/
 }
 
 THook(void, "?_onClientAuthenticated@ServerNetworkHandler@@AEAAXAEBVNetworkIdentifier@@AEBVCertificate@@@Z", ServerNetworkHandler* snh, NetworkIdentifier& neti, Certificate& cert) {
