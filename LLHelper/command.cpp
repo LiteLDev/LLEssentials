@@ -142,77 +142,88 @@ bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, std::string targ
 	}
 }
 
-bool oncmd_vanish(CommandOrigin const& ori, CommandOutput& outp) {
-	auto sp = ori.getPlayer();
-	VarULong ul(ZigZag(sp->getUniqueID().id));
-	WBStream ws;
-	ws.apply(ul);
-	MyPkt<14> pk{ ws };
-	std::vector<Player*> plist = Level::getAllPlayers();
-	for (auto p : plist) {
-		if (p != sp) {
-			auto spp = (ServerPlayer*)p;
-			spp->sendNetworkPacket(pk);
+class VanishCommand : public Command {
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+		ServerPlayer* sp = ori.getPlayer();
+		VarULong ul(ZigZag(sp->getUniqueID().id));
+		BinaryStream bs;
+		bs.writeUnsignedInt64(ul);
+		NetworkPacket	<14> pk{ bs.getAndReleaseData() };
+		std::vector<Player*> plist = Level::getAllPlayers();
+		for (auto p : plist) {
+			if (p != sp) {
+				ServerPlayer* spp = (ServerPlayer*)p;
+				spp->sendNetworkPacket(pk);
+			}
 		}
+		outp.addMessage(tr("vanish.success"));
 	}
-	outp.addMessage(tr("vanish.success"));
-	return true;
-}
-
-enum class CNAMEOP :int {
-	set = 1,
-	remove = 2
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("vanish", "Hide yourself", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+	}
 };
 
-bool onCMD_CNAME(CommandOrigin const& ori, CommandOutput& p, MyEnum<CNAMEOP> op, std::string src, const optional<string>& name) {
-	std::vector<Player*> pList = Level::getAllPlayers();
-	Player* player = nullptr;
-	for (auto p : pList) {
-		if (p->getRealName() == src) {
-			player = p;
-			break;
+class CnameCommand : public Command {
+	enum CNAMEOP : int {
+		set = 1,
+		remove = 2
+	} op;
+	std::string src;
+	bool name_isSet;
+	std::string name;
+
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+		std::vector<Player*> pList = Level::getAllPlayers();
+		Player* player = nullptr;
+		for (auto p : pList) {
+			if (p->getRealName() == src) {
+				player = p;
+				break;
+			}
+		}
+		if (op == CNAMEOP::set) {
+			if (name_isSet) {
+				outp.error(tr("cname.set.null"));
+				return;
+			}
+			std::string str = name;
+			for (int i = 0; i < str.size(); ++i) {
+				if (str[i] == '^') str[i] = '\n';
+			}
+			CNAME[src] = str;
+			db->put(src, str);
+			if (!player) {
+				outp.error(tr("cname.set.notonline"));
+				return;
+			}
+			outp.success(tr("cname.set.success"));
+			player->setName(str);
+			ORIG_NAME[(ServerPlayer*)player] = player->getName().c_str();
+		}
+		if (op == CNAMEOP::remove) {
+			CNAME.erase(src);
+			db->del(src);
+			if (!player) {
+				outp.error(tr("cname.rm.notonline"));
+				return;
+			}
+			outp.success(tr("cname.rm.success"));
+			player->setName(src);
+			ORIG_NAME._map.erase((ServerPlayer*)player);
 		}
 	}
-	if (op == CNAMEOP::set) {
-		if (!name.set) {
-			p.error(tr("cname.set.null"));
-			return false;
-		}
-		std::string str = name.val();
-		for (int i = 0; i < str.size(); ++i) {
-			if (str[i] == '^') str[i] = '\n';
-		}
-		CNAME[src] = str;
-		db->put(src, str);
-		if (!player) {
-			p.success(tr("cname.set.notonline"));
-			return false;
-		}
-		if (!player) {
-			p.success(tr("cname.set.notonline"));
-			return false;
-		}
-		p.success(tr("cname.set.success"));
-		player->setName(str);
-		ORIG_NAME[(ServerPlayer*)player] = player->getName().c_str();
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("cname", "Custom name", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->addEnum<CNAMEOP>("OP", { {"set", CNAMEOP::set}, {"rm", CNAMEOP::remove}});
+		registry->registerOverload<CnameCommand>("cname", makeMandatory<CommandParameterDataType::ENUM>(&CnameCommand::op, "optinal", "OP"), makeMandatory(&CnameCommand::src, "player"), makeOptional(&CnameCommand::name, "name", & CnameCommand::name_isSet));
 	}
-	if (op == CNAMEOP::remove) {
-		CNAME.erase(src);
-		db->del(src);
-		if (!player) {
-			p.success(tr("cname.rm.notonline"));
-			return false;
-		}
-		if (!player) {
-			p.success(tr("cname.rm.notonline"));
-			return false;
-		}
-		p.success(tr("cname.rm.success"));
-		player->setName(src);
-		ORIG_NAME._map.erase((ServerPlayer*)player);
-	}
-	return true;
-}
+};
 
 class TransferCommand : public Command {
 	CommandSelector<Player> p;
@@ -225,11 +236,8 @@ public:
 		int P = port_isSet ? port : 19132;
 		auto res = p.results(ori);
 		if (!Command::checkHasTargets(res, outp)) return;
-		WBStream ws;
-		ws.apply(MCString(host), (unsigned short)P);
-		NetworkPacket<0x55, false> trpk(ws);
 		for (auto i : res) {
-			((ServerPlayer*)i)->sendNetworkPacket(trpk);
+			i->sendTransferPacket(host, P);
 		}
 	}
 	static void setup(CommandRegistry* registry) {
@@ -241,44 +249,54 @@ public:
 };
 
 class HelperCommand : public Command {
-	// enum action: { reload }
+	enum HelperOP : int {
+		reload = 0
+	} action;
 
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) {
-		// if action == reload
-		loadCfg();
-		outp.success(tr("hreload.success"));
+		switch (action) {
+		case reload:
+			loadCfg();
+			outp.success(tr("hreload.success"));
+			break;
+		default:
+			outp.error("Error");
+		}
+		
 	}
 	static void setup(CommandRegistry* registry) {
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("helper", "LLHelper", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->registerOverload<HelperCommand>("helper", makeMandatory(&HelperCommand::action, "action"));
+		registry->addEnum<HelperOP>("Action", {{"reload", HelperOP::reload}});
+		registry->registerOverload<HelperCommand>("helper", makeMandatory<CommandParameterDataType::ENUM>(&HelperCommand::action, "optinal", "Action"));
 	}
 };
 
-bool oncmd_item(CommandOrigin const& ori, CommandOutput& outp) {
-	//if (ori.getOriginType() == OriginType::Player) {
-	ServerPlayer* wp = ori.getPlayer();
-	if (wp) {
-		const ItemStack* item = &wp->getCarriedItem();
-		std::string itemName = "Air";
-		if (item->getId() != 0) {
-			itemName = item->getItem()->getSerializedName();
+class ItemCommand : public Command {
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+		if (ori.getOriginType() == (int)OriginType::Player) {
+			ServerPlayer* wp = ori.getPlayer();
+			const ItemStack* item = &wp->getCarriedItem();
+			std::string itemName = "Air";
+			if (item->getId() != 0) {
+				itemName = item->getItem()->getSerializedName();
+			}
+			outp.success(itemName + " " + std::to_string(item->getId()));
 		}
-		outp.success(itemName + " " + std::to_string(item->getId()));
-		return true;
+		else {
+			outp.error("You are not a player");
+			return;
+		}
 	}
-	else {
-		outp.error("You are not a player");
-		return false;
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("item", "Show item information on your hand", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
 	}
-	/*}
-	else {
-		outp.error("You are not a player");
-		return false;
-	}*/
-}
+};
 
 void RegisterCommands() {
 	loadCNAME();
@@ -286,6 +304,9 @@ void RegisterCommands() {
 	Event::RegCmdEvent::subscribe([](Event::RegCmdEvent e) {
 		TransferCommand::setup(e.mCommandRegistry);
 		HelperCommand::setup(e.mCommandRegistry);
+		ItemCommand::setup(e.mCommandRegistry);
+		CnameCommand::setup(e.mCommandRegistry);
+		VanishCommand::setup(e.mCommandRegistry);
 		return true;
 		});
 	/*
