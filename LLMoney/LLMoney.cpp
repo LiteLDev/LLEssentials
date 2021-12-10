@@ -436,6 +436,7 @@ void entry() {
 	Translation::load("plugins\\LLMoney\\langpack\\money.json");
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& ev) {
 		MoneyCommand::setup(ev.mCommandRegistry);
+		MoneySCommand::setup(ev.mCommandRegistry);
 		return true;
 		});
 	try {
