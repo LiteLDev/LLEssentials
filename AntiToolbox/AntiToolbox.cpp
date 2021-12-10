@@ -86,27 +86,28 @@ void customCmdExe(std::string player_name) {
 	}
 }
 
-void onPlayerLogin(JoinEvent ev) {
+bool onPlayerLogin(Event::PlayerJoinEvent ev) {
 	if (FakeNameDetection) {
-		std::string real_name = ev.player->getRealName();
-		std::string player_name = ev.player->getNameTag();
+		std::string real_name = ev.mPlayer->getRealName();
+		std::string player_name = ev.mPlayer->getNameTag();
 		if (real_name != player_name) {
 			Logger::Info("Fake Nametag detected: {} RealName: {}", player_name, real_name);
 			if (!EnableCustomCmd) {
-				ev.player->kick(Kick_message);
+				ev.mPlayer->kick(Kick_message);
 			}
 			else {
 				customCmdExe(real_name);
 			}
 		}
 	}
+	return true;
 }
 
 void entry() {
 	Logger::setTitle("AntiToolbox");
 	Logger::setFile("logs/toolbox.log");
 	loadConfig();
-	Event::addEventListener(onPlayerLogin);
+	Event::PlayerJoinEvent::subscribe(onPlayerLogin);
 	Logger::Info("Loaded");
 }
 
