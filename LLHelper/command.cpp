@@ -16,7 +16,7 @@ playerMap<string> ORIG_NAME;
 std::unordered_map<string, string> CNAME;
 
 void loadCNAME() {
-	db = std::make_unique<KVDB>("plugins/LLHelper/data", false);
+	db = MakeKVDB("plugins/LLHelper/data", false);
 	db->iter([](string_view k, string_view v) {
 		if (!k._Starts_with("b_"))
 			CNAME.emplace(k, v);
@@ -46,7 +46,7 @@ class GmodeCommand : public Command {
 	CommandSelector<Player> pl;
 	int mode;
 public:
-	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		auto res = pl.results(ori);
 		if (!Command::checkHasTargets(res, outp)) return;
 		for (auto i : res) {
@@ -73,8 +73,8 @@ class BanCommand : public Command {
 	bool time_isSet;
 	int time;
 public:
-	void execute(CommandOrigin const& ori, CommandOutput& outp) {
-		LOWERSTRING(entry);
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		LOWERSTRING((std::string&)entry);
 		switch (op)
 		{
 		case BANOP::banip: {
@@ -140,7 +140,7 @@ public:
 class SkickCommand : public Command {
 	std::string target;
 public:
-	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		std::vector<Player*> plist = Level::getAllPlayers();
 		Player* pl = nullptr;
 		for (auto p : plist) {
@@ -168,17 +168,16 @@ public:
 
 class VanishCommand : public Command {
 public:
-	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		ServerPlayer* sp = ori.getPlayer();
-		VarULong ul(ZigZag(sp->getUniqueID().id));
 		BinaryStream bs;
-		bs.writeUnsignedInt64(ul);
-		NetworkPacket	<14> pk{ bs.getAndReleaseData() };
+		bs.writeUnsignedVarInt64(ZigZag(sp->getUniqueID().id));
+		NetworkPacket<14> pkt{ bs.getAndReleaseData() };
 		std::vector<Player*> plist = Level::getAllPlayers();
 		for (auto p : plist) {
 			if (p != sp) {
 				ServerPlayer* spp = (ServerPlayer*)p;
-				spp->sendNetworkPacket(pk);
+				spp->sendNetworkPacket(pkt);
 			}
 		}
 		outp.addMessage(tr("vanish.success"));
@@ -200,7 +199,7 @@ class CnameCommand : public Command {
 	std::string name;
 
 public:
-	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		std::vector<Player*> pList = Level::getAllPlayers();
 		Player* player = nullptr;
 		for (auto p : pList) {
@@ -256,7 +255,7 @@ class TransferCommand : public Command {
 	bool port_isSet;
 
 public:
-	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		int P = port_isSet ? port : 19132;
 		auto res = p.results(ori);
 		if (!Command::checkHasTargets(res, outp)) return;
@@ -278,7 +277,7 @@ class HelperCommand : public Command {
 	} action;
 
 public:
-	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		switch (action) {
 		case reload:
 			loadCfg();
@@ -300,7 +299,7 @@ public:
 
 class ItemCommand : public Command {
 public:
-	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		if (ori.getOriginType() == (int)OriginType::Player) {
 			ServerPlayer* wp = ori.getPlayer();
 			const ItemStack* item = &wp->getCarriedItem();

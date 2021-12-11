@@ -10,6 +10,7 @@ bool onPlayerLeft(Event::PlayerLeftEvent e) {
 	if (pz < 0)pz = pz - 1;
 	auto dim = e.mPlayer->getDimensionId();
 	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.mPlayer->getRealName(), px, py, pz, (short)dim, e.mXUID);
+	return true;
 }
 
 bool onPlayerJoin(Event::PlayerPreJoinEvent ev) {
@@ -19,6 +20,7 @@ bool onPlayerJoin(Event::PlayerPreJoinEvent ev) {
 		ORIG_NAME[ev.mPlayer] = pl->getRealName();
 	}
 	Logger::Info("{} joined server IP: {} xuid: {}", pl->getRealName(), ev.mIP, ev.mXUID);
+	return true;
 }
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
