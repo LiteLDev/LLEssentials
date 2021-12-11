@@ -58,7 +58,7 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("gmode", "Switch your gamemode", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->registerOverload<GmodeCommand>("skick", makeMandatory(&GmodeCommand::pl, "target"), makeMandatory(&GmodeCommand::mode, "mode"));
+		registry->registerOverload<GmodeCommand>("gmode", makeMandatory(&GmodeCommand::pl, "target"), makeMandatory(&GmodeCommand::mode, "mode"));
 	}
 };
 
@@ -209,7 +209,7 @@ public:
 			}
 		}
 		if (op == CNAMEOP::set) {
-			if (name_isSet) {
+			if (!name_isSet) {
 				outp.error(tr("cname.set.null"));
 				return;
 			}
@@ -318,6 +318,7 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("item", "Show item information on your hand", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<ItemCommand>("item");
 	}
 };
 
