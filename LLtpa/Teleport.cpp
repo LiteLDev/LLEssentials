@@ -142,13 +142,15 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 	reqs.emplace_back(dir, a, b, clock());
 	string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
 	_b->sendTextPacket(prompt, TextType::RAW);
-	using namespace Form;
+	//摸了，还没写
+	/*using namespace Form;
 	char buf[1024];
 	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str()) };
 	CustomForm form(FM);
 	form.sendTo(_b, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
 
-		});
+		});*/
+	//original
 	/*
 	sendForm(_b, RawFormBinder{ FM,[](WPlayer wp,RawFormBinder::DType i) {
 		auto [clicked,res,list] = i;
@@ -170,7 +172,7 @@ void schTask() {
 			}
 			else break;
 		}
-		}, 200);
+		}, 10);
 }
 
 std::vector<string> playerList() {
@@ -205,7 +207,6 @@ public:
 			case TPFailReason::success:
 			{
 				DoMakeReq({ (ServerPlayer*)ori.getEntity() }, t, dir);
-				outp.success("sent");
 				return;
 			}
 			break;
@@ -260,6 +261,9 @@ public:
 				break;
 			}
 			case TPAOP::gui: {
+				outp.error(u8"这摸鱼，多是一件美事啊");
+				//摸了
+				/*
 				ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
 				using namespace Form;
 				CustomForm* fm{};
@@ -272,7 +276,8 @@ public:
 				fm->append({ Dropdown("", guiDropdown2.c_str() ,playerList()) });
 				fm->sendTo(wp, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
 
-					});
+					});*/
+				//origin
 				/*sendForm(wp, FullFormBinder{fm,{[](WPlayer P, FullFormBinder::DType data) {
 					if (!data.set) return;
 						auto& [d1,d2] = data.val();
@@ -295,7 +300,7 @@ public:
 };
 
 Form::SimpleForm* WARPGUI;
-void reinitWARPGUI() {
+void reinitWARPGUI() { //broken
 	WARPGUI->title = tr("warp.gui.title");
 	WARPGUI->content = tr("warp.gui.content");
 	for (auto& [k, v] : warps) {
@@ -305,7 +310,7 @@ void reinitWARPGUI() {
 
 void sendWARPGUI(ServerPlayer* wp) {
 	using namespace Form;
-	WARPGUI->sendTo(wp, [wp](int i) { //working
+	WARPGUI->sendTo(wp, [wp](int i) { //broken origin见old分支
 		wp->runcmd("warp go" + std::to_string(i));
 		});
 }
@@ -314,7 +319,7 @@ void saveWarps() {
 	WBStream ws;
 	ws.apply(warps);
 	db->put("warps", ws);
-	reinitWARPGUI();
+	//reinitWARPGUI();
 }
 
 class WarpCommand : public Command {
@@ -332,9 +337,9 @@ public:
 		switch (op)
 		{
 		case gui: {
-			sendWARPGUI(((ServerPlayer*)ori.getEntity()));
+			outp.error(u8"这摸鱼，多是一件美事啊");
+			//sendWARPGUI(((ServerPlayer*)ori.getEntity()));
 			return;
-			break;
 		}
 		case add: {
 			if (ori.getPermissionsLevel() < 1) return;
@@ -455,13 +460,17 @@ public:
 			break;
 		}
 		case HOMEOP::gui: {
+			outp.error(u8"这摸鱼，多是一件美事啊");
+			//摸了
+			/*
 			auto wp = ((ServerPlayer*)ori.getEntity());
 			Form::SimpleForm* HomeGUI{};
 			HomeGUI->title = tr("home.gui.title");
 			HomeGUI->content = tr("home.gui.content");
 			for (auto& i : hm.data) {
 				HomeGUI->append(Form::Button(string(i.name)));
-			}
+			}*/
+			//origin
 			/*
 			GUI::sendForm(wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer* wp, GUI::SimpleFormBinder::DType d) {
 				if (d.set) {
