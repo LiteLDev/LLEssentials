@@ -333,32 +333,9 @@ void RegisterCommands() {
 		VanishCommand::setup(e.mCommandRegistry);
 		SkickCommand::setup(e.mCommandRegistry);
 		BanCommand::setup(e.mCommandRegistry);
+		GmodeCommand::setup(e.mCommandRegistry);
 		return true;
 		});
-	/*
-	Event::addEventListener([](RegCmdEvent e) {
-		CEnum<BANOP> _1("banop", { "ban","unban","banip" });
-		CEnum<BANOP_LIST> _2("banoplist", { "list" });
-		CEnum<CNAMEOP> _3("cnameop", { "set","rm" });
-		MakeCommand("gmode", "set your gametype", 1);
-		CmdOverload(gmode, oncmd_gmode, "target", "mode");
-		MakeCommand("ban", "blacklist", 1);
-		CmdOverload(ban, onCMD_Ban, "op", "target", "time");
-		CmdOverload(ban, onCMD_BanList, "list");
-		MakeCommand("transfer", "transfer player to another server", 1);
-		CmdOverload(transfer, onCMD_Trans, "target", "host", "port");
-		MakeCommand("hreload", "reload cmdhelper", 1);
-		CmdOverload(hreload, onReload);
-		MakeCommand("skick", "force kick", 1);
-		CmdOverload(skick, onCMD_skick, "target");
-		MakeCommand("cname", "custom name", 1);
-		CmdOverload(cname, onCMD_CNAME, "op", "target", "name");
-		MakeCommand("vanish", "hide yourself", 1);
-		CmdOverload(vanish, oncmd_vanish);
-		MakeCommand("item", "show item info on hand", 0);
-		CmdOverload(item, oncmd_item);
-		});
-		*/
 }
 
 THook(void, "?_onClientAuthenticated@ServerNetworkHandler@@AEAAXAEBVNetworkIdentifier@@AEBVCertificate@@@Z", ServerNetworkHandler* snh, NetworkIdentifier& neti, Certificate& cert) {
