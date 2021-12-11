@@ -8,8 +8,8 @@ bool onPlayerLeft(Event::PlayerLeftEvent e) {
 	int pz = e.mPlayer->getPos().z;
 	if (px < 0)px = px - 1;
 	if (pz < 0)pz = pz - 1;
-	auto dim = e.mPlayer->getDimensionId();
-	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.mPlayer->getRealName(), px, py, pz, (short)dim, e.mXUID);
+	short dim = e.mPlayer->getDimensionId();
+	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.mPlayer->getRealName(), px, py, pz, dim, e.mXUID);
 	return true;
 }
 

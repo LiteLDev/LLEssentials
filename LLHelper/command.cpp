@@ -80,11 +80,18 @@ public:
 		case BANOP::banip: {
 			addBanEntry(entry, time_isSet  ? time : 0);
 			outp.success(entry + tr("ban.banip.success"));
+			return;
 		}
 		case BANOP::ban: {
-			addBanEntry(PlayerDB::getXuid(entry), time_isSet ? time : 0);
+			std::string xuid = PlayerDB::getXuid(entry);
+			if (xuid == "") {
+				outp.error("Player not found");
+				return;
+			}
+			addBanEntry(xuid, time_isSet ? time : 0);
 			Level::runcmdEx("skick " + entry);
 			outp.success(entry + tr("ban.ban.success"));
+			return;
 		}
 					   break;
 		case BANOP::unban: {
@@ -99,7 +106,8 @@ public:
 				}
 				else {
 					removeBanEntry(XID);
-					outp.success("");
+					outp.success(entry + tr("ban.unban.success"));
+					return;
 				}
 			}
 		}
@@ -118,22 +126,23 @@ public:
 						outp.addMessage(banned + " (" + PlayerDB::fromXuid(xid) + ") " + std::to_string(*(time_t*)val.data()));
 					}
 				}
-				outp.addMessage(tr("ban.list.success"));
 				});
 			outp.success(tr("ban.list.success"));
+			return;
 		}
 				 break;
 		default:
 			break;
 		}
-		outp.error("");
 	}
 	static void setup(CommandRegistry* registry) {
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("ban", "Ban a player", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->addEnum<BANOP>("BANOP", { {"ban", BANOP::ban}, {"unban", BANOP::unban}, {"banip", BANOP::banip}, {"list", BANOP::list}});
-		registry->registerOverload<BanCommand>("ban", makeMandatory<CommandParameterDataType::ENUM>(&BanCommand::op, "BANOP"), makeMandatory(&BanCommand::entry, "target"), makeOptional(&BanCommand::time, "time", &BanCommand::time_isSet));
+		registry->addEnum<BANOP>("BANOP", { {"ban", BANOP::ban}, {"unban", BANOP::unban}, {"banip", BANOP::banip}});
+		registry->addEnum<BANOP>("BANOP2", { {"list", BANOP::list} });
+		registry->registerOverload<BanCommand>("ban", makeMandatory<CommandParameterDataType::ENUM>(&BanCommand::op, "OP", "BANOP"), makeMandatory(&BanCommand::entry, "target"), makeOptional(&BanCommand::time, "time", &BanCommand::time_isSet));
+		registry->registerOverload<BanCommand>("ban", makeMandatory<CommandParameterDataType::ENUM>(&BanCommand::op, "OP2", "BANOP2"));
 	}
 };
 
@@ -186,6 +195,7 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("vanish", "Hide yourself", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<VanishCommand>("vanish");
 	}
 };
 
@@ -300,7 +310,7 @@ public:
 class ItemCommand : public Command {
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
-		if (ori.getOriginType() == (int)OriginType::Player) {
+		if (ori.getOriginType() == 0) {
 			ServerPlayer* wp = ori.getPlayer();
 			const ItemStack* item = &wp->getCarriedItem();
 			std::string itemName = "Air";
