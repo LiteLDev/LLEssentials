@@ -2,23 +2,23 @@
 #include "Helper.h"
 #include <MC/Block.hpp>
 
-void onPlayerLeft(LeftEvent e) {
-	int px = e.player->getPos().x;
-	int py = e.player->getPos().y;
-	int pz = e.player->getPos().z;
+bool onPlayerLeft(Event::PlayerLeftEvent e) {
+	int px = e.mPlayer->getPos().x;
+	int py = e.mPlayer->getPos().y;
+	int pz = e.mPlayer->getPos().z;
 	if (px < 0)px = px - 1;
 	if (pz < 0)pz = pz - 1;
-	auto dim = e.player->getDimensionId();
-	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.player->getRealName(), px, py, pz, (short)dim, e.xuid);
+	auto dim = e.mPlayer->getDimensionId();
+	Logger::Info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.mPlayer->getRealName(), px, py, pz, (short)dim, e.mXUID);
 }
 
-bool onPlayerJoin(PreJoinEvent ev) {
-	Player* pl = ev.player;
+bool onPlayerJoin(Event::PlayerPreJoinEvent ev) {
+	Player* pl = ev.mPlayer;
 	if (auto it = CNAME.find(pl->getRealName()); it != CNAME.end()) {
 		pl->setName(it->second);
-		ORIG_NAME[ev.player] = pl->getRealName();
+		ORIG_NAME[ev.mPlayer] = pl->getRealName();
 	}
-	Logger::Info("{} joined server IP: {} xuid: {}", pl->getRealName(), ev.ip, ev.xuid);
+	Logger::Info("{} joined server IP: {} xuid: {}", pl->getRealName(), ev.mIP, ev.mXUID);
 }
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",

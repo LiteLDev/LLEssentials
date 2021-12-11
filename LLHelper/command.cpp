@@ -23,24 +23,6 @@ void loadCNAME() {
 		return true;
 		});
 }
-bool oncmd_gmode(CommandOrigin const& ori, CommandOutput& outp, CommandSelector<Player> s, int mode) {
-	auto res = s.results(ori);
-	if (!Command::checkHasTargets(res, outp)) return false;
-	for (auto i : res) {
-		i->setPlayerGameType(mode);
-	}
-	outp.success(tr("gmode.success"));
-	return true;
-}
-
-enum class BANOP :int {
-	ban = 1,
-	unban = 2,
-	banip = 3
-};
-enum class BANOP_LIST :int {
-	list = 1
-};
 
 void LOWERSTRING(string& S) {
 	for (auto& i : S) {
@@ -60,87 +42,129 @@ void removeBanEntry(string const& entry) {
 	db->del("b_" + entry);
 }
 
-bool onCMD_BanList(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP_LIST>) {
-	db->iter([&](string_view key, string_view val)->bool {
-		if (key._Starts_with("b_")) {
-			string banned{ key.substr(2) };
-			if (banned.find('.') != banned.npos) {
-				outp.addMessage(banned + " " + std::to_string(*(time_t*)val.data()));
-			}
-			else {
-				xuid_t xid;
-				std::stringstream ss{ banned };
-				ss >> xid;
-				outp.addMessage(banned + " (" + PlayerDB::fromXuid(xid) + ") " + std::to_string(*(time_t*)val.data()));
-			}
+class GmodeCommand : public Command {
+	CommandSelector<Player> pl;
+	int mode;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+		auto res = pl.results(ori);
+		if (!Command::checkHasTargets(res, outp)) return;
+		for (auto i : res) {
+			i->setPlayerGameType(mode);
 		}
-		outp.success(tr("ban.list.success"));
-		return true;
-		});
-	outp.success(tr("ban.list.success"));
-	return true;
-}
-bool onCMD_Ban(CommandOrigin const& ori, CommandOutput& outp, MyEnum<BANOP> op, std::string entry, const optional<int>& time) {
-	LOWERSTRING(entry);
-	switch (op.val)
-	{
-	case BANOP::banip: {
-		addBanEntry(entry, time.set ? time.val() : 0);
-		outp.success(entry + tr("ban.banip.success"));
-		return true;
+		outp.success(tr("gmode.success"));
 	}
-	case BANOP::ban: {
-		addBanEntry(PlayerDB::getXuid(entry), time.set ? time.val() : 0);
-		Level::runcmdEx("skick "+ entry);
-		outp.success(entry + tr("ban.ban.success"));
-		return true;
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("gmode", "Switch your gamemode", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<GmodeCommand>("skick", makeMandatory(&GmodeCommand::pl, "target"), makeMandatory(&GmodeCommand::mode, "mode"));
 	}
-				   break;
-	case BANOP::unban: {
-		if (getBanEntry(entry).set) {
-			removeBanEntry(entry);
-			outp.success(entry + tr("ban.unban.success"));
-			return true;
-		}
-		else {
-			std::string XID = PlayerDB::getXuid(entry);
-			if (XID == "") {
-				outp.error(tr("ban.unban.error"));
-				return false;
-			}
-			else {
-				removeBanEntry(XID);
-				return true;
-			}
-		}
-	}
-					 break;
-	default:
-		break;
-	}
-	return false;
-}
+};
 
-bool onCMD_skick(CommandOrigin const& ori, CommandOutput& outp, std::string target) {
-	string playername = target;
-	std::vector<Player*> plist = Level::getAllPlayers();
-	Player* A = nullptr;
-	for (auto p : plist) {
-		if (p->getRealName() == playername) {
-			A = p;
+class BanCommand : public Command {
+	enum BANOP {
+		ban = 1,
+		unban = 2,
+		banip = 3,
+		list = 4
+	} op;
+	std::string entry;
+	bool time_isSet;
+	int time;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+		LOWERSTRING(entry);
+		switch (op)
+		{
+		case BANOP::banip: {
+			addBanEntry(entry, time_isSet  ? time : 0);
+			outp.success(entry + tr("ban.banip.success"));
+		}
+		case BANOP::ban: {
+			addBanEntry(PlayerDB::getXuid(entry), time_isSet ? time : 0);
+			Level::runcmdEx("skick " + entry);
+			outp.success(entry + tr("ban.ban.success"));
+		}
+					   break;
+		case BANOP::unban: {
+			if (getBanEntry(entry).set) {
+				removeBanEntry(entry);
+				outp.success(entry + tr("ban.unban.success"));
+			}
+			else {
+				std::string XID = PlayerDB::getXuid(entry);
+				if (XID == "") {
+					outp.error(tr("ban.unban.error"));
+				}
+				else {
+					removeBanEntry(XID);
+					outp.success("");
+				}
+			}
+		}
+						 break;
+		case list: {
+			db->iter([&](string_view key, string_view val)->bool {
+				if (key._Starts_with("b_")) {
+					string banned{ key.substr(2) };
+					if (banned.find('.') != banned.npos) {
+						outp.addMessage(banned + " " + std::to_string(*(time_t*)val.data()));
+					}
+					else {
+						xuid_t xid;
+						std::stringstream ss{ banned };
+						ss >> xid;
+						outp.addMessage(banned + " (" + PlayerDB::fromXuid(xid) + ") " + std::to_string(*(time_t*)val.data()));
+					}
+				}
+				outp.addMessage(tr("ban.list.success"));
+				});
+			outp.success(tr("ban.list.success"));
+		}
+				 break;
+		default:
 			break;
 		}
+		outp.error("");
 	}
-	if (A) {
-		A->kick("You are kicked by admin");
-		outp.addMessage(target + tr("skick.success"));
-		return true;
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("ban", "Ban a player", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->addEnum<BANOP>("OP", { {"ban", BANOP::ban}, {"unban", BANOP::unban}, {"banip", BANOP::banip}, {"list", BANOP::list}});
+		registry->registerOverload<BanCommand>("ban", makeMandatory<CommandParameterDataType::ENUM>(&BanCommand::op, "op"), makeMandatory(&BanCommand::entry, "target"), makeOptional(&BanCommand::time, "time", &BanCommand::time_isSet));
 	}
-	else
-	{
-		//no player
+};
+
+class SkickCommand : public Command {
+	std::string target;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) {
+		std::vector<Player*> plist = Level::getAllPlayers();
+		Player* pl = nullptr;
+		for (auto p : plist) {
+			if (p->getRealName() == target) {
+				pl = p;
+				break;
+			}
+		}
+		if (pl) {
+			pl->kick("You are kicked by admin");
+			outp.success(target + tr("skick.success"));
+		}
+		else
+		{
+			outp.error(target + " not found");
+		}
 	}
-}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("skick", "Force kick", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<SkickCommand>("skick", makeMandatory(&SkickCommand::target, "target"));
+	}
+};
 
 class VanishCommand : public Command {
 public:
@@ -244,7 +268,7 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("transfer", "Transfer player to another server", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->registerOverload<TransferCommand>("transfer", makeMandatory(&TransferCommand::host, "IP"), makeOptional(&TransferCommand::port, "port", &TransferCommand::port_isSet));
+		registry->registerOverload<TransferCommand>("transfer", makeMandatory(&TransferCommand::p, "player"), makeMandatory(&TransferCommand::host, "IP"), makeOptional(&TransferCommand::port, "port", &TransferCommand::port_isSet));
 	}
 };
 
@@ -307,6 +331,8 @@ void RegisterCommands() {
 		ItemCommand::setup(e.mCommandRegistry);
 		CnameCommand::setup(e.mCommandRegistry);
 		VanishCommand::setup(e.mCommandRegistry);
+		SkickCommand::setup(e.mCommandRegistry);
+		BanCommand::setup(e.mCommandRegistry);
 		return true;
 		});
 	/*

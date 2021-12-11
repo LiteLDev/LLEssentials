@@ -37,13 +37,13 @@ void loadCfg() {
 	}
 }
 
-void onPlayerLeft(LeftEvent);
-bool onPlayerJoin(PreJoinEvent);
+bool onPlayerLeft(Event::PlayerLeftEvent);
+bool onPlayerJoin(Event::PlayerPreJoinEvent);
 void RegisterCommands();
 
 void entry() {
-	Event::addEventListener(onPlayerLeft);
-	Event::addEventListener(onPlayerJoin);
+	Event::PlayerLeftEvent::subscribe(onPlayerLeft);
+	Event::PlayerPreJoinEvent::subscribe(onPlayerJoin);
 	loadCfg();
 	RegisterCommands();
 	Logger::setTitle("Helper");
