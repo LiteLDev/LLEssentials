@@ -45,7 +45,7 @@ public:
 	
     LIAPI bool hasTag(string tag);
 	LIAPI bool hurtEntity(int damage);
-	LIAPI void teleport(Vec3 pos,int dimid);
+	LIAPI bool teleport(Vec3 pos,int dimid);
     LIAPI ItemStack* getHandSlot();
     LIAPI bool rename(const string& name);
     LIAPI CompoundTag* getNbt();

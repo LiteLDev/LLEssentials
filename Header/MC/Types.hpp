@@ -3,7 +3,7 @@
 #include "../Global.h"
 #include "ChunkPos.hpp"
 #include <string>
-
+#include <Utils/Bstream.h>
 typedef std::string xuid_t;
 typedef unsigned long long QWORD;
 
@@ -84,6 +84,12 @@ public:
     inline Vec3 add(float dx) {
         return {x + dx, y , z };
     }
+
+    template <typename _TP>
+    void pack(WBStreamImpl<_TP>& ws) const {
+        ws.apply(x, y, z);
+    }
+    void unpack(RBStream& rs) { rs.apply(x, y, z); }
 
     inline Vec3 operator*(float num) { return { x * num, y * num, z * num }; }
     inline Vec3 operator+(const Vec3& b) { return { this->x + b.x, this->y + b.y, this->z + b.z }; }

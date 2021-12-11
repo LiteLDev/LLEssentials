@@ -4,7 +4,6 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
-#include <regCommandAPI.h>
 #include <SendPacketAPI.h>
 #include <KVDBAPI.h>
 #include <TranslationAPI.h>
@@ -22,6 +21,9 @@
 #include <MC/ServerPlayer.hpp>
 #include <MC/Level.hpp>
 #include <ScheduleAPI.h>
+#include <commandold/regCommandHelper.h>
+#include <commandold/CommandReg.h>
+#include <commandold/Command.h>
 using std::shared_ptr, std::pair;
 using std::make_shared;
 #endif //PCH_H

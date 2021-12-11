@@ -138,19 +138,19 @@ bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
 		//no such player
 	}
 }
-void DoMakeReq(ServerPlayer _a, ServerPlayer _b, direction dir) {
-	std::string a = _a.getRealName();
-	std::string b = _b.getRealName();
+void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
+	std::string a = _a->getRealName();
+	std::string b = _b->getRealName();
 	CHash A = do_hash(a.c_str()), B = do_hash(b.c_str());
 	tpaSetting[A].lastReq = clock();
 	reqs.emplace_back(dir, a, b, clock());
 	string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
-	_b.sendTextPacket(prompt, TextType::RAW);
+	_b->sendTextPacket(prompt, TextType::RAW);
 	using namespace Form;
 	char buf[1024];
 	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str()) };
 	CustomForm form(FM);
-	form.sendTo(&_b, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
+	form.sendTo(_b, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
 
 		});
 	/*
@@ -185,7 +185,7 @@ bool oncmd_tpa(CommandOrigin const& ori, CommandOutput& outp, MyEnum<direction> 
 	switch (reqres) {
 	case TPFailReason::success:
 	{
-		DoMakeReq({ *(ServerPlayer*)ori.getEntity() }, *t, dir);
+		DoMakeReq({ (ServerPlayer*)ori.getEntity() }, t, dir);
 		return true;
 	}
 	break;
@@ -257,9 +257,9 @@ bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op)
 		break;
 	}
 	case TPAOP::gui: {
-		ServerPlayer* wp = ori.getPlayer();
+		ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
 		using namespace Form;
-		CustomForm* fm;
+		CustomForm* fm{};
 		fm->title = tr("tpa.gui.title");
 		std::string guiLabel = tr("tpa.gui.label");
 		std::string guiDropdown1 = tr("tpa.gui.dropdown1");
@@ -316,13 +316,13 @@ bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op
 	switch (op)
 	{
 	case gui: {
-		sendWARPGUI(ori.getPlayer());
+		sendWARPGUI(((ServerPlayer*)ori.getEntity()));
 		return true;
 		break;
 	}
 	case add: {
 		if (ori.getPermissionsLevel() < 1) return false;
-		warps.emplace(val.value(), ori.getPlayer());
+		warps.emplace(val.value(), ((ServerPlayer*)ori.getEntity()));
 		saveWarps();
 
 		break;
@@ -347,7 +347,7 @@ bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op
 			outp.error(tr("home.not.found"));
 			return false;
 		}
-		it->second.teleport(ori.getPlayer());
+		it->second.teleport(((ServerPlayer*)ori.getEntity()));
 
 		break;
 	}
@@ -368,7 +368,7 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 			outp.error(tr("home.is.full"));
 			return false;
 		}
-		ServerPlayer* wp = ori.getPlayer();
+		ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
 		Vec4 vc{ wp };
 		IVec2 startVc{ wp->getPos() };
 		IVec2 endVc{ wp->getPos() };
@@ -401,7 +401,7 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	case HOMEOP::go: {
 		for (auto& i : hm.data) {
 			if (i.name == val.value()) {
-				i.pos.teleport(ori.getPlayer());
+				i.pos.teleport(((ServerPlayer*)ori.getEntity()));
 				return true;
 			}
 		}
@@ -410,8 +410,8 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 		break;
 	}
 	case HOMEOP::gui: {
-		auto wp = ori.getPlayer();
-		Form::SimpleForm* HomeGUI;
+		auto wp = ((ServerPlayer*)ori.getEntity());
+		Form::SimpleForm* HomeGUI{};
 		HomeGUI->title = tr("home.gui.title");
 		HomeGUI->content = tr("home.gui.content");
 		for (auto& i : hm.data) {
@@ -431,7 +431,7 @@ bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEn
 	return true;
 }
 bool oncmd_home(CommandOrigin const& ori, CommandOutput& outp, MyEnum<HOMEOP> op, optional<string> val) {
-	return generic_home(ori, outp, getHomeInCache(std::stoull(ori.getPlayer()->getXuid())), op, val);
+	return generic_home(ori, outp, getHomeInCache(std::stoull(((ServerPlayer*)ori.getEntity())->getXuid())), op, val);
 }
 bool oncmd_homeAs(CommandOrigin const& ori, CommandOutput& outp, std::string target, MyEnum<HOMEOP> op, optional<string> val) {
 	return generic_home(ori, outp, getHomeInCache(std::stoull(PlayerDB::getXuid(target))), op, val);
@@ -451,7 +451,7 @@ bool oncmd_back(CommandOrigin const& ori, CommandOutput& outp) {
 }
 #pragma endregion
 bool oncmd_suicide(CommandOrigin const& ori, CommandOutput& outp) {
-	ori.getPlayer()->kill();
+	ori.getEntity()->kill();
 	return true;
 }
 void loadCfg() {
@@ -487,13 +487,13 @@ void tpa_entry() {
 	std::filesystem::create_directory("plugins\\LLtpa");
 	std::filesystem::create_directory("plugins\\LLtpa\\data");
 	std::filesystem::create_directory("plugins\\LLtpa\\langpack");
-	db = std::make_unique<KVDB>("plugins\\LLtpa\\data", true, 8);
+	MakeKVDB("plugins\\LLtpa\\data", true, 8);
 	Translation::load("plugins/LLtpa/langpack/tpa.json");
 	Logger::setTitle("TPA");
 	loadall();
 	reinitWARPGUI();
 	schTask();
-	Event::addEventListener([](RegCmdEvent e) {
+	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
 		CEnum<direction> _1("tpdir", { "to","here" });
 		CEnum<WARPOP> _2("warpop", { "go","add","ls","del","gui" });
 		CEnum<HOMEOP> _4("homeop", { "go","add","ls","del", "gui" });
@@ -521,12 +521,14 @@ void tpa_entry() {
 			MakeCommand("suicide", "kill yourself", 0);
 			CmdOverload(suicide, oncmd_suicide);
 		}
+		return true;
 		});
 	if (BACK_ENABLED) {
-		Event::addEventListener([](PlayerDeathEvent  ev) {
-			ServerPlayer* sp = (ServerPlayer*)ev.player;
+		Event::PlayerDeathEvent::subscribe([](const Event::PlayerDeathEvent&  ev) {
+			ServerPlayer* sp = (ServerPlayer*)ev.mPlayer;
 			deathPos[sp] = Vec4{ sp };
 			sp->sendTextPacket(tr("tpa.back.use"), TextType::RAW);
+			return true;
 			});
 	}
 	Logger::Info("Loaded version: ", _ver);
