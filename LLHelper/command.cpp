@@ -132,8 +132,8 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("ban", "Ban a player", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->addEnum<BANOP>("OP", { {"ban", BANOP::ban}, {"unban", BANOP::unban}, {"banip", BANOP::banip}, {"list", BANOP::list}});
-		registry->registerOverload<BanCommand>("ban", makeMandatory<CommandParameterDataType::ENUM>(&BanCommand::op, "op"), makeMandatory(&BanCommand::entry, "target"), makeOptional(&BanCommand::time, "time", &BanCommand::time_isSet));
+		registry->addEnum<BANOP>("BANOP", { {"ban", BANOP::ban}, {"unban", BANOP::unban}, {"banip", BANOP::banip}, {"list", BANOP::list}});
+		registry->registerOverload<BanCommand>("ban", makeMandatory<CommandParameterDataType::ENUM>(&BanCommand::op, "BANOP"), makeMandatory(&BanCommand::entry, "target"), makeOptional(&BanCommand::time, "time", &BanCommand::time_isSet));
 	}
 };
 
@@ -243,8 +243,8 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("cname", "Custom name", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->addEnum<CNAMEOP>("OP", { {"set", CNAMEOP::set}, {"rm", CNAMEOP::remove}});
-		registry->registerOverload<CnameCommand>("cname", makeMandatory<CommandParameterDataType::ENUM>(&CnameCommand::op, "optinal", "OP"), makeMandatory(&CnameCommand::src, "player"), makeOptional(&CnameCommand::name, "name", & CnameCommand::name_isSet));
+		registry->addEnum<CNAMEOP>("CNAMEOP", { {"set", CNAMEOP::set}, {"rm", CNAMEOP::remove}});
+		registry->registerOverload<CnameCommand>("cname", makeMandatory<CommandParameterDataType::ENUM>(&CnameCommand::op, "optinal", "CNAMEOP"), makeMandatory(&CnameCommand::src, "player"), makeOptional(&CnameCommand::name, "name", & CnameCommand::name_isSet));
 	}
 };
 
@@ -292,8 +292,8 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("helper", "LLHelper", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->addEnum<HelperOP>("Action", {{"reload", HelperOP::reload}});
-		registry->registerOverload<HelperCommand>("helper", makeMandatory<CommandParameterDataType::ENUM>(&HelperCommand::action, "optinal", "Action"));
+		registry->addEnum<HelperOP>("HelperOP", {{"reload", HelperOP::reload}});
+		registry->registerOverload<HelperCommand>("helper", makeMandatory<CommandParameterDataType::ENUM>(&HelperCommand::action, "optinal", "HelperOP"));
 	}
 };
 

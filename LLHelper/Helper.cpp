@@ -48,7 +48,7 @@ void entry() {
 	RegisterCommands();
 	Logger::setTitle("Helper");
 	Logger::setFile("logs/Helper.log");
-	Logger::Info("Loaded version: ", _ver);
+	Logger::Info("Loaded version: {}", _ver);
 }
 
 THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",
