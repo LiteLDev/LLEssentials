@@ -5,10 +5,11 @@
 #include "homeStorage.h"
 #include "Tpa.h"
 #include <MC/FormUI.hpp>
+#include <RegCommandAPI.h>
+#include <MC/NetworkIdentifier.hpp>
 
 std::unique_ptr<KVDB> db;
 
-#pragma region structs
 enum direction :int {
 	A_B = 1,
 	B_A = 2
@@ -25,9 +26,6 @@ struct TPASet {
 	bool Accept = true;
 };
 
-
-#pragma endregion
-#pragma region gvals
 #include<unordered_map>
 using std::unordered_map;
 static std::list<TPReq> reqs;
@@ -42,9 +40,7 @@ static bool BACK_ENABLED, SUICIDE_ENABLED, TPA_ENABLED, HOME_ENABLED;
 
 
 playerMap<Vec4> deathPos;
-#pragma endregion
 
-#pragma region TPA
 optional<decltype(reqs.begin())> DoFetchReq(string_view a) {
 	for (auto it = reqs.begin(); it != reqs.end(); ++it) {
 		if (it->A == a || it->B == a) return { it };
@@ -177,41 +173,6 @@ void schTask() {
 		}, 10);
 }
 
-bool oncmd_tpa(CommandOrigin const& ori, CommandOutput& outp, MyEnum<direction> dir, CommandSelector<Player> target) {
-	auto res = target.results(ori);
-	if (!Command::checkHasTargets(res, outp) || (res.count() != 1)) return false;
-	ServerPlayer* t = (ServerPlayer*)*res.begin();
-	auto reqres = CanMakeReq(ori.getName(), t->getName());
-	switch (reqres) {
-	case TPFailReason::success:
-	{
-		DoMakeReq({ (ServerPlayer*)ori.getEntity() }, t, dir);
-		return true;
-	}
-	break;
-	case TPFailReason::ratelimit: {
-		outp.error(tr("tp.fail.rate"));
-		return false;
-	}
-								break;
-	case TPFailReason::inreq: {
-		outp.error(tr("tp.fail.inreq"));
-		return false;
-	}
-							break;
-	case TPFailReason::blocked: {
-		outp.error(tr("tp.fail.blocked"));
-		return false;
-	}
-							  break;
-	}
-	return false;
-}
-
-enum class TPAOP :int {
-	ac = 1, de = 2, cancel = 3, toggle = 4, gui = 5
-};
-
 std::vector<string> playerList() {
 	auto plist = Level::getAllPlayers();
 	std::vector<string> pl;
@@ -221,68 +182,117 @@ std::vector<string> playerList() {
 	return pl;
 }
 
-bool oncmd_tpa2(CommandOrigin const& ori, CommandOutput& outp, MyEnum<TPAOP> op) {
-	switch (op) {
-	case TPAOP::ac: {
-		auto it = DoFetchReq_receiver(ori.getName());
-		if (!it.set) {
-			return false;
+class TpaCommand : public Command {
+	bool dir_isSet;
+	direction dir;
+	bool tpaop_isSet;
+	enum TPAOP :int {
+		ac = 1,
+		de = 2,
+		cancel = 3,
+		toggle = 4,
+		gui = 5
+	} op;
+	CommandSelector<Player> target;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		if (dir_isSet) {
+			auto res = target.results(ori);
+			if (!Command::checkHasTargets(res, outp) || (res.count() != 1)) return;
+			ServerPlayer* t = (ServerPlayer*)*res.begin();
+			auto reqres = CanMakeReq(ori.getName(), t->getName());
+			switch (reqres) {
+			case TPFailReason::success:
+			{
+				DoMakeReq({ (ServerPlayer*)ori.getEntity() }, t, dir);
+				outp.success("sent");
+				return;
+			}
+			break;
+			case TPFailReason::ratelimit: {
+				outp.error(tr("tp.fail.rate"));
+				return;
+			}
+										break;
+			case TPFailReason::inreq: {
+				outp.error(tr("tp.fail.inreq"));
+				return;
+			}
+									break;
+			case TPFailReason::blocked: {
+				outp.error(tr("tp.fail.blocked"));
+				return;
+			}
+									  break;
+			}
 		}
-		DoCloseReq(it.val(), TPCloseReason::accept);
-		break;
-	}
-	case TPAOP::de: {
-		auto it = DoFetchReq_receiver(ori.getName());
-		if (!it.set) {
-			return false;
+		if (tpaop_isSet) {
+			switch (op) {
+			case TPAOP::ac: {
+				auto it = DoFetchReq_receiver(ori.getName());
+				if (!it.set) {
+					return;
+				}
+				DoCloseReq(it.val(), TPCloseReason::accept);
+				break;
+			}
+			case TPAOP::de: {
+				auto it = DoFetchReq_receiver(ori.getName());
+				if (!it.set) {
+					return;
+				}
+				DoCloseReq(it.val(), TPCloseReason::deny);
+				break;
+			}
+			case TPAOP::cancel: {
+				auto it = DoFetchReq_sender(ori.getName());
+				if (!it.set) {
+					return;
+				}
+				DoCloseReq(it.val(), TPCloseReason::cancel);
+				break;
+			}
+			case TPAOP::toggle: {
+				CHash hs = do_hash(ori.getName().c_str());
+				auto state = !tpaSetting[hs].Accept;
+				tpaSetting[hs].Accept = state;
+				outp.success("new state " + std::to_string(state));
+				break;
+			}
+			case TPAOP::gui: {
+				ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
+				using namespace Form;
+				CustomForm* fm{};
+				fm->title = tr("tpa.gui.title");
+				std::string guiLabel = tr("tpa.gui.label");
+				std::string guiDropdown1 = tr("tpa.gui.dropdown1");
+				std::string guiDropdown2 = tr("tpa.gui.dropdown2");
+				fm->append({ Label("", guiLabel.c_str()) });
+				fm->append({ Dropdown("", guiDropdown1.c_str() ,{"to","here"}) });
+				fm->append({ Dropdown("", guiDropdown2.c_str() ,playerList()) });
+				fm->sendTo(wp, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
+
+					});
+				/*sendForm(wp, FullFormBinder{fm,{[](WPlayer P, FullFormBinder::DType data) {
+					if (!data.set) return;
+						auto& [d1,d2] = data.val();
+						Level::runcmdAs(P, "tpa " + d2[0] + " " + QUOTE(d2[1]));
+				}} });*/
+				break;
+			}
+			}
 		}
-		DoCloseReq(it.val(), TPCloseReason::deny);
-		break;
 	}
-	case TPAOP::cancel: {
-		auto it = DoFetchReq_sender(ori.getName());
-		if (!it.set) {
-			return false;
-		}
-		DoCloseReq(it.val(), TPCloseReason::cancel);
-
-		break;
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("tpa", "Teleport", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->addEnum<direction>("TPAOP2", { {"to", direction::A_B}, {"from", direction::B_A}});
+		registry->addEnum<TpaCommand::TPAOP>("TPAOP", { {"ac", TPAOP::ac}, {"de", TPAOP::de}, {"cancel", TPAOP::cancel}, {"gui", TPAOP::gui}, {"toggle", TPAOP::toggle}});
+		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::dir, "direction", "TPAOP", &TpaCommand::dir_isSet), makeMandatory(&TpaCommand::target, "player"));
+		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::op, "op", "TPAOP2", &TpaCommand::tpaop_isSet));
 	}
-	case TPAOP::toggle: {
-		CHash hs = do_hash(ori.getName().c_str());
-		auto state = !tpaSetting[hs].Accept;
-		tpaSetting[hs].Accept = state;
-		outp.addMessage("new state " + std::to_string(state));
-
-		break;
-	}
-	case TPAOP::gui: {
-		ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
-		using namespace Form;
-		CustomForm* fm{};
-		fm->title = tr("tpa.gui.title");
-		std::string guiLabel = tr("tpa.gui.label");
-		std::string guiDropdown1 = tr("tpa.gui.dropdown1");
-		std::string guiDropdown2 = tr("tpa.gui.dropdown2");
-		fm->append({ Label("", guiLabel.c_str()) });
-		fm->append({ Dropdown("", guiDropdown1.c_str() ,{"to","here"}) });
-		fm->append({ Dropdown("", guiDropdown2.c_str() ,playerList()) });
-		fm->sendTo(wp, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
-
-			});
-		/*sendForm(wp, FullFormBinder{fm,{[](WPlayer P, FullFormBinder::DType data) {
-			if (!data.set) return;
-				auto& [d1,d2] = data.val();
-				Level::runcmdAs(P, "tpa " + d2[0] + " " + QUOTE(d2[1]));
-		}} });*/
-		break;
-	}
-	}
-	return true;
-}
-#pragma endregion
-
-#pragma region WARP
+};
 
 Form::SimpleForm* WARPGUI;
 void reinitWARPGUI() {
@@ -306,154 +316,205 @@ void saveWarps() {
 	db->put("warps", ws);
 	reinitWARPGUI();
 }
-enum WARPOP :int {
-	go = 1, add = 2, ls = 3, del = 4, gui = 5
-};
-enum class HOMEOP :int {
-	go = 1, add = 2, ls = 3, del = 4, gui = 5
-};
-bool oncmd_warp(CommandOrigin const& ori, CommandOutput& outp, MyEnum<WARPOP> op, optional<string> val) {
-	switch (op)
-	{
-	case gui: {
-		sendWARPGUI(((ServerPlayer*)ori.getEntity()));
-		return true;
-		break;
-	}
-	case add: {
-		if (ori.getPermissionsLevel() < 1) return false;
-		warps.emplace(val.value(), ((ServerPlayer*)ori.getEntity()));
-		saveWarps();
 
-		break;
-	}
-	case del: {
-		if (ori.getPermissionsLevel() < 1) return false;
-		warps.erase(val.value());
-		saveWarps();
-
-		break;
-	}
-	case ls: {
-		for (auto& i : warps) {
-			outp.addMessage(i.first + " " + i.second.toStr());
+class WarpCommand : public Command {
+	enum WARPOP :int {
+		go = 1,
+		add = 2,
+		ls = 3,
+		del = 4,
+		gui = 5
+	} op;
+	bool val_isSet;
+	std::string val;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		switch (op)
+		{
+		case gui: {
+			sendWARPGUI(((ServerPlayer*)ori.getEntity()));
+			return;
+			break;
 		}
+		case add: {
+			if (ori.getPermissionsLevel() < 1) return;
+			warps.emplace(val, ((ServerPlayer*)ori.getEntity()));
+			saveWarps();
 
-		break;
+			break;
+		}
+		case del: {
+			if (ori.getPermissionsLevel() < 1) return;
+			warps.erase(val);
+			saveWarps();
+
+			break;
+		}
+		case ls: {
+			for (auto& i : warps) {
+				outp.success(i.first + " " + i.second.toStr());
+			}
+
+			break;
+		}
+		case go: {
+			auto it = warps.find(val);
+			if (it == warps.end()) {
+				outp.error(tr("home.not.found"));
+				return;
+			}
+			it->second.teleport(((ServerPlayer*)ori.getEntity()));
+
+			break;
+		}
+		default:
+			break;
+		}
 	}
-	case go: {
-		auto it = warps.find(val.value());
-		if (it == warps.end()) {
+
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("warp", "Teleport", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->addEnum<WarpCommand::WARPOP>("WARPOP", { {"add", WARPOP::add}, {"del", WARPOP::del}, {"go", WARPOP::go}, {"gui", WARPOP::gui}, {"ls", WARPOP::ls}});
+		registry->registerOverload<WarpCommand>("warp", makeMandatory<CommandParameterDataType::ENUM>(&WarpCommand::op, "op", "WARPOP"), makeOptional(&WarpCommand::val, "warp", &WarpCommand::val_isSet));
+	}
+};
+
+class HomeCommand : public Command {
+	enum HOMEOP :int {
+		go = 1,
+		add = 2,
+		ls = 3,
+		del = 4,
+		gui = 5
+	} op;
+	bool val_isSet;
+	std::string val;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		Homes& hm = getHomeInCache(std::stoull(((ServerPlayer*)ori.getEntity())->getXuid()));
+		switch (op)
+		{
+		case HOMEOP::add: {
+			if (!val_isSet) {
+				outp.error("Please input home's name");
+				return;
+			}
+			if (ori.getPermissionsLevel() == 0 && hm.data.size() >= MAX_HOMES) {
+				outp.error(tr("home.is.full"));
+				return;
+			}
+			ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
+			Vec4 vc{ wp };
+			IVec2 startVc{ wp->getPos() };
+			IVec2 endVc{ wp->getPos() };
+			startVc += -HOME_DISTANCE_LAND;
+			endVc += HOME_DISTANCE_LAND;
+			/*if (!checkLandOwnerRange_stub(startVc, endVc, vc.dimid, wp.getXuid())) {
+				outp.error(tr("home.near.others.land"));
+				return false;
+			}*/
+			hm.data.emplace_back(val, vc);
+			hm.save();
+			outp.success("home point `" + val + "` was set successfully!!");
+
+			break;
+		}
+		case HOMEOP::del: {
+			if (!val_isSet) {
+				outp.error("Please input home's name");
+				return;
+			}
+			hm.data.remove_if([&](auto& x) {
+				return x.name == val;
+				});
+			hm.save();
+
+			break;
+		}
+		case HOMEOP::ls: {
+			for (auto& i : hm.data) {
+				outp.addMessage(i.name + " " + i.pos.toStr());
+			}
+			break;
+		}
+		case HOMEOP::go: {
+			if (!val_isSet) {
+				outp.error("Please input home's name");
+				return;
+			}
+			for (auto& i : hm.data) {
+				if (i.name == val) {
+					i.pos.teleport(((ServerPlayer*)ori.getEntity()));
+					return;
+				}
+			}
 			outp.error(tr("home.not.found"));
-			return false;
+			return;
+			break;
 		}
-		it->second.teleport(((ServerPlayer*)ori.getEntity()));
-
-		break;
-	}
-	default:
-		break;
-	}
-	return true;
-}
-#pragma endregion
-
-#pragma region HOME
-
-bool generic_home(CommandOrigin const& ori, CommandOutput& outp, Homes& hm, MyEnum<HOMEOP> op, optional<string> val) {
-	switch (op)
-	{
-	case HOMEOP::add: {
-		if (ori.getPermissionsLevel() == 0 && hm.data.size() >= MAX_HOMES) {
-			outp.error(tr("home.is.full"));
-			return false;
-		}
-		ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
-		Vec4 vc{ wp };
-		IVec2 startVc{ wp->getPos() };
-		IVec2 endVc{ wp->getPos() };
-		startVc += -HOME_DISTANCE_LAND;
-		endVc += HOME_DISTANCE_LAND;
-		/*if (!checkLandOwnerRange_stub(startVc, endVc, vc.dimid, wp.getXuid())) {
-			outp.error(tr("home.near.others.land"));
-			return false;
-		}*/
-		hm.data.emplace_back(val.value(), vc);
-		hm.save();
-		outp.success("home point `" + val.value() + "` was set successfully!!");
-
-		break;
-	}
-	case HOMEOP::del: {
-		hm.data.remove_if([&](auto& x) {
-			return x.name == val.value();
-			});
-		hm.save();
-
-		break;
-	}
-	case HOMEOP::ls: {
-		for (auto& i : hm.data) {
-			outp.addMessage(i.name + " " + i.pos.toStr());
-		}
-		break;
-	}
-	case HOMEOP::go: {
-		for (auto& i : hm.data) {
-			if (i.name == val.value()) {
-				i.pos.teleport(((ServerPlayer*)ori.getEntity()));
-				return true;
+		case HOMEOP::gui: {
+			auto wp = ((ServerPlayer*)ori.getEntity());
+			Form::SimpleForm* HomeGUI{};
+			HomeGUI->title = tr("home.gui.title");
+			HomeGUI->content = tr("home.gui.content");
+			for (auto& i : hm.data) {
+				HomeGUI->append(Form::Button(string(i.name)));
 			}
+			/*
+			GUI::sendForm(wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer* wp, GUI::SimpleFormBinder::DType d) {
+				if (d.set) {
+					wp.runcmdA("home", "go", QUOTE(d.val().second));
+				}
+				}));*/
+			break;
 		}
-		outp.error(tr("home.not.found"));
-		return false;
-		break;
-	}
-	case HOMEOP::gui: {
-		auto wp = ((ServerPlayer*)ori.getEntity());
-		Form::SimpleForm* HomeGUI{};
-		HomeGUI->title = tr("home.gui.title");
-		HomeGUI->content = tr("home.gui.content");
-		for (auto& i : hm.data) {
-			HomeGUI->append(Form::Button(string(i.name)));
+		default:
+			break;
 		}
-		/*
-		GUI::sendForm(wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer* wp, GUI::SimpleFormBinder::DType d) {
-			if (d.set) {
-				wp.runcmdA("home", "go", QUOTE(d.val().second));
-			}
-			}));*/
-		break;
 	}
-	default:
-		break;
-	}
-	return true;
-}
-bool oncmd_home(CommandOrigin const& ori, CommandOutput& outp, MyEnum<HOMEOP> op, optional<string> val) {
-	return generic_home(ori, outp, getHomeInCache(std::stoull(((ServerPlayer*)ori.getEntity())->getXuid())), op, val);
-}
-bool oncmd_homeAs(CommandOrigin const& ori, CommandOutput& outp, std::string target, MyEnum<HOMEOP> op, optional<string> val) {
-	return generic_home(ori, outp, getHomeInCache(std::stoull(PlayerDB::getXuid(target))), op, val);
-}
-#pragma endregion
-#pragma region BACK
-bool oncmd_back(CommandOrigin const& ori, CommandOutput& outp) {
-	ServerPlayer* sp = (ServerPlayer*)ori.getEntity();
-	if (!deathPos._map.count(sp)) {
-		outp.error(tr("home.not.found"));
-		return false;
-	}
-	deathPos[sp].teleport({ sp });
-	deathPos._map.erase(sp);
 
-	return true;
-}
-#pragma endregion
-bool oncmd_suicide(CommandOrigin const& ori, CommandOutput& outp) {
-	ori.getEntity()->kill();
-	return true;
-}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("home", "Teleport", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->addEnum<HomeCommand::HOMEOP>("HOMEOP", { {"add", HOMEOP::add}, {"del", HOMEOP::del}, {"go", HOMEOP::go}, {"gui", HOMEOP::gui}, {"ls", HOMEOP::ls} });
+		registry->registerOverload<HomeCommand>("home", makeMandatory<CommandParameterDataType::ENUM>(&HomeCommand::op, "op", "HOMEOP"), makeOptional(&HomeCommand::val, "home", &HomeCommand::val_isSet));
+	}
+};
+
+class BackCommand : public Command {
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		ServerPlayer* sp = (ServerPlayer*)ori.getEntity();
+		if (!deathPos._map.count(sp)) {
+			outp.error(tr("home.not.found"));
+		}
+		deathPos[sp].teleport({ sp });
+		deathPos._map.erase(sp);
+	}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("back", "Back to last deathpoint", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<BackCommand>("back");
+	}
+};
+
+class SuicideCommand : public Command {
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		ori.getPlayer()->kill();
+	}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("kill", "Goodbye", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<SuicideCommand>("kill");
+	}
+};
+
 void loadCfg() {
 	try {
 		ConfigJReader jr("plugins\\LLtpa\\tpa.json");
@@ -471,10 +532,21 @@ void loadCfg() {
 		throw 0;
 	}
 }
-static bool onReload(CommandOrigin const& ori, CommandOutput& outp) {
-	loadCfg();
-	return true;
-}
+
+class ReloadCommand : public Command {
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		loadCfg();
+		outp.success("Reloaded");
+	}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("tpareload", "Reload LLTpa's config", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<ReloadCommand>("tpareload");
+	}
+};
+
 void loadall() {
 	string val;
 	if (db->get("warps", val)) {
@@ -483,44 +555,26 @@ void loadall() {
 	}
 	loadCfg();
 }
+
 void tpa_entry() {
 	std::filesystem::create_directory("plugins\\LLtpa");
 	std::filesystem::create_directory("plugins\\LLtpa\\data");
 	std::filesystem::create_directory("plugins\\LLtpa\\langpack");
-	MakeKVDB("plugins\\LLtpa\\data", true, 8);
+	db = MakeKVDB("plugins\\LLtpa\\data", true, 8);
 	Translation::load("plugins/LLtpa/langpack/tpa.json");
 	Logger::setTitle("TPA");
 	loadall();
 	reinitWARPGUI();
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
-		CEnum<direction> _1("tpdir", { "to","here" });
-		CEnum<WARPOP> _2("warpop", { "go","add","ls","del","gui" });
-		CEnum<HOMEOP> _4("homeop", { "go","add","ls","del", "gui" });
-		CEnum<TPAOP> _3("tpaop", { "ac","de","cancel","toggle", "gui" });
-		if (TPA_ENABLED) {
-			MakeCommand("tpa", "tpa system", 0);
-			CmdOverload(tpa, oncmd_tpa, "dir", "target");
-			CmdOverload(tpa, oncmd_tpa2, "op");
-			MakeCommand("tpareload", "reload tpa", 1);
-			CmdOverload(tpareload, onReload);
-		}
+		if (TPA_ENABLED)	TpaCommand::setup(e.mCommandRegistry);
 		if (HOME_ENABLED) {
-			MakeCommand("warp", "warp system", 0);
-			MakeCommand("home", "home system", 0);
-			MakeCommand("homeas", "run home as a player", 1);
-			CmdOverload(warp, oncmd_warp, "op", "name");
-			CmdOverload(home, oncmd_home, "op", "name");
-			CmdOverload(homeas, oncmd_homeAs, "Pname", "op", "home_name");
+			HomeCommand::setup(e.mCommandRegistry);
 		}
-		if (BACK_ENABLED) {
-			MakeCommand("back", "back to last deathpoint", 0);
-			CmdOverload(back, oncmd_back);
-		}
-		if (SUICIDE_ENABLED) {
-			MakeCommand("suicide", "kill yourself", 0);
-			CmdOverload(suicide, oncmd_suicide);
-		}
+		WarpCommand::setup(e.mCommandRegistry);
+		if (BACK_ENABLED) BackCommand::setup(e.mCommandRegistry);
+		if (SUICIDE_ENABLED) SuicideCommand::setup(e.mCommandRegistry);
+		ReloadCommand::setup(e.mCommandRegistry);
 		return true;
 		});
 	if (BACK_ENABLED) {
@@ -531,5 +585,5 @@ void tpa_entry() {
 			return true;
 			});
 	}
-	Logger::Info("Loaded version: ", _ver);
+	Logger::Info("Loaded version: {}", _ver);
 }

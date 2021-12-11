@@ -310,8 +310,8 @@ public:
 class ItemCommand : public Command {
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
-		if (ori.getOriginType() == 0) {
-			ServerPlayer* wp = ori.getPlayer();
+		ServerPlayer* wp = ori.getPlayer();
+		if (wp) {
 			const ItemStack* item = &wp->getCarriedItem();
 			std::string itemName = "Air";
 			if (item->getId() != 0) {
@@ -327,7 +327,7 @@ public:
 	static void setup(CommandRegistry* registry) {
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
-		registry->registerCommand("item", "Show item information on your hand", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerCommand("item", "Show item information on your hand", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
 		registry->registerOverload<ItemCommand>("item");
 	}
 };
