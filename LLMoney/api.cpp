@@ -236,14 +236,15 @@ void ConvertData() {
 		Logger::Info("Old money data detected, try to convert old data to new data");
 		try {
 			std::unique_ptr<SQLite::Database> db2 = std::make_unique<SQLite::Database>("plugins\\LLMoney\\money.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
-			SQLite::Statement get{ *db2, "select * from money" };
+			SQLite::Statement get{ *db2, "select hex(XUID),Money from money" };
 			SQLite::Statement set{ *db,"insert into money values (?,?)" };
 			while (get.executeStep()) {
-				const void* bolb = get.getColumn(0).getBlob();
-				// not working correctly
-				unsigned long long xuid =(unsigned long long)&bolb;
+				std::string blob = get.getColumn(0).getText();
+				unsigned long long value;
+				std::istringstream iss(blob);
+				iss >> std::hex >> value;
+				unsigned long long xuid =_byteswap_uint64(value);
 				long long money = get.getColumn(1).getInt64();
-				Logger::Info("{} {}", xuid, money);
 				set.bindNoCopy(1, std::to_string(xuid));
 				set.bind(2, money);
 				set.exec();
