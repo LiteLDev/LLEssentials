@@ -160,7 +160,7 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 }
 
 void schTask() {
-	Schedule::repeat([] {
+	Schedule::repeat::repeat([] {
 		clock_t expire = clock() - TPexpire;
 		for (auto it = reqs.begin(); it != reqs.end();) {
 			if (it->time <= expire) {
@@ -170,7 +170,7 @@ void schTask() {
 			}
 			else break;
 		}
-		}, 10);
+		}, 200);
 }
 
 std::vector<string> playerList() {
@@ -289,8 +289,8 @@ public:
 		registry->registerCommand("tpa", "Teleport", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
 		registry->addEnum<direction>("TPAOP2", { {"to", direction::A_B}, {"from", direction::B_A}});
 		registry->addEnum<TpaCommand::TPAOP>("TPAOP", { {"ac", TPAOP::ac}, {"de", TPAOP::de}, {"cancel", TPAOP::cancel}, {"gui", TPAOP::gui}, {"toggle", TPAOP::toggle}});
-		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::dir, "direction", "TPAOP", &TpaCommand::dir_isSet), makeMandatory(&TpaCommand::target, "player"));
-		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::op, "op", "TPAOP2", &TpaCommand::tpaop_isSet));
+		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::dir, "direction", "TPAOP2", &TpaCommand::dir_isSet), makeMandatory(&TpaCommand::target, "player"));
+		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::op, "op", "TPAOP", &TpaCommand::tpaop_isSet));
 	}
 };
 
@@ -510,8 +510,8 @@ public:
 	static void setup(CommandRegistry* registry) {
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
-		registry->registerCommand("kill", "Goodbye", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->registerOverload<SuicideCommand>("kill");
+		registry->registerCommand("suicide", "Goodbye", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<SuicideCommand>("suicide");
 	}
 };
 
@@ -564,7 +564,7 @@ void tpa_entry() {
 	Translation::load("plugins/LLtpa/langpack/tpa.json");
 	Logger::setTitle("TPA");
 	loadall();
-	reinitWARPGUI();
+	//reinitWARPGUI();
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
 		if (TPA_ENABLED)	TpaCommand::setup(e.mCommandRegistry);
