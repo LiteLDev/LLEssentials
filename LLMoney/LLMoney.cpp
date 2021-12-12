@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <Global.h>
 #include <iostream>
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
@@ -15,6 +16,8 @@
 #include <TranslationAPI.h>
 #include <JsonLoader.h>
 using namespace RegisterCommandHelper;
+
+Logger logger("LLMoney");
 
 double MoneyFee;
 bool initDB();
