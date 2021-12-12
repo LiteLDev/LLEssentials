@@ -5,16 +5,30 @@
 一些[LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)的示例插件
 
 # 用法
-[Documents](https://docs.litetitle.com/)
+## LLMoney
+## LLHelper
+| 命令 | 说明 | 权限等级 |
+| --- | --- | --- |
+| /money query [player] | 查询你自己/他人的余额 | 玩家/OP |
+| /money pay <玩家> <数量> | 转账给某人 | 玩家 |
+| /money set <玩家> <数量> | 设置某人的余额 | OP |
+| /money add <玩家> <数量> | 添加某人的余额 | OP |
+| /money reduce <玩家> <数量> | 减少某人的余额 | OP |
+| /money hist | 打印流水账 | Player |
+| /money purge | 清除流水账 | OP |
+## LLHelper
 | 命令 | 说明 | 权限等级 |
 | --- | --- | --- |
 | /gmode <玩家> <模式(0/1/2/3)> | 切换玩家游戏模式 | OP |
 | /ban <ban/unban/list> [玩家] [时间(秒)] | 封禁/解封一名玩家 | OP |
 | /transfer <玩家> <IP> <端口> | 将一名玩家转移到其它服务器 | OP |
-| /hreload | 重载LLHelper配置文件 | OP |
+| /helper reload | 重载LLHelper配置文件 | OP |
 | /skick <玩家> | 以暴力的方式强制踢出一名玩家 | OP |
 | /cname <set/rm> <玩家> [假名] | 给玩家设置假名 | OP |
 | /vanish | 隐身(仅对可以看见你的玩家有效) | OP |
+## LLTpa
+| 命令 | 说明 | 权限等级 |
+| --- | --- | --- |
 | /tpa <to/here/ac/de/cancel/toggle> [玩家]	| 传送到一名玩家的位置/将玩家传送到你的位置/接受传送/拒绝传送/取消传送/改变是否接受传送的状态 | 玩家 |
 | /warp <add/del/go/ls> [地标] | 添加一个地标/删除地标/前往地标/列出地标 | OP |
 | /home <add/del/go/ls> [家] | 添加一个家/删除家/前往家/列出家 | 玩家 |
