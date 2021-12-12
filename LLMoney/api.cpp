@@ -5,6 +5,7 @@
 #include "Event.h"
 #include <LoggerAPI.h>
 static std::unique_ptr<SQLite::Database> db;
+Logger moneylog("LLMoney");
 money_t DEF_MONEY = 0;
 
 struct cleanSTMT {
@@ -21,7 +22,6 @@ struct cleanSTMT {
 void ConvertData();
 bool initDB() {
 	try {
-		Logger::setTitle("Money");
 		db = std::make_unique<SQLite::Database>("plugins\\LLMoney\\economy.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
 		db->exec("PRAGMA journal_mode = MEMORY");
 		db->exec("PRAGMA synchronous = NORMAL");
@@ -45,7 +45,7 @@ bool initDB() {
 		); ");
 	}
 	catch (std::exception const& e) {
-		Logger::Error("DB err %s", e.what());
+		moneylog.error("DB err %s", e.what());
 		return false;
 	}
 	ConvertData();
@@ -75,7 +75,7 @@ LLMONEY_API money_t LLMoneyGet(xuid_t xuid) {
 		return rv;
 	}
 	catch (std::exception const& e) {
-		Logger::Error("DB err %s\n", e.what());
+		moneylog.error("DB err %s\n", e.what());
 		return -1;
 	}
 }
@@ -144,7 +144,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 	}
 	catch (std::exception const& e) {
 		db->exec("rollback");
-		Logger::Error("DB err %s\n", e.what());
+		moneylog.error("DB err %s\n", e.what());
 		return false;
 	}
 }
@@ -207,8 +207,8 @@ LLMONEY_API string LLMoneyGetHist(xuid_t xuid, int timediff)
 		get.bindNoCopy(2, xuid);
 		get.bindNoCopy(3, xuid);
 		while (get.executeStep()) {
-			auto from = PlayerDB::fromXuid(*(xuid_t*)get.getColumn(0).getBlob());
-			auto to = PlayerDB::fromXuid(*(xuid_t*)get.getColumn(1).getBlob());
+			auto from = PlayerInfo::fromXuid(*(xuid_t*)get.getColumn(0).getBlob());
+			auto to = PlayerInfo::fromXuid(*(xuid_t*)get.getColumn(1).getBlob());
 			if (from != "" && to != "")
 				rv += from + " -> " + to + " " + std::to_string((money_t)get.getColumn(2).getInt64()) + " " + get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
 		}
@@ -217,7 +217,7 @@ LLMONEY_API string LLMoneyGetHist(xuid_t xuid, int timediff)
 		return rv;
 	}
 	catch (std::exception const& e) {
-		Logger::Error("DB err %s\n", e.what());
+		moneylog.error("DB err %s\n", e.what());
 		return "failed";
 	}
 }
@@ -233,7 +233,7 @@ LLMONEY_API void LLMoneyClearHist(int difftime) {
 
 void ConvertData() {
 	if (std::filesystem::exists("plugins\\LLMoney\\money.db")) {
-		Logger::Info("Old money data detected, try to convert old data to new data");
+		moneylog.info("Old money data detected, try to convert old data to new data");
 		try {
 			std::unique_ptr<SQLite::Database> db2 = std::make_unique<SQLite::Database>("plugins\\LLMoney\\money.db", SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
 			SQLite::Statement get{ *db2, "select hex(XUID),Money from money" };
@@ -254,9 +254,9 @@ void ConvertData() {
 			get.reset();
 		}
 		catch (std::exception& e) {
-			Logger::Info("{}", e.what());
+			moneylog.info("{}", e.what());
 		}
 		std::filesystem::rename("plugins\\LLMoney\\money.db", "plugins\\LLMoney\\money_old.db");
-		Logger::Info("Conversion completed");
+		moneylog.info("Conversion completed");
 	}
 }

@@ -8,6 +8,7 @@
 
 std::unique_ptr<KVDB> db;
 
+
 #pragma region structs
 enum direction :int {
 	A_B = 1,

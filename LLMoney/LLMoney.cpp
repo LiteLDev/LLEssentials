@@ -13,6 +13,7 @@
 #include "LLMoney.h"
 #include "Money.h"
 #include <filesystem>
+#include <TranslationAPI.h>
 #include <JsonLoader.h>
 using namespace RegisterCommandHelper;
 
@@ -45,10 +46,10 @@ public:
 		case query:
 		case hist:
 			if (dst_isSet && ori.getPermissionsLevel() > 0) {
-				dstid = PlayerDB::getXuid(dst);
+				dstid = PlayerInfo::getXuid(dst);
 			}
 			else {
-				dstid = PlayerDB::getXuid(ori.getName());
+				dstid = PlayerInfo::getXuid(ori.getName());
 			}
 			if (dstid == "") {
 				outp.error(tr("money.no.target"));
@@ -59,7 +60,7 @@ public:
 		case set:
 		case add:
 		case reduce:
-			dstxuid = PlayerDB::getXuid(dst);
+			dstxuid = PlayerInfo::getXuid(dst);
 			if (dstxuid == "") {
 				outp.error(tr("money.no.target"));
 				return;
@@ -85,7 +86,7 @@ public:
 			if (moneynum <= 0) {
 				outp.error(tr("money.invalid.arg"));
 			}
-			myuid = PlayerDB::getXuid(ori.getName());
+			myuid = PlayerInfo::getXuid(ori.getName());
 			if (myuid == "") {
 				outp.error(tr("money.no.target"));
 			}
@@ -192,11 +193,11 @@ public:
 			if (dst_isSet) {
 				if (ori.getPermissionsLevel() > 0) {
 					if (!player.results(ori).empty()) {
-						dstid = PlayerDB::getXuid(player.results(ori).begin().operator*()->getRealName());
+						dstid = PlayerInfo::getXuid(player.results(ori).begin().operator*()->getRealName());
 					}
 				}
 				else {
-					dstid = PlayerDB::getXuid(ori.getName());
+					dstid = PlayerInfo::getXuid(ori.getName());
 				}
 				if (dstid == "") {
 					outp.error(tr("money.no.target"));
@@ -215,7 +216,7 @@ public:
 			}
 			for (auto resu : player.results(ori)) {
 				optional<std::string> dstxuid, myuid;
-				dstxuid = PlayerDB::getXuid(resu->getRealName());
+				dstxuid = PlayerInfo::getXuid(resu->getRealName());
 				if (!dstxuid.Set()) {
 					outp.error(tr("money.no.target"));
 					return;
@@ -236,7 +237,7 @@ public:
 			if (moneynum <= 0) {
 				outp.error(tr("money.invalid.arg"));
 			}
-			myuid = PlayerDB::getXuid(ori.getName());
+			myuid = PlayerInfo::getXuid(ori.getName());
 			if (myuid == "") {
 				outp.error(tr("money.no.target"));
 			}
@@ -304,10 +305,6 @@ public:
 			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP2"),
 			makeMandatory(&MoneySCommand::player, "PlayerName"),
 			makeMandatory(&MoneySCommand::moneynum, "num"));
-		registry->registerOverload<MoneyCommand>(
-			"money_s",
-			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP3"),
-			makeOptional(&MoneySCommand::difftime, "time", &MoneySCommand::difftime_isSet));
 	}
 };
 
@@ -317,7 +314,6 @@ void entry() {
 	if (!initDB()) {
 		exit(1);
 	}
-	Logger::setTitle("Money");
 	Translation::load("plugins\\LLMoney\\langpack\\money.json");
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& ev) {
 		MoneyCommand::setup(ev.mCommandRegistry);
@@ -332,8 +328,8 @@ void entry() {
 		DEF_MONEY = defmoney;
 	}
 	catch (string e) {
-		Logger::Error("Json error: {}", e);
+		Logger("LLMoney").error("Json error: {}", e);
 		throw 0;
 	}
-	Logger::Info("Loaded version: {}", _ver);
+	Logger("LLMoney").info("Loaded version: {}", _ver);
 }

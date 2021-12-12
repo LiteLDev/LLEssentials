@@ -17,9 +17,9 @@
 #ifndef GSL_MULTI_SPAN_H
 #define GSL_MULTI_SPAN_H
 
-#include <gsl/gsl_assert> // for Expects
-#include <gsl/gsl_byte>   // for byte
-#include <gsl/gsl_util>   // for narrow_cast
+#include "gsl_assert" // for Expects
+#include "gsl_byte"   // for byte
+#include "gsl_util"   // for narrow_cast
 
 #include <algorithm> // for transform, lexicographical_compare
 #include <array>     // for array
@@ -83,7 +83,7 @@ namespace details
     template <typename SizeType>
     struct [[deprecated]] SizeTypeTraits
     {
-        static const SizeType max_value = std::numeric_limits<SizeType>::max();
+        static const SizeType max_value = (std::numeric_limits<SizeType>::max)();
     };
 
     template <typename... Ts>

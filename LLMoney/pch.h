@@ -11,6 +11,5 @@
 
 #include <iostream>
 #include<SQLiteCpp/SQLiteCpp.h>
-#include <PlayerDB.h>
-#include <TranslationAPI.h>
+#include <PlayerInfoAPI.h>
 #endif //PCH_H
