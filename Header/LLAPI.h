@@ -8,8 +8,6 @@
 #include "Global.h"
 #include "Utils/WinHelper.h"
 #include "Utils/PluginOwnData.h"
-
-#define LOGGER_DEFAULT_TITLE "ll_plugin_default_logger_title"
 #include "LoggerAPI.h"
 
 //helper
@@ -76,7 +74,6 @@ namespace LL
     inline bool registerPlugin(std::string name, std::string introduction, std::string version,
                               std::string git = "", std::string license = "", std::string website = "") {
         //此函数的实现必须放在头文件中
-        PluginOwnData::set<string>(LOGGER_DEFAULT_TITLE, name);
         return ::RegisterPlugin(GetCurrentModule(), name, introduction, version, git, license, website);
     }
 

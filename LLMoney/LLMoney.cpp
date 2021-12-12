@@ -1,5 +1,4 @@
 #include "pch.h"
-#include <Global.h>
 #include <iostream>
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
@@ -291,6 +290,7 @@ public:
 		//registerCommand
 		registry->registerCommand(
 			"money_s", "Economy system(Selector)", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+
 		//addEnum
 		registry->addEnum<MoneyOP>("MoneyOP1", { { "query",MoneyOP::query},{ "hist",MoneyOP::hist} });
 		registry->addEnum<MoneyOP>("MoneyOP2", { { "add",MoneyOP::add},{ "pay",MoneyOP::pay },{"reduce",MoneyOP::reduce},{"set",MoneyOP::set} });
@@ -300,6 +300,7 @@ public:
 			"money_s",
 			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP1"),
 			makeOptional(&MoneySCommand::player, "PlayerName", &MoneySCommand::dst_isSet));
+
 		registry->registerOverload<MoneyCommand>(
 			"money_s",
 			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP2"),
