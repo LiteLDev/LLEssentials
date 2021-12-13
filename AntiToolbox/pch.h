@@ -17,7 +17,7 @@
 #include <third-party/rapidjson/document.h>
 #include "base64.h"
 #include <MC/Level.hpp>
-#include <PlayerDB.h>
+#include <PlayerInfoAPI.h>
 #include <MC/NetworkIdentifier.hpp>
 #include <MC/ServerNetworkEventHandler.hpp>
 
