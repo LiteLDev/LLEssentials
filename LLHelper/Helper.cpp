@@ -6,7 +6,7 @@ std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
 std::unordered_set<short> logItems, banItems;
 bool LOG_CMD, LOG_CHAT, regABILITY, NO_EXPLOSION, EXP_PLAY, penderman, pfarm;
-//Minecraft* mc;
+Logger logger("Helper");
 
 void loadCfg() {
 	try {
@@ -46,9 +46,8 @@ void entry() {
 	Event::PlayerPreJoinEvent::subscribe(onPlayerJoin);
 	loadCfg();
 	RegisterCommands();
-	Logger::setTitle("Helper");
-	Logger::setFile("logs/Helper.log");
-	Logger::Info("Loaded version: {}", _ver);
+	logger.setFile("logs/Helper.log", true);
+	logger.info("Loaded version: {}", _ver);
 }
 
 THook(bool, "?baseUseItem@GameMode@@QEAA_NAEAVItemStack@@@Z",

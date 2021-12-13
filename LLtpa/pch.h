@@ -21,6 +21,7 @@
 #include <MC/ServerPlayer.hpp>
 #include <MC/Level.hpp>
 #include <ScheduleAPI.h>
+#include <MC/NetworkIdentifier.hpp>
 using std::shared_ptr, std::pair;
 using std::make_shared;
 #endif //PCH_H

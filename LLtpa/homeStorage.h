@@ -57,7 +57,7 @@ struct Homes {
 	}
 	Homes(string_view own) {
 		string val;
-		auto x = std::stoull(PlayerDB::getXuid((std::string)own));
+		auto x = std::stoull(PlayerInfo::getXuid((std::string)own));
 		if (x != 0) {
 			if (db->get(to_view(x), val)) {
 				RBStream rs{ val };

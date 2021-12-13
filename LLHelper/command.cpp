@@ -16,7 +16,7 @@ playerMap<string> ORIG_NAME;
 std::unordered_map<string, string> CNAME;
 
 void loadCNAME() {
-	db = MakeKVDB("plugins/LLHelper/data", false);
+	db = KVDB::create("plugins/LLHelper/data", false);
 	db->iter([](string_view k, string_view v) {
 		if (!k._Starts_with("b_"))
 			CNAME.emplace(k, v);
@@ -83,7 +83,7 @@ public:
 			return;
 		}
 		case BANOP::ban: {
-			std::string xuid = PlayerDB::getXuid(entry);
+			std::string xuid = PlayerInfo::getXuid(entry);
 			if (xuid == "") {
 				outp.error("Player not found");
 				return;
@@ -100,7 +100,7 @@ public:
 				outp.success(entry + tr("ban.unban.success"));
 			}
 			else {
-				std::string XID = PlayerDB::getXuid(entry);
+				std::string XID = PlayerInfo::getXuid(entry);
 				if (XID == "") {
 					outp.error(tr("ban.unban.error"));
 				}
@@ -123,7 +123,7 @@ public:
 						xuid_t xid;
 						std::stringstream ss{ banned };
 						ss >> xid;
-						outp.addMessage(banned + " (" + PlayerDB::fromXuid(xid) + ") " + std::to_string(*(time_t*)val.data()));
+						outp.addMessage(banned + " (" + PlayerInfo::fromXuid(xid) + ") " + std::to_string(*(time_t*)val.data()));
 					}
 				}
 				});

@@ -7,8 +7,11 @@
 #include <MC/FormUI.hpp>
 #include <RegCommandAPI.h>
 #include <MC/NetworkIdentifier.hpp>
+#include <MC/Types.hpp>
+#include <Dedicated/Core.h>
 
 std::unique_ptr<KVDB> db;
+Logger logger("Teleport");
 
 enum direction :int {
 	A_B = 1,
@@ -537,7 +540,7 @@ void loadCfg() {
 		jr.bind("HOME_ENABLED", HOME_ENABLED, true);
 	}
 	catch (string e) {
-		Logger::Error("JSON ERROR", e);
+		logger.error("JSON ERROR", e);
 		throw 0;
 	}
 }
@@ -569,9 +572,8 @@ void tpa_entry() {
 	std::filesystem::create_directory("plugins\\LLtpa");
 	std::filesystem::create_directory("plugins\\LLtpa\\data");
 	std::filesystem::create_directory("plugins\\LLtpa\\langpack");
-	db = MakeKVDB("plugins\\LLtpa\\data", true, 8);
+	db = KVDB::create("plugins\\LLtpa\\data", true, 8);
 	Translation::load("plugins/LLtpa/langpack/tpa.json");
-	Logger::setTitle("TPA");
 	loadall();
 	//reinitWARPGUI();
 	schTask();
@@ -587,12 +589,12 @@ void tpa_entry() {
 		return true;
 		});
 	if (BACK_ENABLED) {
-		Event::PlayerDeathEvent::subscribe([](const Event::PlayerDeathEvent&  ev) {
+		Event::PlayerDieEvent::subscribe([](const Event::PlayerDieEvent&  ev) {
 			ServerPlayer* sp = (ServerPlayer*)ev.mPlayer;
 			deathPos[sp] = Vec4{ sp };
 			sp->sendTextPacket(tr("tpa.back.use"), TextType::RAW);
 			return true;
 			});
 	}
-	Logger::Info("Loaded version: {}", _ver);
+	logger.info("Loaded version: {}", _ver);
 }

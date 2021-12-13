@@ -1,25 +1,26 @@
 ﻿#include "pch.h"
 #include <filesystem>
 
-std::string Kick_message = u8"��cDon't use toolbox!";
+std::string Kick_message = u8"§cDon't use toolbox!";
 std::vector<std::string> Array;
 bool FakeNameDetection = true;
 std::vector<std::string> CmdArray;
 bool EnableCustomCmd = false;
+Logger antiToolboxLogger("AntiToolbox");
 
 void loadConfig() {
 	std::string   config_file = "plugins/AntiToolbox/config.json";
 	std::ifstream fs;
 	fs.open(config_file, std::ios::in);
 	if (!fs) {
-		Logger::Warn("{} not found, creating configuration file", config_file);
+		antiToolboxLogger.warn("{} not found, creating configuration file", config_file);
 		std::filesystem::create_directory("plugins/AntiToolbox");
 		std::ofstream of(config_file);
 		if (of) {
 			of << "{\n  \"KickMessage\": \"§cDon't use toolbox!\",\n  \"WhiteList\": [\"Notch\", \"Jeb_\"],\n  \"FakeNameDetection\": true,\n  \"EnableCustomCmd\": false,\n  \"CustomCmd\": [\"ban ban %player%\", \"say Toolbox Detected: %player%\"]\n}";
 		}
 		else {
-			Logger::Error("Configuration file creation failed");
+			antiToolboxLogger.error("Configuration file creation failed");
 		}
 	}
 	else {
@@ -34,7 +35,7 @@ void loadConfig() {
 			Kick_message = document["KickMessage"].GetString();
 		}
 		else {
-			Logger::Warn("Config KickMessage not found");
+			antiToolboxLogger.warn("Config KickMessage not found");
 		}
 		if (document.HasMember("WhiteList")) {
 			auto arraylist = document["WhiteList"].GetArray();
@@ -43,19 +44,19 @@ void loadConfig() {
 			}
 		}
 		else {
-			Logger::Warn("Config WhiteList not found");
+			antiToolboxLogger.warn("Config WhiteList not found");
 		}
 		if (document.HasMember("FakeNameDetection")) {
 			FakeNameDetection = document["FakeNameDetection"].GetBool();
 		}
 		else {
-			Logger::Warn("Config FakeNameDetection not found");
+			antiToolboxLogger.warn("Config FakeNameDetection not found");
 		}
 		if (document.HasMember("EnableCustomCmd")) {
 			EnableCustomCmd = document["EnableCustomCmd"].GetBool();
 		}
 		else {
-			Logger::Warn("Config EnableCustomCmd not found");
+			antiToolboxLogger.warn("Config EnableCustomCmd not found");
 		}
 		if (document.HasMember("CustomCmd")) {
 			auto arraylist = document["CustomCmd"].GetArray();
@@ -64,7 +65,7 @@ void loadConfig() {
 			}
 		}
 		else {
-			Logger::Warn("Config CmdArray not found");
+			antiToolboxLogger.warn("Config CmdArray not found");
 		}
 	}
 }
@@ -91,7 +92,7 @@ bool onPlayerLogin(Event::PlayerJoinEvent ev) {
 		std::string real_name = ev.mPlayer->getRealName();
 		std::string player_name = ev.mPlayer->getNameTag();
 		if (real_name != player_name) {
-			Logger::Info("Fake Nametag detected: {} RealName: {}", player_name, real_name);
+			antiToolboxLogger.info("Fake Nametag detected: {} RealName: {}", player_name, real_name);
 			if (!EnableCustomCmd) {
 				ev.mPlayer->kick(Kick_message);
 			}
@@ -104,11 +105,10 @@ bool onPlayerLogin(Event::PlayerJoinEvent ev) {
 }
 
 void entry() {
-	Logger::setTitle("AntiToolbox");
-	Logger::setFile("logs/toolbox.log");
+	antiToolboxLogger.setFile("logs/AntiToolbox.log", true);
 	loadConfig();
 	Event::PlayerJoinEvent::subscribe(onPlayerLogin);
-	Logger::Info("Loaded");
+	antiToolboxLogger.info("Loaded");
 }
 
 std::vector<string> split(const string& str, const char pattern)
@@ -136,7 +136,7 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 		std::string device_model = document["DeviceModel"].GetString();
 		std::string player_name = sp->getRealName();
 		if (device_model == "") {
-			Logger::Info("Null model detected: {}, using Horion client?", player_name);
+			antiToolboxLogger.info("Null model detected: {}, using Horion client?", player_name);
 			if (!EnableCustomCmd) {
 				sp->kick(u8"§cNull model");
 			}
@@ -153,12 +153,12 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 		//std::cout << device_company << ":" << device_company_ori << "\n";
 		if (device_company_ori != device_company) { //Toolbox detected
 			for (std::string pl_name : Array) { // WhiteList detecting
-				std::string xuid = PlayerDB::getXuid(pl_name);
+				std::string xuid = PlayerInfo::getXuid(pl_name);
 				if (xuid == sp->getXuid()) { // WhiteList detected
 					return original(thi, networkId, con_req, sp);
 				}
 			}
-			Logger::Info("Toolbox detected: {}", player_name);
+			antiToolboxLogger.info("Toolbox detected: {}", player_name);
 			if (!EnableCustomCmd) {
 				sp->kick(Kick_message);
 			}
