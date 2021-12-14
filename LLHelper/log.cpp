@@ -26,7 +26,7 @@ bool onPlayerJoin(Event::PlayerPreJoinEvent ev) {
 
 THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
 	GameMode* self, ItemStack* item, BlockPos* bpos, unsigned char a1, Vec3* plpos, Block* block) {
-	std::string blockname = block->getNameString();
+	std::string blockname = block->getName().getString();
 	Player* sp = self->getPlayer();
 	short itemid = item->getId();
 	if (logItems.count(itemid)) {
