@@ -35,7 +35,8 @@ HMODULE GetCurrentModule();
 
 class Logger {
 public:
-    class OutputStream {
+    class OutputStream
+    {
         friend class Logger;
 
     protected:
@@ -52,14 +53,16 @@ public:
         bool locked = false;
 
         LIAPI explicit OutputStream(Logger* logger, int level,
-            std::string&& consoleFormat,
-            std::string&& fileFormat,
-            fmt::text_style&& style,
-            std::string&& mode);
+                                    std::string&& consoleFormat,
+                                    std::string&& fileFormat,
+                                    fmt::text_style&& style,
+                                    std::string&& mode);
 
-        template<typename T>
-        OutputStream& operator<<(T t) {
-            if (!locked) {
+        template <typename T>
+        OutputStream& operator<<(T t)
+        {
+            if (!locked)
+            {
                 lock();
                 locked = true;
             }
@@ -67,20 +70,23 @@ public:
             return *this;
         }
 
-        template<>
-        OutputStream& operator<<(void (*t)(OutputStream&)) {
+        template <>
+        OutputStream& operator<<(void (*t)(OutputStream&))
+        {
             t(*this);
             return *this;
         }
 
-        template<typename S, typename... Args, enable_if_t<(fmt::v8::detail::is_string<S>::value), int> = 0>
-        void operator()(const S& formatStr, const Args &... args) {
+        template <typename S, typename... Args, enable_if_t<(fmt::v8::detail::is_string<S>::value), int> = 0>
+        void operator()(const S& formatStr, const Args&... args)
+        {
             std::string str = fmt::format(formatStr, args...);
             *this << str << endl;
         }
 
-        template<typename... Args>
-        void operator()(const char* formatStr, const Args &... args) {
+        template <typename... Args>
+        void operator()(const char* formatStr, const Args&... args)
+        {
             std::string str = fmt::format(std::string(formatStr), args...);
             *this << str << endl;
         }
