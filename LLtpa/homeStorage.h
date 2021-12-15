@@ -11,10 +11,10 @@ struct Vec4 {
 	}
 	template<typename _TP>
 	void pack(WBStreamImpl<_TP>& ws) const {
-		ws.apply(vc, dimid);
+		ws.apply(vc.x, vc.y, vc.z, dimid);
 	}
 	void unpack(RBStream& rs) {
-		rs.apply(vc, dimid);
+		rs.apply(vc.x, vc.y, vc.z, dimid);
 	}
 	void teleport(ServerPlayer* wp) {
 		wp->teleport(vc, dimid);
