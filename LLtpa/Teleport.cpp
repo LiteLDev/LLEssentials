@@ -4,11 +4,11 @@
 #include "pch.h"
 #include "homeStorage.h"
 #include "Tpa.h"
-#include <FormUI.h>
 #include <RegCommandAPI.h>
 #include <MC/NetworkIdentifier.hpp>
 #include <MC/Types.hpp>
 #include <Dedicated/Core.h>
+#include <GuiAPI.h>
 
 std::unique_ptr<KVDB> db;
 Logger logger("Teleport");
@@ -145,23 +145,17 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 	reqs.emplace_back(dir, a, b, clock());
 	string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
 	_b->sendTextPacket(prompt, TextType::RAW);
-	//摸了，还没写
-	/*using namespace Form;
+	using namespace GUI;
+	shared_ptr<RawFormBinder> x;
 	char buf[1024];
-	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str()) };
-	CustomForm form(FM);
-	form.sendTo(_b, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
-
-		});*/
-	//original
-	/*
-	sendForm(_b, RawFormBinder{ FM,[](WPlayer wp,RawFormBinder::DType i) {
+	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str())};
+	sendForm(*_b, RawFormBinder{ FM,[](ServerPlayer& wp,RawFormBinder::DType i) {
 		auto [clicked,res,list] = i;
 		if (clicked) {
 			int idx = atoi(res);
-			wp.runcmdA("tpa",(idx == 0 ? "ac" : "de"));
+			wp.runcmd("tpa" + idx == 0 ? "ac" : "de");
 		}
-	} ,{} });*/
+	} ,{} });
 }
 
 void schTask() {
@@ -209,7 +203,7 @@ public:
 			switch (reqres) {
 			case TPFailReason::success:
 			{
-				DoMakeReq({ (ServerPlayer*)ori.getEntity() }, t, dir);
+				DoMakeReq({ ori.getPlayer()}, t, dir);
 				return;
 			}
 			break;
@@ -264,28 +258,21 @@ public:
 				break;
 			}
 			case TPAOP::gui: {
-				outp.error(u8"这摸鱼，多是一件美事啊");
-				//摸了
-				/*
-				ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
-				using namespace Form;
-				CustomForm* fm{};
+				using namespace GUI;
+				auto fm = std::make_shared<FullForm>();
 				fm->title = tr("tpa.gui.title");
 				std::string guiLabel = tr("tpa.gui.label");
 				std::string guiDropdown1 = tr("tpa.gui.dropdown1");
 				std::string guiDropdown2 = tr("tpa.gui.dropdown2");
-				fm->append({ Label("", guiLabel.c_str()) });
-				fm->append({ Dropdown("", guiDropdown1.c_str() ,{"to","here"}) });
-				fm->append({ Dropdown("", guiDropdown2.c_str() ,playerList()) });
-				fm->sendTo(wp, [](const std::map<string, std::shared_ptr<CustomFormElement>>& map) {
-
-					});*/
-				//origin
-				/*sendForm(wp, FullFormBinder{fm,{[](WPlayer P, FullFormBinder::DType data) {
+				fm->addWidget({ GUILabel(guiLabel.c_str()) });
+				fm->addWidget({ GUIDropdown(guiDropdown1.c_str() ,{"to","here"}) });
+				fm->addWidget({ GUIDropdown(guiDropdown2.c_str() ,playerList()) });
+				sendForm(*ori.getPlayer(), FullFormBinder{fm,{[](ServerPlayer& P, FullFormBinder::DType data) {
 					if (!data.set) return;
 						auto& [d1,d2] = data.val();
-						Level::runcmdAs(P, "tpa " + d2[0] + " " + QUOTE(d2[1]));
-				}} });*/
+						logger.debug("{} {}", d2[0], d2[1]);
+						P.runcmd("tpa " + d2[0] + " " + d2[1]);
+				}} });
 				break;
 			}
 			}
@@ -302,20 +289,26 @@ public:
 	}
 };
 
-Form::SimpleForm* WARPGUI;
-void reinitWARPGUI() { //broken
+shared_ptr<GUI::SimpleForm> WARPGUI;
+void reinitWARPGUI() {
+	using namespace GUI;
+	if (!WARPGUI) WARPGUI = make_shared<SimpleForm>();
 	WARPGUI->title = tr("warp.gui.title");
 	WARPGUI->content = tr("warp.gui.content");
+	WARPGUI->reset();
 	for (auto& [k, v] : warps) {
-		WARPGUI->append(Form::Button(string(k)));
+		WARPGUI->addButton(GUIButton(string(k)));
 	}
 }
 
 void sendWARPGUI(ServerPlayer* wp) {
-	using namespace Form;
-	WARPGUI->sendTo(wp, [wp](int i) { //broken origin见old分支
-		wp->runcmd("warp go" + std::to_string(i));
-		});
+	using namespace GUI;
+	sendForm(*wp, SimpleFormBinder(WARPGUI, [](ServerPlayer& wp, SimpleFormBinder::DType d) {
+		if (d.set) {
+			logger.debug("d.val().second {}", d.val().second);
+			wp.runcmd("warp go" + d.val().second);
+		}
+		}));
 }
 
 void saveWarps() {
@@ -340,13 +333,12 @@ public:
 		switch (op)
 		{
 		case gui: {
-			outp.error(u8"这摸鱼，多是一件美事啊");
-			//sendWARPGUI(((ServerPlayer*)ori.getEntity()));
+			sendWARPGUI(ori.getPlayer());
 			return;
 		}
 		case add: {
 			if (ori.getPermissionsLevel() < 1) return;
-			warps.emplace(val, ((ServerPlayer*)ori.getEntity()));
+			warps.emplace(val, ori.getPlayer());
 			saveWarps();
 
 			break;
@@ -371,7 +363,7 @@ public:
 				outp.error(tr("home.not.found"));
 				return;
 			}
-			it->second.teleport(((ServerPlayer*)ori.getEntity()));
+			it->second.teleport(ori.getPlayer());
 
 			break;
 		}
@@ -401,7 +393,7 @@ class HomeCommand : public Command {
 	std::string val;
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
-		Homes& hm = getHomeInCache(std::stoull(((ServerPlayer*)ori.getEntity())->getXuid()));
+		Homes& hm = getHomeInCache(std::stoull(ori.getPlayer()->getXuid()));
 		switch (op)
 		{
 		case HOMEOP::add: {
@@ -413,7 +405,7 @@ public:
 				outp.error(tr("home.is.full"));
 				return;
 			}
-			ServerPlayer* wp = ((ServerPlayer*)ori.getEntity());
+			ServerPlayer* wp = ori.getPlayer();
 			Vec4 vc{ wp };
 			IVec2 startVc{ wp->getPos() };
 			IVec2 endVc{ wp->getPos() };
@@ -454,7 +446,7 @@ public:
 			}
 			for (auto& i : hm.data) {
 				if (i.name == val) {
-					i.pos.teleport(((ServerPlayer*)ori.getEntity()));
+					i.pos.teleport(ori.getPlayer());
 					return;
 				}
 			}
@@ -463,24 +455,20 @@ public:
 			break;
 		}
 		case HOMEOP::gui: {
-			outp.error(u8"这摸鱼，多是一件美事啊");
-			//摸了
-			/*
-			auto wp = ((ServerPlayer*)ori.getEntity());
-			Form::SimpleForm* HomeGUI{};
+			auto wp = ori.getPlayer();
+			auto HomeGUI = make_shared<GUI::SimpleForm>();
 			HomeGUI->title = tr("home.gui.title");
 			HomeGUI->content = tr("home.gui.content");
+			HomeGUI->reset();
 			for (auto& i : hm.data) {
-				HomeGUI->append(Form::Button(string(i.name)));
-			}*/
-			//origin
-			/*
-			GUI::sendForm(wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer* wp, GUI::SimpleFormBinder::DType d) {
+				HomeGUI->addButton(GUI::GUIButton(string(i.name)));
+			}
+			GUI::sendForm(*wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer& wp, GUI::SimpleFormBinder::DType d) {
 				if (d.set) {
-					wp.runcmdA("home", "go", QUOTE(d.val().second));
+					logger.debug("d.val().second: {}", d.val().second);
+					wp.runcmd("home go" + d.val().second);
 				}
-				}));*/
-			break;
+				}));
 		}
 		default:
 			break;
@@ -499,7 +487,7 @@ public:
 class BackCommand : public Command {
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
-		ServerPlayer* sp = (ServerPlayer*)ori.getEntity();
+		ServerPlayer* sp = ori.getPlayer();
 		if (!deathPos._map.count(sp)) {
 			outp.error(tr("home.not.found"));
 		}
