@@ -187,7 +187,7 @@ class MoneySCommand : public Command {
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		std::string dstid;
-		std::string dstxuid, myuid;
+		optional<std::string> dstxuid, myuid;
 		switch (op)
 		{
 		case query:
@@ -198,16 +198,15 @@ public:
 						dstid = PlayerInfo::getXuid(player.results(ori).begin().operator*()->getRealName());
 					}
 				}
-				else {
-					dstid = PlayerInfo::getXuid(ori.getName());
-				}
-				if (dstid == "") {
-					outp.error(tr("money.no.target"));
-					return;
-				}
-				break;
 			}
-			return;
+			else {
+				dstid = PlayerInfo::getXuid(ori.getName());
+			}
+			if (dstid == "") {
+				outp.error(tr("money.no.target"));
+				return;
+			}
+		break;
 		case pay:
 		case set:
 		case add:
@@ -217,7 +216,6 @@ public:
 				return;
 			}
 			for (auto resu : player.results(ori)) {
-				optional<std::string> dstxuid, myuid;
 				dstxuid = PlayerInfo::getXuid(resu->getRealName());
 				if (!dstxuid.Set()) {
 					outp.error(tr("money.no.target"));
@@ -240,13 +238,13 @@ public:
 				outp.error(tr("money.invalid.arg"));
 			}
 			myuid = PlayerInfo::getXuid(ori.getName());
-			if (myuid == "") {
+			if (myuid.val() == "") {
 				outp.error(tr("money.no.target"));
 			}
-			if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
+			if (LLMoneyTrans(myuid.val(), dstxuid.val(), moneynum, "money pay")) {
 				money_t fee = (money_t)(moneynum * MoneyFee);
 				if (fee)
-					LLMoneyTrans(dstxuid, "", fee, "money pay fee");
+					LLMoneyTrans(dstxuid.val(), "", fee, "money pay fee");
 				outp.success("pay success");
 			}
 			else {
@@ -258,7 +256,7 @@ public:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
 			}
-			if (LLMoneySet(dstxuid, moneynum)) {
+			if (LLMoneySet(dstxuid.val(), moneynum)) {
 				outp.success("set success");
 			}
 			else {
@@ -269,7 +267,7 @@ public:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
 			}
-			if (LLMoneyAdd(dstxuid, moneynum)) {
+			if (LLMoneyAdd(dstxuid.val(), moneynum)) {
 				outp.success("add success");
 			}
 			else {
@@ -280,7 +278,7 @@ public:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
 			}
-			if (LLMoneyReduce(dstxuid, moneynum)) {
+			if (LLMoneyReduce(dstxuid.val(), moneynum)) {
 			}
 			else {
 				outp.error(tr("money.invalid.arg"));

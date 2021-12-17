@@ -45,7 +45,7 @@ bool initDB() {
 		); ");
 	}
 	catch (std::exception const& e) {
-		moneylog.error("DB err %s", e.what());
+		moneylog.error("DB err {}", e.what());
 		return false;
 	}
 	ConvertData();
@@ -75,7 +75,7 @@ LLMONEY_API money_t LLMoneyGet(xuid_t xuid) {
 		return rv;
 	}
 	catch (std::exception const& e) {
-		moneylog.error("DB err %s\n", e.what());
+		moneylog.error("DB err {}\n", e.what());
 		return -1;
 	}
 }
@@ -144,7 +144,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 	}
 	catch (std::exception const& e) {
 		db->exec("rollback");
-		moneylog.error("DB err %s\n", e.what());
+		moneylog.error("DB err {}\n", e.what());
 		return false;
 	}
 }
@@ -155,7 +155,7 @@ LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money)
 		return false;
 
 	isRealTrans = false;
-	bool res = LLMoneyTrans("", xuid, money, "add " + std::to_string(money));
+	bool res = LLMoneyTrans("System", xuid, money, "add " + std::to_string(money));
 	if(res)
 		CallAfterEvent(LLMoneyEvent::Add, "", xuid, money);
 	return res;
@@ -167,7 +167,7 @@ LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money)
 		return false;
 
 	isRealTrans = false;
-	bool res = LLMoneyTrans(xuid, "", money, "reduce " + std::to_string(money));
+	bool res = LLMoneyTrans(xuid, "System", money, "reduce " + std::to_string(money));
 	if (res)
 		CallAfterEvent(LLMoneyEvent::Reduce, "", xuid, money);
 	return res;
@@ -207,17 +207,24 @@ LLMONEY_API string LLMoneyGetHist(xuid_t xuid, int timediff)
 		get.bindNoCopy(2, xuid);
 		get.bindNoCopy(3, xuid);
 		while (get.executeStep()) {
-			auto from = PlayerInfo::fromXuid(*(xuid_t*)get.getColumn(0).getBlob());
-			auto to = PlayerInfo::fromXuid(*(xuid_t*)get.getColumn(1).getBlob());
-			if (from != "" && to != "")
-				rv += from + " -> " + to + " " + std::to_string((money_t)get.getColumn(2).getInt64()) + " " + get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
+			optional<string> from, to;
+			 from = PlayerInfo::fromXuid(get.getColumn(0).getString());
+			 to = PlayerInfo::fromXuid(get.getColumn(1).getString());
+			if (from.Set() && to.Set())
+				if (from.val() == "") {
+					from.val() = "System";
+				}
+				else if (to.val() == "") {
+					to.val() = "System";
+				}
+				rv += from.val() + " -> " + to.val() + " " + std::to_string((money_t)get.getColumn(2).getInt64()) + " " + get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
 		}
 		get.reset();
 		get.clearBindings();
 		return rv;
 	}
 	catch (std::exception const& e) {
-		moneylog.error("DB err %s\n", e.what());
+		moneylog.error("DB err {}\n", e.what());
 		return "failed";
 	}
 }
