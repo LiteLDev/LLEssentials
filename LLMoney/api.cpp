@@ -155,7 +155,8 @@ LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money)
 		return false;
 
 	isRealTrans = false;
-	bool res = LLMoneyTrans("System", xuid, money, "add " + std::to_string(money));
+	bool res = LLMoneyTrans("", xuid, money, "add " + std::to_string(money));
+	std::cout << res << std::endl;
 	if(res)
 		CallAfterEvent(LLMoneyEvent::Add, "", xuid, money);
 	return res;
@@ -167,7 +168,7 @@ LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money)
 		return false;
 
 	isRealTrans = false;
-	bool res = LLMoneyTrans(xuid, "System", money, "reduce " + std::to_string(money));
+	bool res = LLMoneyTrans(xuid, "", money, "reduce " + std::to_string(money));
 	if (res)
 		CallAfterEvent(LLMoneyEvent::Reduce, "", xuid, money);
 	return res;
