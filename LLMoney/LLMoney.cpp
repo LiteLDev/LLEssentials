@@ -299,12 +299,12 @@ public:
 		registry->addEnum<MoneyOP>("MoneyOP2", { { "add",MoneyOP::add},{ "pay",MoneyOP::pay },{"reduce",MoneyOP::reduce},{"set",MoneyOP::set} });
 
 		//registerOverload
-		registry->registerOverload<MoneyCommand>(
+		registry->registerOverload<MoneySCommand>(
 			"money_s",
 			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP1"),
 			makeOptional(&MoneySCommand::player, "PlayerName", &MoneySCommand::dst_isSet));
 
-		registry->registerOverload<MoneyCommand>(
+		registry->registerOverload<MoneySCommand>(
 			"money_s",
 			makeMandatory<CommandParameterDataType::ENUM>(&MoneySCommand::op, "optional", "MoneyOP2"),
 			makeMandatory(&MoneySCommand::player, "PlayerName"),
