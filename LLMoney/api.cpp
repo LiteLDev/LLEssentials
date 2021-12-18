@@ -268,3 +268,4 @@ void ConvertData() {
 		moneylog.info("Conversion completed");
 	}
 }
+

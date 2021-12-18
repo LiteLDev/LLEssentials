@@ -277,7 +277,10 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("transfer", "Transfer player to another server", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->registerOverload<TransferCommand>("transfer", makeMandatory(&TransferCommand::p, "player"), makeMandatory(&TransferCommand::host, "IP"), makeOptional(&TransferCommand::port, "port", &TransferCommand::port_isSet));
+		registry->registerOverload<TransferCommand>("transfer", 
+			makeMandatory(&TransferCommand::p, "player"), 
+			makeMandatory(&TransferCommand::host, "IP"), 
+			makeOptional(&TransferCommand::port, "port", &TransferCommand::port_isSet));
 	}
 };
 
