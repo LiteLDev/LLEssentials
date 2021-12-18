@@ -148,7 +148,8 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 	using namespace GUI;
 	shared_ptr<RawFormBinder> x;
 	char buf[1024];
-	string FM{ buf,(size_t)snprintf(buf,1024,tr("tpa.form").c_str(), prompt.c_str())};
+	std::string form = "{\"type\":\"form\",\"title\":\"" + tr("tpa.request.title") + "\",\"content\":\"%s\",\"buttons\":[{\"text\":\"" + tr("tpa.request.accept") + "\"},{\"text\":\"" + tr("tpa.request.deny") + "\"}]}";
+	string FM{ buf,(size_t)snprintf(buf,1024, form.c_str(), prompt.c_str()) };
 	sendForm(*_b, RawFormBinder{ FM,[](ServerPlayer& wp,RawFormBinder::DType i) {
 		auto [clicked,res,list] = i;
 		if (clicked) {
