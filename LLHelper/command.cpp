@@ -50,7 +50,7 @@ public:
 		auto res = pl.results(ori);
 		if (!Command::checkHasTargets(res, outp)) return;
 		for (auto i : res) {
-			i->setPlayerGameType(mode);
+			i->setPlayerGameType((GameType)mode);
 		}
 		outp.success(tr("gmode.success"));
 	}
