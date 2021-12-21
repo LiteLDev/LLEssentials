@@ -81,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)Header;$(SolutionDir)Header\third-party;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)SDK\Header;$(SolutionDir)SDK\Header\third-party;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -174,12 +174,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Lib\bedrock_server_api.lib" />
-    <Library Include="..\Lib\bedrock_server_var.lib" />
-    <Library Include="..\Lib\LiteLoader.lib" />
-    <Library Include="..\lib\sqlite3.lib" />
-    <Library Include="..\lib\SQLiteCpp.lib" />
-    <Library Include="..\Lib\SymDBHelper.lib" />
+    <Library Include="..\SDK\Lib\bedrock_server_api.lib" />
+    <Library Include="..\SDK\Lib\bedrock_server_var.lib" />
+    <Library Include="..\SDK\Lib\LiteLoader.lib" />
+    <Library Include="..\SDK\Lib\sqlite3.lib" />
+    <Library Include="..\SDK\Lib\SQLiteCpp.lib" />
+    <Library Include="..\SDK\Lib\SymDBHelper.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

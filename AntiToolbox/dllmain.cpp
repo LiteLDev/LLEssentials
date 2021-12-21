@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "framework.h"
 #include <LLAPI.h>
-#define _ver "211204"
+#define _ver "211221"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,

@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)Header\third-party;$(SolutionDir)Header;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)SDK\Header\third-party;$(SolutionDir)SDK\Header;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -174,10 +174,10 @@
     <ClCompile Include="Tick_schedule.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Lib\bedrock_server_api.lib" />
-    <Library Include="..\Lib\bedrock_server_var.lib" />
-    <Library Include="..\Lib\LiteLoader.lib" />
-    <Library Include="..\Lib\SymDBHelper.lib" />
+    <Library Include="..\SDK\Lib\bedrock_server_api.lib" />
+    <Library Include="..\SDK\Lib\bedrock_server_var.lib" />
+    <Library Include="..\SDK\Lib\LiteLoader.lib" />
+    <Library Include="..\SDK\Lib\SymDBHelper.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

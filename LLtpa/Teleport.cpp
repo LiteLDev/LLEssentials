@@ -160,7 +160,7 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 }
 
 void schTask() {
-	Schedule::repeat::repeat([] {
+	Schedule::repeat([] {
 		clock_t expire = clock() - TPexpire;
 		for (auto it = reqs.begin(); it != reqs.end();) {
 			if (it->time <= expire) {
