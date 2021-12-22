@@ -2,7 +2,6 @@
 #include "pch.h"
 #include "framework.h"
 #include <LLAPI.h>
-#define _ver "211221"
 
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -12,7 +11,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-        LL::registerPlugin("AntiToolbox", "Stop toolbox player from joining your server", LL::Version{ 0,0, std::stoi(_ver) }, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
+        LL::registerPlugin("AntiToolbox", "Stop toolbox player from joining your server", LL::Version{1,0,9}, "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:

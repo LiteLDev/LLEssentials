@@ -9,7 +9,7 @@
 #include <MC/Types.hpp>
 #include <Dedicated/Core.h>
 #include <GuiAPI.h>
-
+#include <MC/ServerPlayer.hpp>
 std::unique_ptr<KVDB> db;
 Logger logger("Teleport");
 
@@ -154,7 +154,12 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 		auto [clicked,res,list] = i;
 		if (clicked) {
 			int idx = atoi(res);
-			wp.runcmd("tpa" + idx == 0 ? "ac" : "de");
+			if (idx) {
+				wp.runcmd("tpa de");
+			}
+			else {
+				wp.runcmd("tpa ac");
+			}
 		}
 	} ,{} });
 }
@@ -307,7 +312,7 @@ void sendWARPGUI(ServerPlayer* wp) {
 	sendForm(*wp, SimpleFormBinder(WARPGUI, [](ServerPlayer& wp, SimpleFormBinder::DType d) {
 		if (d.set) {
 			logger.debug("d.val().second {}", d.val().second);
-			wp.runcmd("warp go" + d.val().second);
+			wp.runcmd("warp go " + d.val().second);
 		}
 		}));
 }
@@ -467,7 +472,7 @@ public:
 			GUI::sendForm(*wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer& wp, GUI::SimpleFormBinder::DType d) {
 				if (d.set) {
 					logger.debug("d.val().second: {}", d.val().second);
-					wp.runcmd("home go" + d.val().second);
+					wp.runcmd("home go " + d.val().second);
 				}
 				}));
 		}
