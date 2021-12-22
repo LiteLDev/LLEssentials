@@ -35,7 +35,7 @@ jobs:
         mkdir ../LiteLoader
         mkdir ../LiteLoader/Lib
         ./LibraryBuilder.exe D:/BDS
-        mv ../LiteLoader/Lib/* ../Lib/
+        mv ../LiteLoader/Lib/* ../SDK/Lib/
       shell: bash
 
     - name: Add MSBuild to PATH
@@ -61,7 +61,7 @@ jobs:
         cp x64/Release/*.dll D:/out/plugins
         cp x64/Release/*.lib D:/out/sdk/Lib
         cp x64/Release/*.pdb D:/out/plugins
-        cp Header/LLMoney.h D:/out/sdk/Header
+        cp SDK/Header/LLMoney.h D:/out/sdk/Header
         cp -r plugins/* D:/out/plugins
       shell: bash
 
