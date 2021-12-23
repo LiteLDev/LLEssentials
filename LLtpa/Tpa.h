@@ -1,2 +1,2 @@
 #pragma once
-#define _ver "211223"
+#define _ver "211224"
