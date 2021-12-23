@@ -276,7 +276,6 @@ public:
 				sendForm(*ori.getPlayer(), FullFormBinder{fm,{[](ServerPlayer& P, FullFormBinder::DType data) {
 					if (!data.set) return;
 						auto& [d1,d2] = data.val();
-						logger.debug("{} {}", d2[0], d2[1]);
 						P.runcmd("tpa " + d2[0] + " " + d2[1]);
 				}} });
 				break;
@@ -288,7 +287,7 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("tpa", "Teleport", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->addEnum<direction>("TPAOP2", { {"to", direction::A_B}, {"from", direction::B_A}});
+		registry->addEnum<direction>("TPAOP2", { {"to", direction::A_B}, {"here", direction::B_A}});
 		registry->addEnum<TpaCommand::TPAOP>("TPAOP", { {"ac", TPAOP::ac}, {"de", TPAOP::de}, {"cancel", TPAOP::cancel}, {"gui", TPAOP::gui}, {"toggle", TPAOP::toggle}});
 		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::dir, "direction", "TPAOP2", &TpaCommand::dir_isSet), makeMandatory(&TpaCommand::target, "player"));
 		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::op, "op", "TPAOP", &TpaCommand::tpaop_isSet));
@@ -311,7 +310,6 @@ void sendWARPGUI(ServerPlayer* wp) {
 	using namespace GUI;
 	sendForm(*wp, SimpleFormBinder(WARPGUI, [](ServerPlayer& wp, SimpleFormBinder::DType d) {
 		if (d.set) {
-			logger.debug("d.val().second {}", d.val().second);
 			wp.runcmd("warp go " + d.val().second);
 		}
 		}));
@@ -471,7 +469,6 @@ public:
 			}
 			GUI::sendForm(*wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer& wp, GUI::SimpleFormBinder::DType d) {
 				if (d.set) {
-					logger.debug("d.val().second: {}", d.val().second);
 					wp.runcmd("home go " + d.val().second);
 				}
 				}));
@@ -560,6 +557,7 @@ void loadall() {
 		rs.apply(warps);
 	}
 	loadCfg();
+	reinitWARPGUI();
 }
 
 void tpa_entry() {
@@ -569,7 +567,6 @@ void tpa_entry() {
 	db = KVDB::create("plugins\\LLtpa\\data", true, 8);
 	Translation::load("plugins/LLtpa/langpack/tpa.json");
 	loadall();
-	//reinitWARPGUI();
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
 		if (TPA_ENABLED)	TpaCommand::setup(e.mCommandRegistry);
