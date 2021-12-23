@@ -21,7 +21,6 @@ struct Vec4 {
 	}
 	Vec4(ServerPlayer* wp) {
 		vc = wp->getPos();
-		vc.y -= 1.5;
 		dimid = wp->getDimensionId();
 	}
 	Vec4(Vec3 x, int dim) :vc(x), dimid(dim) {}

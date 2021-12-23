@@ -321,7 +321,7 @@ void saveWarps() {
 	WBStream ws;
 	ws.apply(warps);
 	db->put("warps", ws);
-	//reinitWARPGUI();
+	reinitWARPGUI();
 }
 
 class WarpCommand : public Command {
