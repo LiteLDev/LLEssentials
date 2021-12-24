@@ -6,7 +6,6 @@
 
 # 用法
 ## LLMoney
-## LLHelper
 | 命令 | 说明 | 权限等级 |
 | --- | --- | --- |
 | /money query [player] | 查询你自己/他人的余额 | 玩家/OP |
