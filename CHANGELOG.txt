@@ -1,3 +1,2 @@
 ## Bug Fix
-- Fix Tpa GUI error
-- Fix Warp GUI crash
+- Warp/Home GUI problem
