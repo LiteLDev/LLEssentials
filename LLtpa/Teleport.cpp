@@ -310,7 +310,7 @@ void sendWARPGUI(ServerPlayer* wp) {
 	using namespace GUI;
 	sendForm(*wp, SimpleFormBinder(WARPGUI, [](ServerPlayer& wp, SimpleFormBinder::DType d) {
 		if (d.set) {
-			wp.runcmd("warp go " + d.val().second);
+			wp.runcmd("warp go \"" + d.val().second + "\"");
 		}
 		}));
 }
@@ -469,7 +469,7 @@ public:
 			}
 			GUI::sendForm(*wp, GUI::SimpleFormBinder::SimpleFormBinder(HomeGUI, [](ServerPlayer& wp, GUI::SimpleFormBinder::DType d) {
 				if (d.set) {
-					wp.runcmd("home go " + d.val().second);
+					wp.runcmd("home go \"" + d.val().second + "\"");
 				}
 				}));
 		}
