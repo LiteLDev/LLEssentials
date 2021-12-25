@@ -128,7 +128,7 @@ bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
 			A->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
 		}
 		if (B) {
-			A->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+			B->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
 		}
 		reqs.erase(rq);
 		return true;
