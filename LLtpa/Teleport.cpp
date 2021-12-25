@@ -89,47 +89,39 @@ void LOWERSTRING(string& S) {
 }
 
 bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
-	string playernamea = rq->A;
-	string playernameb = rq->B;
-	vector<Player*> plist = Level::getAllPlayers();
-	Player* fplA = nullptr;
-	Player* fplB = nullptr;
-	for (auto p : plist) {
-		if (p->getRealName() == playernamea) {
-			fplA = p;
+	vector<Player*> playerList = Level::getAllPlayers();
+	ServerPlayer* playerA = nullptr;
+	ServerPlayer* playerB = nullptr;
+	for (auto p : playerList) {
+		if (p->getRealName() == rq->A) {
+			playerA = (ServerPlayer*)p;
 			break;
 		}
 	}
-	for (auto p : plist) {
-		if (p->getRealName() == playernameb) {
-			fplB = p;
+	for (auto p : playerList) {
+		if (p->getRealName() == rq->B) {
+			playerB = (ServerPlayer*)p;
 			break;
 		}
 	}
-	if (fplA && fplB) {
-		ServerPlayer* A = (ServerPlayer*)fplA;
-		ServerPlayer* B = (ServerPlayer*)fplB;
+	if (playerA && playerB) {
 		if (res == TPCloseReason::cancel) {
 			reqs.erase(rq);
 			return true;
 		}
 		if (res == TPCloseReason::accept) {
-			if (A && B) {
-				Vec4 AP{ rq->dir == A_B ? B : A };
-				AP.teleport(rq->dir == A_B ? A : B);
+			if (playerA && playerB) {
+				Vec4 AP{ rq->dir == A_B ? playerB : playerA };
+				AP.teleport(rq->dir == A_B ? playerA : playerB);
 				reqs.erase(rq);
-				A->sendTextPacket(tr("tpa.reason.accept"), TextType::RAW);
+				playerA->sendTextPacket(tr("tpa.reason.accept"), TextType::RAW);
 				return true;
 			}
 			reqs.erase(rq);
 			return false;
 		}
-		if (A) {
-			A->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
-		}
-		if (B) {
-			B->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
-		}
+		playerA->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+		playerB->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
 		reqs.erase(rq);
 		return true;
 	}
@@ -550,7 +542,7 @@ public:
 	}
 };
 
-void loadall() {
+void init() {
 	string val;
 	if (db->get("warps", val)) {
 		RBStream rs{ val };
@@ -566,7 +558,7 @@ void tpa_entry() {
 	std::filesystem::create_directory("plugins\\LLtpa\\langpack");
 	db = KVDB::create("plugins\\LLtpa\\data", true, 8);
 	Translation::load("plugins/LLtpa/langpack/tpa.json");
-	loadall();
+	init();
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
 		if (TPA_ENABLED)	TpaCommand::setup(e.mCommandRegistry);
