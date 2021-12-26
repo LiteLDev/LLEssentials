@@ -15,6 +15,7 @@
 | /money reduce <玩家> <数量> | 减少某人的余额 | OP |
 | /money hist | 打印流水账 | Player |
 | /money purge | 清除流水账 | OP |
+| /money_s | 带有选择器支持的指令 | Player |
 ## LLHelper
 | 命令 | 说明 | 权限等级 |
 | --- | --- | --- |
