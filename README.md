@@ -72,7 +72,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 ## LLMoney
 ```json
 {
-	"language": "en-us",
+    "language": "en-us",
     "def_money": 0, //Default money
     "pay_tax": 0.0 //Tax
 }

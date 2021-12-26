@@ -71,7 +71,7 @@
 ## LLMoney
 ```json
 {
-	"language": "en-us", //语言，改为zh-cn为中文
+    "language": "en-us", //语言，改为zh-cn为中文
     "def_money": 0, //默认金钱数
     "pay_tax": 0.0 //转账税率
 }
