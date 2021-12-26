@@ -24,16 +24,16 @@ bool onPlayerJoin(Event::PlayerPreJoinEvent ev) {
 	return true;
 }
 
-THook(bool, "?useItemOn@GameMode@@UEAA_NAEAVItemStack@@AEBVBlockPos@@EAEBVVec3@@PEBVBlock@@@Z",
-	GameMode* self, ItemStack* item, BlockPos* bpos, unsigned char a1, Vec3* plpos, Block* block) {
-	std::string blockname = block->getName().getString();
-	Player* sp = self->getPlayer();
-	short itemid = item->getId();
-	if (logItems.count(itemid)) {
-		logger.info("[ItemLog] {} used logitem({}) on ({})", sp->getRealName(), item->getName(), blockname, bpos->toString());
+bool onPlayerUseItemOn(Event::PlayerUseItemOnEvent e) {
+	std::string blockName = e.mBlockInstance.getBlock()->getName().getString();
+	Player* sp = e.mPlayer;
+	short itemId = e.mItemStack->getId();
+	if (logItems.count(itemId)) {
+		logger.info("[ItemLog] {} used logitem({}) on ({})", sp->getRealName(), e.mItemStack->getName(), blockName, e.mItemStack->toString());
 	}
-	if (banItems.count(itemid)) {
+	if (banItems.count(itemId)) {
 		sp->kick("Don't use banned item");
+		return false;
 	}
-	return original(self, item, bpos, a1, plpos, block);
+	return true;
 }
