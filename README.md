@@ -34,36 +34,46 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | /item | Show the item info on hand | Player |
 
 # Config
-LLHelper:
+## LLHelper
 ```json
 {
+    "language": "en-us",
     "force_enable_expplay": false,//Enable experimental mode
-    "CMDMAP": {//Use item to click block to execute a command
+    "commmand_map": {//Use item to click block to execute a command
         "391": "me 114514"
     },
     "timer": {//Timed loop execution command
         "600": "say Welcome to the server"
     },
-    "banItems": [],//Prohibited items, use ID
-    "logItems": [//Items that will be recorded in the log after use, use ID
+    "ban_items": [],//Prohibited items, use ID
+    "log_items": [//Items that will be recorded in the log after use, use ID
         7
     ],
     "force_enable_ability": false,//Turn on the /ability command, if the educational version is turned on, the server will be abnormal
-    "FAKE_SEED": 114514,//Fake seed
-    "NO_EXPLOSION": true,//Stop all explosions in the server
-    "MAX_CHAT_LEN": 1919,//Maximum length of chat message
-    "LOG_CHAT": true,//Log chat
-    "LOG_CMD": true,//Log command
-    "NoEndermanTakeBlock": true,//Stop the enderman from picking up the block
-    "ProtectFarmBlock": true//Protect arable land from being trampled on
+    "fake_seed": 114514,//Fake seed
+    "no_explosion": true,//Stop all explosions in the server
+    "max_chat_length": 1919,//Maximum length of chat message
+    "log_chat": true,//Log chat
+    "log_cmd": true,//Log command
+    "no_enderman_take_block": true,//Stop the enderman from picking up the block
+    "protect_farm_block": true//Protect arable land from being trampled on
 ```
-LLtpa:
+## LLtpa
 ```json
 {
+    "language": "en-us",
     "max_homes": 3,//The maximum number of homes the player can set
     "tpa_timeout": 20000,//tpa request timeout
     "tpa_ratelimit": 5000,//tpa request cooldown
-    "BACK_ENABLED": true,//Enable /back command
-    "SUICIDE_ENABLED": true//Enable /suicide command
+    "back_enabled": true,//Enable /back command
+    "suicide_enabled": true//Enable /suicide command
+}
+```
+## LLMoney
+```json
+{
+	"language": "en-us",
+    "def_money": 0, //Default money
+    "pay_tax": 0.0 //Tax
 }
 ```
