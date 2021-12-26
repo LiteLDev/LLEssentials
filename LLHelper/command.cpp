@@ -182,7 +182,7 @@ public:
 		ServerPlayer* sp = ori.getPlayer();
 		BinaryStream bs;
 		bs.writeUnsignedVarInt64(ZigZag(sp->getUniqueID().id));
-		auto pkt = MinecraftPackets::createPacket(14);
+		auto pkt = MinecraftPackets::createPacket(MinecraftPacketIds::RemoveActor);
 		pkt->read(bs);
 		std::vector<Player*> plist = Level::getAllPlayers();
 		for (auto p : plist) {
