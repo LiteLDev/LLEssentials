@@ -201,6 +201,26 @@ public:
 	}
 };
 
+class CrashCommand : public Command {
+	CommandSelector<Player> pl;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		auto res = pl.results(ori);
+		for (auto p : res) {
+			p->crashClient
+			
+			();
+		}
+		outp.success("Crashed");
+	}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("crash", "Crash player's client", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<CrashCommand>("crash", makeMandatory(&CrashCommand::pl, "player"));
+	}
+};
+
 class CnameCommand : public Command {
 	enum CNAMEOP : int {
 		set = 1,
@@ -349,6 +369,7 @@ void RegisterCommands() {
 		SkickCommand::setup(e.mCommandRegistry);
 		BanCommand::setup(e.mCommandRegistry);
 		GmodeCommand::setup(e.mCommandRegistry);
+		CrashCommand::setup(e.mCommandRegistry);
 		return true;
 		});
 }
