@@ -65,8 +65,8 @@
     "max_homes": 3,//玩家可以设置的家的最大数量
     "tpa_timeout": 20000,//tpa请求超时时间
     "tpa_ratelimit": 5000,//tpa请求冷却时间
-    "back_enable": true,//开启/back命令
-    "suicide_enable": true//开启/suicide命令
+    "back_enabled": true,//开启/back命令
+    "suicide_enabled": true//开启/suicide命令
 }
 ```
 ## LLMoney
