@@ -32,7 +32,8 @@ bool onPlayerUseItemOn(Event::PlayerUseItemOnEvent e) {
 		logger.info("[ItemLog] {} used logitem({}) on ({})", sp->getRealName(), e.mItemStack->getName(), blockName, e.mItemStack->toString());
 	}
 	if (banItems.count(itemId)) {
-		sp->kick("Don't use banned item");
+		logger.info("[ItemLog] {} used banitem({}) on ({})", sp->getRealName(), e.mItemStack->getName(), blockName, e.mItemStack->toString());
+		sp->sendText("Don't use banned item");
 		return false;
 	}
 	return true;
