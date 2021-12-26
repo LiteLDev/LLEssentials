@@ -10,6 +10,7 @@
 #include <MC/ServerNetworkHandler.hpp>
 #include <MC/Item.hpp>
 #include <SendPacketAPI.h>
+#include <MC/MinecraftPackets.hpp>
 
 std::unique_ptr<KVDB> db;
 playerMap<string> ORIG_NAME;
@@ -181,12 +182,13 @@ public:
 		ServerPlayer* sp = ori.getPlayer();
 		BinaryStream bs;
 		bs.writeUnsignedVarInt64(ZigZag(sp->getUniqueID().id));
-		NetworkPacket<14> pkt{ bs.getAndReleaseData() };
+		auto pkt = MinecraftPackets::createPacket(14);
+		pkt->read(bs);
 		std::vector<Player*> plist = Level::getAllPlayers();
 		for (auto p : plist) {
 			if (p != sp) {
 				ServerPlayer* spp = (ServerPlayer*)p;
-				spp->sendNetworkPacket(pkt);
+				spp->sendNetworkPacket(*pkt);
 			}
 		}
 		outp.addMessage(tr("vanish.success"));
