@@ -37,6 +37,7 @@ static unordered_map<string, Vec4> warps;
 
 static clock_t TPexpire = CLOCKS_PER_SEC * 10;
 static clock_t TPratelimit = CLOCKS_PER_SEC * 2;
+std::string LANGUAGE = "en-us";
 static int MAX_HOMES = 5;
 static int HOME_DISTANCE_LAND = 0;
 static bool BACK_ENABLED, SUICIDE_ENABLED, TPA_ENABLED, HOME_ENABLED;
@@ -104,31 +105,37 @@ bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
 			break;
 		}
 	}
-	if (playerA && playerB) {
-		if (res == TPCloseReason::cancel) {
-			reqs.erase(rq);
-			return true;
-		}
-		if (res == TPCloseReason::accept) {
-			if (playerA && playerB) {
-				Vec4 AP{ rq->dir == A_B ? playerB : playerA };
-				AP.teleport(rq->dir == A_B ? playerA : playerB);
-				reqs.erase(rq);
-				playerA->sendTextPacket(tr("tpa.reason.accept"), TextType::RAW);
-				return true;
-			}
-			reqs.erase(rq);
-			return false;
-		}
-		playerA->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
-		playerB->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+	if (res == TPCloseReason::cancel) {
+		if (playerA)
+			playerA->sendText(tr("tpa.reason.cancel"));
+		if (playerB)
+			playerB->sendText(tr("tpa.reason.cancel"));
 		reqs.erase(rq);
 		return true;
 	}
-	else {
-		//no such player
+	if (res == TPCloseReason::accept) {
+		if (playerA && playerB) {
+			Vec4 AP{ rq->dir == A_B ? playerB : playerA };
+			AP.teleport(rq->dir == A_B ? playerA : playerB);
+			reqs.erase(rq);
+			playerA->sendTextPacket(tr("tpa.reason.accept"), TextType::RAW);
+			playerB->sendTextPacket(tr("tpa.reason.accept"), TextType::RAW);
+			return true;
+		}
+		// When tpa sender offline
+		if (playerB)
+			playerB->sendTextPacket(tr("tpa.reason.notonline"), TextType::RAW);
+		reqs.erase(rq);
+		return false;
 	}
+	if (playerA)
+		playerA->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+	if (playerB)
+		playerB->sendTextPacket(res == TPCloseReason::deny ? tr("tpa.reason.deny") : tr("tpa.reason.timeout"), TextType::RAW);
+	reqs.erase(rq);
+	return true;
 }
+
 void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 	std::string a = _a->getRealName();
 	std::string b = _b->getRealName();
@@ -201,7 +208,7 @@ public:
 			switch (reqres) {
 			case TPFailReason::success:
 			{
-				DoMakeReq({ ori.getPlayer()}, t, dir);
+				DoMakeReq({ ori.getPlayer() }, t, dir);
 				return;
 			}
 			break;
@@ -265,7 +272,7 @@ public:
 				fm->addWidget({ GUILabel(guiLabel.c_str()) });
 				fm->addWidget({ GUIDropdown(guiDropdown1.c_str() ,{"to","here"}) });
 				fm->addWidget({ GUIDropdown(guiDropdown2.c_str() ,playerList()) });
-				sendForm(*ori.getPlayer(), FullFormBinder{fm,{[](ServerPlayer& P, FullFormBinder::DType data) {
+				sendForm(*ori.getPlayer(), FullFormBinder{ fm,{[](ServerPlayer& P, FullFormBinder::DType data) {
 					if (!data.set) return;
 						auto& [d1,d2] = data.val();
 						P.runcmd("tpa " + d2[0] + " " + d2[1]);
@@ -279,8 +286,8 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("tpa", "Teleport", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->addEnum<direction>("TPAOP2", { {"to", direction::A_B}, {"here", direction::B_A}});
-		registry->addEnum<TpaCommand::TPAOP>("TPAOP", { {"ac", TPAOP::ac}, {"de", TPAOP::de}, {"cancel", TPAOP::cancel}, {"gui", TPAOP::gui}, {"toggle", TPAOP::toggle}});
+		registry->addEnum<direction>("TPAOP2", { {"to", direction::A_B}, {"here", direction::B_A} });
+		registry->addEnum<TpaCommand::TPAOP>("TPAOP", { {"ac", TPAOP::ac}, {"de", TPAOP::de}, {"cancel", TPAOP::cancel}, {"gui", TPAOP::gui}, {"toggle", TPAOP::toggle} });
 		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::dir, "direction", "TPAOP2", &TpaCommand::dir_isSet), makeMandatory(&TpaCommand::target, "player"));
 		registry->registerOverload<TpaCommand>("tpa", makeMandatory<CommandParameterDataType::ENUM>(&TpaCommand::op, "op", "TPAOP", &TpaCommand::tpaop_isSet));
 	}
@@ -372,7 +379,7 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("warp", "Teleport", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->addEnum<WarpCommand::WARPOP>("WARPOP", { {"add", WARPOP::add}, {"del", WARPOP::del}, {"go", WARPOP::go}, {"gui", WARPOP::gui}, {"ls", WARPOP::ls}});
+		registry->addEnum<WarpCommand::WARPOP>("WARPOP", { {"add", WARPOP::add}, {"del", WARPOP::del}, {"go", WARPOP::go}, {"gui", WARPOP::gui}, {"ls", WARPOP::ls} });
 		registry->registerOverload<WarpCommand>("warp", makeMandatory<CommandParameterDataType::ENUM>(&WarpCommand::op, "op", "WARPOP"), makeOptional(&WarpCommand::val, "warp", &WarpCommand::val_isSet));
 	}
 };
@@ -513,14 +520,15 @@ public:
 void loadCfg() {
 	try {
 		ConfigJReader jr("plugins\\LLtpa\\tpa.json");
+		jr.bind("language", LANGUAGE);
 		jr.bind("max_homes", MAX_HOMES, 5);
 		jr.bind("tpa_timeout", TPexpire, CLOCKS_PER_SEC * 20);
 		jr.bind("tpa_ratelimit", TPratelimit, CLOCKS_PER_SEC * 5);
 		jr.bind("home_land_distance", HOME_DISTANCE_LAND, -1);
-		jr.bind("BACK_ENABLED", BACK_ENABLED, true);
-		jr.bind("SUICIDE_ENABLED", SUICIDE_ENABLED, true);
-		jr.bind("TPA_ENABLED", TPA_ENABLED, true);
-		jr.bind("HOME_ENABLED", HOME_ENABLED, true);
+		jr.bind("back_enabled", BACK_ENABLED, true);
+		jr.bind("suicide_enabled", SUICIDE_ENABLED, true);
+		jr.bind("tpa_enabled", TPA_ENABLED, true);
+		jr.bind("home_enabled", HOME_ENABLED, true);
 	}
 	catch (string e) {
 		logger.error("JSON ERROR", e);
@@ -549,15 +557,12 @@ void init() {
 		rs.apply(warps);
 	}
 	loadCfg();
+	Translation::load("plugins/LLtpa/langpack/" + LANGUAGE + ".json");
 	reinitWARPGUI();
 }
 
 void tpa_entry() {
-	std::filesystem::create_directory("plugins\\LLtpa");
-	std::filesystem::create_directory("plugins\\LLtpa\\data");
-	std::filesystem::create_directory("plugins\\LLtpa\\langpack");
 	db = KVDB::create("plugins\\LLtpa\\data", true, 8);
-	Translation::load("plugins/LLtpa/langpack/tpa.json");
 	init();
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
@@ -572,7 +577,7 @@ void tpa_entry() {
 		return true;
 		});
 	if (BACK_ENABLED) {
-		Event::PlayerDieEvent::subscribe([](const Event::PlayerDieEvent&  ev) {
+		Event::PlayerDieEvent::subscribe([](const Event::PlayerDieEvent& ev) {
 			ServerPlayer* sp = (ServerPlayer*)ev.mPlayer;
 			deathPos[sp] = Vec4{ sp };
 			sp->sendTextPacket(tr("tpa.back.use"), TextType::RAW);

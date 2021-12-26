@@ -18,6 +18,7 @@
 using namespace RegisterCommandHelper;
 
 Logger logger("LLMoney");
+std::string LANGUAGE = "en-us";
 
 double MoneyFee;
 bool initDB();
@@ -311,12 +312,9 @@ public:
 };
 
 void entry() {
-	std::filesystem::create_directory("plugins\\LLMoney");
-	std::filesystem::create_directory("plugins\\LLMoney\\langpack");
 	if (!initDB()) {
-		exit(1);
+		return;
 	}
-	Translation::load("plugins\\LLMoney\\langpack\\money.json");
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& ev) {
 		MoneyCommand::setup(ev.mCommandRegistry);
 		MoneySCommand::setup(ev.mCommandRegistry);
@@ -325,6 +323,7 @@ void entry() {
 	try {
 		ConfigJReader jr("plugins\\LLMoney\\money.json");
 		int defmoney;
+		jr.bind("language", LANGUAGE);
 		jr.bind("def_money", defmoney, 0);
 		jr.bind("pay_tax", MoneyFee, .0);
 		DEF_MONEY = defmoney;
@@ -333,5 +332,6 @@ void entry() {
 		Logger("LLMoney").error("Json error: {}", e);
 		throw 0;
 	}
+	Translation::load("plugins\\LLMoney\\langpack\\" + LANGUAGE + ".json");
 	Logger("LLMoney").info("Loaded version: {}", _ver);
 }

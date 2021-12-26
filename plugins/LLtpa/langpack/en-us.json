@@ -14,6 +14,8 @@
     "tpa.reason.deny": "Tpa request deny",
     "tpa.reason.timeout": "Tpa request timeout",
     "tpa.reason.accept": "Tpa request accepted",
+    "tpa.reason.notonline": "Target player not online",
+    "tpa.reason.cancel": "Tpa request cancelled",
     "tpa.back.use": "Using /back to back to your death point",
     "tpa.request.title": "Tpa request",
     "tpa.request.accept": "Accept",

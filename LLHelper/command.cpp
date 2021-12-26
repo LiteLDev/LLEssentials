@@ -15,6 +15,7 @@
 std::unique_ptr<KVDB> db;
 playerMap<string> ORIG_NAME;
 std::unordered_map<string, string> CNAME;
+extern std::string LANGUAGE;
 
 void loadCNAME() {
 	db = KVDB::create("plugins/LLHelper/data", false);
@@ -359,7 +360,7 @@ public:
 
 void RegisterCommands() {
 	loadCNAME();
-	Translation::load("plugins\\LLHelper\\langpack\\helper.json");
+	Translation::load("plugins\\LLHelper\\langpack\\" + LANGUAGE + ".json");
 	Event::RegCmdEvent::subscribe([](Event::RegCmdEvent e) {
 		TransferCommand::setup(e.mCommandRegistry);
 		HelperCommand::setup(e.mCommandRegistry);

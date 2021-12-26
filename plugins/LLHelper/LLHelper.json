@@ -1,18 +1,19 @@
 {
-    "CMDMAP": {
-        "391": "me 114514"
+	"language": "en-us",
+    "command_map": {
+        "393": "me I used clock"
     },
     "timer": {
         "1200": "say Welcome to the server"
     },
-    "banItems": [],
-    "logItems": [
+    "ban_items": [],
+    "log_items": [
         7
     ],
     "force_enable_ability": false,
-    "FAKE_SEED": 114514,
-    "NO_EXPLOSION": false,
-    "MAX_CHAT_LEN": 1919,
-    "NoEndermanTakeBlock": true,
-    "ProtectFarmBlock": true
+    "fake_seed": 114514,
+    "no_explosion": false,
+    "max_chat_length": 1919,
+    "no_enderman_take_block": true,
+    "protect_farm_block": true
 }
