@@ -57,7 +57,6 @@ public:
 			}
 			if (dstid == "") {
 				outp.error(tr("money.no.target"));
-				return;
 			}
 			break;
 		case pay:
@@ -67,13 +66,11 @@ public:
 			dstxuid = PlayerInfo::getXuid(dst);
 			if (dstxuid == "") {
 				outp.error(tr("money.no.target"));
-				return;
 			}
 			break;
 		case purge:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
-				return;
 			}
 			break;
 		}
@@ -89,64 +86,52 @@ public:
 		{
 			if (moneynum <= 0) {
 				outp.error(tr("money.invalid.arg"));
-				return;
 			}
 			myuid = ori.getPlayer()->getXuid();
 			if (myuid == "" || myuid == dstxuid) {
 				outp.error(tr("money.no.target"));
-				return;
 			}
 			if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
 				money_t fee = (money_t)(moneynum * MoneyFee);
 				if (fee)
 					LLMoneyTrans(dstxuid, "", fee, "money pay fee");
 				outp.success("pay success");
-				return;
 			}
 			else {
 				outp.error(tr("money.not.enough"));
-				return;
 			}
 		}
 		break;
 		case set:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
-				return;
 			}
 			if (LLMoneySet(dstxuid, moneynum)) {
 				outp.success("set success");
-				return;
 			}
 			else {
 				outp.error(tr("money.invalid.arg"));
-				return;
 			}
 			break;
 		case add:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
-				return;
 			}
 			if (LLMoneyAdd(dstxuid, moneynum)) {
 				outp.success("add success");
-				return;
 			}
 			else {
 				outp.error(tr("money.invalid.arg"));
-				return;
 			}
 			break;
 		case reduce:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
-				return;
 			}
 			if (LLMoneyReduce(dstxuid, moneynum)) {
 			}
 			else {
 				outp.error(tr("money.invalid.arg"));
-				return;
 			}
 			break;
 		case purge:
@@ -163,8 +148,8 @@ public:
 		registry->registerCommand(
 			"money", "Economy system", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
 		//addEnum
-		registry->addEnum<MoneyOP>("MoneyOP1", { { "query",MoneyOP::query},{ "hist",MoneyOP::hist}});
-		registry->addEnum<MoneyOP>("MoneyOP2", { { "add",MoneyOP::add},{ "pay",MoneyOP::pay },{"reduce",MoneyOP::reduce},{"set",MoneyOP::set}});
+		registry->addEnum<MoneyOP>("MoneyOP1", { { "query",MoneyOP::query},{ "hist",MoneyOP::hist} });
+		registry->addEnum<MoneyOP>("MoneyOP2", { { "add",MoneyOP::add},{ "pay",MoneyOP::pay },{"reduce",MoneyOP::reduce},{"set",MoneyOP::set} });
 		registry->addEnum<MoneyOP>("MoneyOP3", { { "purge",MoneyOP::purge} });
 
 		//registerOverload
@@ -220,7 +205,7 @@ public:
 				outp.error(tr("money.no.target"));
 				return;
 			}
-		break;
+			break;
 		case pay:
 		case set:
 		case add:
