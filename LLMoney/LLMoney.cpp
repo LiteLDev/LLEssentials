@@ -4,6 +4,7 @@
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include <MC/Player.hpp>
+#include <MC/ServerPlayer.hpp>
 #include <regCommandAPI.h>
 #include <map>
 #include "pch.h"
@@ -88,52 +89,64 @@ public:
 		{
 			if (moneynum <= 0) {
 				outp.error(tr("money.invalid.arg"));
+				return;
 			}
-			myuid = PlayerInfo::getXuid(ori.getName());
-			if (myuid == "") {
+			myuid = ori.getPlayer()->getXuid();
+			if (myuid == "" || myuid == dstxuid) {
 				outp.error(tr("money.no.target"));
+				return;
 			}
 			if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
 				money_t fee = (money_t)(moneynum * MoneyFee);
 				if (fee)
 					LLMoneyTrans(dstxuid, "", fee, "money pay fee");
 				outp.success("pay success");
+				return;
 			}
 			else {
 				outp.error(tr("money.not.enough"));
+				return;
 			}
 		}
 		break;
 		case set:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneySet(dstxuid, moneynum)) {
 				outp.success("set success");
+				return;
 			}
 			else {
 				outp.error(tr("money.invalid.arg"));
+				return;
 			}
 			break;
 		case add:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneyAdd(dstxuid, moneynum)) {
 				outp.success("add success");
+				return;
 			}
 			else {
 				outp.error(tr("money.invalid.arg"));
+				return;
 			}
 			break;
 		case reduce:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneyReduce(dstxuid, moneynum)) {
 			}
 			else {
 				outp.error(tr("money.invalid.arg"));
+				return;
 			}
 			break;
 		case purge:

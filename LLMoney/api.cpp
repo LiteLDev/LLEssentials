@@ -156,7 +156,6 @@ LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money)
 
 	isRealTrans = false;
 	bool res = LLMoneyTrans("", xuid, money, "add " + std::to_string(money));
-	std::cout << res << std::endl;
 	if(res)
 		CallAfterEvent(LLMoneyEvent::Add, "", xuid, money);
 	return res;
@@ -262,7 +261,7 @@ void ConvertData() {
 			get.reset();
 		}
 		catch (std::exception& e) {
-			moneylog.info("{}", e.what());
+			moneylog.error("{}", e.what());
 		}
 		std::filesystem::rename("plugins\\LLMoney\\money.db", "plugins\\LLMoney\\money_old.db");
 		moneylog.info("Conversion completed");
