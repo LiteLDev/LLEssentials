@@ -84,6 +84,9 @@ public:
 			break;
 		case pay:
 		{
+			if ((unsigned short)ori.getOriginType() != (unsigned short)OriginType::Player) {
+				outp.error("You are not a player");
+			}
 			if (moneynum <= 0) {
 				outp.error(tr("money.invalid.arg"));
 			}
@@ -233,6 +236,9 @@ public:
 			break;
 		case pay:
 		{
+			if ((unsigned short)ori.getOriginType() != (unsigned short)OriginType::Player) {
+				outp.error("You are not a player");
+			}
 			if (moneynum <= 0) {
 				outp.error(tr("money.invalid.arg"));
 			}
