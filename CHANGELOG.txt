@@ -1,13 +1,3 @@
-## Bug Fix
-**Please replace all config file with the new config file**
-### LLTpa
-- Fixed bug when target player offline
-- Optimized message
-- Update Language Pack && Config
-
-### LLHelper
-- Optimized code
-- Update Language Pack
-
 ## LLMoney
-- Update Language Pack
+- Deleted debug info
+- Fix trans error
