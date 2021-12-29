@@ -492,6 +492,7 @@ public:
 		ServerPlayer* sp = ori.getPlayer();
 		if (!deathPos._map.count(sp)) {
 			outp.error(tr("home.not.found"));
+			return;
 		}
 		deathPos[sp].teleport({ sp });
 		deathPos._map.erase(sp);
