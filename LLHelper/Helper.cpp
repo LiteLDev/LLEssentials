@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Helper.h"
 #include <unordered_map>
 
@@ -53,6 +53,13 @@ void entry() {
 		return true;
 		});
 	Event::PlayerUseItemOnEvent::subscribe(onPlayerUseItemOn);
+	Event::PlayerChatEvent::subscribe([] (Event::PlayerChatEvent e) {
+		if (e.mMessage.size() >= MAX_CHAT_LEN) {
+			e.mPlayer->sendText(u8"§cDon't spam");
+			return false;
+		}
+		return true;
+		});
 	loadCfg();
 	RegisterCommands();
 	logger.setFile("logs/Helper.log", true);
