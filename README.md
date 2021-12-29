@@ -26,6 +26,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | /skick <player> | Force kick a player from server | OP |
 | /cname <set/rm> <player> [nickname] | Set nickname for a player | OP |
 | /vanish | invisibility(only effective for players who can see you) | OP |
+| /crash <player> | Crash player's client | OP |
 ## LLTpa
 | Command | Description | Permission |
 | --- | --- | --- |
