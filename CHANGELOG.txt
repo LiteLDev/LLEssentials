@@ -1,2 +1,2 @@
-## LLTpa
-- Fix /back Crash
+## LLHelper
+- Fix `max_chat_length`
