@@ -37,4 +37,5 @@
 #include <EventAPI.h>
 #include <MC/ServerPlayer.hpp>
 #include <MC/GameMode.hpp>
+#include "settings.h"
 #endif //PCH_H

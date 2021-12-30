@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "Helper.h"
 #include <MC/Block.hpp>
+
 extern Logger logger;
 
 bool onPlayerLeft(Event::PlayerLeftEvent e) {
@@ -28,10 +29,10 @@ bool onPlayerUseItemOn(Event::PlayerUseItemOnEvent e) {
 	std::string blockName = e.mBlockInstance.getBlock()->getName().getString();
 	Player* sp = e.mPlayer;
 	short itemId = e.mItemStack->getId();
-	if (logItems.count(itemId)) {
+	if (Settings::logItems.count(itemId)) {
 		logger.info("[ItemLog] {} used logitem({}) on ({})", sp->getRealName(), e.mItemStack->getName(), blockName, e.mItemStack->toString());
 	}
-	if (banItems.count(itemId)) {
+	if (Settings::banItems.count(itemId)) {
 		logger.info("[ItemLog] {} used banitem({}) on ({})", sp->getRealName(), e.mItemStack->getName(), blockName, e.mItemStack->toString());
 		sp->sendText("Don't use banned item");
 		return false;
