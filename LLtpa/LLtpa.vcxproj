@@ -157,6 +157,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="homeStorage.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="settings.h" />
     <ClInclude Include="Tpa.h" />
   </ItemGroup>
   <ItemGroup>
@@ -170,6 +171,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="settings.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Teleport.cpp" />
   </ItemGroup>

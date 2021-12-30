@@ -101,7 +101,7 @@ namespace Settings {
 #define TRJ(key,val)                                         \
 if (json.find(key) != json.end()) {                          \
     const nlohmann::json& out = json.at(key);                \
-    out.get_to(val);}                                        \
+    out.get_to(val);}                                         \
 
 namespace TR {
     string gmodesuccess = "Your game mode is changed";

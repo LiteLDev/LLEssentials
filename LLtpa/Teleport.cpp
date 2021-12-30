@@ -30,17 +30,12 @@ struct TPASet {
 };
 
 #include<unordered_map>
+#include "settings.h"
 using std::unordered_map;
 static std::list<TPReq> reqs;
 static unordered_map<CHash, TPASet> tpaSetting;
 static unordered_map<string, Vec4> warps;
 
-static clock_t TPexpire = CLOCKS_PER_SEC * 10;
-static clock_t TPratelimit = CLOCKS_PER_SEC * 2;
-std::string LANGUAGE = "en-us";
-static int MAX_HOMES = 5;
-static int HOME_DISTANCE_LAND = 0;
-static bool BACK_ENABLED, SUICIDE_ENABLED, TPA_ENABLED, HOME_ENABLED;
 
 
 playerMap<Vec4> deathPos;
@@ -69,7 +64,7 @@ enum class TPFailReason :int {
 };
 TPFailReason CanMakeReq(string_view a, string_view b) {
 	CHash A = do_hash(a.data()), B = do_hash(b.data());
-	if (tpaSetting[A].lastReq >= clock() - TPratelimit) {
+	if (tpaSetting[A].lastReq >= clock() - Settings::TPratelimit) {
 		return TPFailReason::ratelimit;
 	}
 	if (DoFetchReq(a).set || DoFetchReq(b).set) return TPFailReason::inreq;
@@ -165,7 +160,7 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 
 void schTask() {
 	Schedule::repeat([] {
-		clock_t expire = clock() - TPexpire;
+		clock_t expire = clock() - Settings::TPexpire;
 		for (auto it = reqs.begin(); it != reqs.end();) {
 			if (it->time <= expire) {
 				auto oldit = it;
@@ -404,7 +399,7 @@ public:
 				outp.error("Please input home's name");
 				return;
 			}
-			if (ori.getPermissionsLevel() == 0 && hm.data.size() >= MAX_HOMES) {
+			if (ori.getPermissionsLevel() == 0 && hm.data.size() >= Settings::MAX_HOMES) {
 				outp.error(tr("home.is.full"));
 				return;
 			}
@@ -412,8 +407,8 @@ public:
 			Vec4 vc{ wp };
 			IVec2 startVc{ wp->getPos() };
 			IVec2 endVc{ wp->getPos() };
-			startVc += -HOME_DISTANCE_LAND;
-			endVc += HOME_DISTANCE_LAND;
+			startVc += -Settings::HOME_DISTANCE_LAND;
+			endVc += Settings::HOME_DISTANCE_LAND;
 			/*if (!checkLandOwnerRange_stub(startVc, endVc, vc.dimid, wp.getXuid())) {
 				outp.error(tr("home.near.others.land"));
 				return false;
@@ -560,21 +555,49 @@ public:
 };
 
 void loadCfg() {
-	try {
-		ConfigJReader jr("plugins\\LLtpa\\tpa.json");
-		jr.bind("language", LANGUAGE);
-		jr.bind("max_homes", MAX_HOMES, 5);
-		jr.bind("tpa_timeout", TPexpire, CLOCKS_PER_SEC * 20);
-		jr.bind("tpa_ratelimit", TPratelimit, CLOCKS_PER_SEC * 5);
-		jr.bind("home_land_distance", HOME_DISTANCE_LAND, -1);
-		jr.bind("back_enabled", BACK_ENABLED, true);
-		jr.bind("suicide_enabled", SUICIDE_ENABLED, true);
-		jr.bind("tpa_enabled", TPA_ENABLED, true);
-		jr.bind("home_enabled", HOME_ENABLED, true);
+	//config
+	if (!std::filesystem::exists("plugins/LLtpa"))
+		std::filesystem::create_directories("plugins/LLtpa");
+	if (std::filesystem::exists("plugins/LLtpa/tpa.json")) {
+		try {
+			Settings::LoadConfigFromJson("plugins/LLtpa/tpa.json");
+		}
+		catch (std::exception& e) {
+			logger.error("Config File isInvalid, Err {}", e.what());
+			Sleep(1000 * 100);
+			exit(1);
+		}
+		catch (...) {
+			logger.error("Config File isInvalid");
+			Sleep(1000 * 100);
+			exit(1);
+		}
 	}
-	catch (string e) {
-		logger.error("JSON ERROR", e);
-		throw 0;
+	else {
+		logger.info("Config with default values created");
+		Settings::WriteDefaultConfig("plugins/LLtpa/tpa.json");
+	}
+	//tr
+	if (!std::filesystem::exists("plugins/LLtpa/langpack"))
+		std::filesystem::create_directories("plugins/LLtpa/langpack");
+	if (std::filesystem::exists("plugins/LLtpa/langpack/en-us.json")) {
+		try {
+			TR::LoadConfigFromJson("plugins/LLtpa/langpack/en-us.json");
+		}
+		catch (std::exception& e) {
+			logger.error("Config File isInvalid, Err {}", e.what());
+			Sleep(1000 * 100);
+			exit(1);
+		}
+		catch (...) {
+			logger.error("Config File isInvalid");
+			Sleep(1000 * 100);
+			exit(1);
+		}
+	}
+	else {
+		logger.info("Config with default values created");
+		TR::WriteDefaultConfig("plugins/LLtpa/langpack/en-us.json");
 	}
 }
 
@@ -599,7 +622,7 @@ void init() {
 		rs.apply(warps);
 	}
 	loadCfg();
-	Translation::load("plugins/LLtpa/langpack/" + LANGUAGE + ".json");
+	Translation::load("plugins/LLtpa/langpack/" + Settings::LANGUAGE + ".json");
 	reinitWARPGUI();
 }
 
@@ -609,17 +632,17 @@ void tpa_entry() {
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
 		LLTPAUpdateCommand::setup(e.mCommandRegistry);
-		if (TPA_ENABLED)	TpaCommand::setup(e.mCommandRegistry);
-		if (HOME_ENABLED) {
+		if (Settings::TPA_ENABLED)	TpaCommand::setup(e.mCommandRegistry);
+		if (Settings::HOME_ENABLED) {
 			HomeCommand::setup(e.mCommandRegistry);
 		}
 		WarpCommand::setup(e.mCommandRegistry);
-		if (BACK_ENABLED) BackCommand::setup(e.mCommandRegistry);
-		if (SUICIDE_ENABLED) SuicideCommand::setup(e.mCommandRegistry);
+		if (Settings::BACK_ENABLED) BackCommand::setup(e.mCommandRegistry);
+		if (Settings::SUICIDE_ENABLED) SuicideCommand::setup(e.mCommandRegistry);
 		ReloadCommand::setup(e.mCommandRegistry);
 		return true;
 		});
-	if (BACK_ENABLED) {
+	if (Settings::BACK_ENABLED) {
 		Event::PlayerDieEvent::subscribe([](const Event::PlayerDieEvent& ev) {
 			ServerPlayer* sp = (ServerPlayer*)ev.mPlayer;
 			deathPos[sp] = Vec4{ sp };
