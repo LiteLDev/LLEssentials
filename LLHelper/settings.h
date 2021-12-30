@@ -21,3 +21,10 @@ namespace Settings {
     void WriteDefaultConfig(const std::string& fileName);
     void LoadConfigFromJson(const std::string& fileName);
 } // namespace Settings
+
+namespace TR {
+    nlohmann::json globaljson();
+    void initjson(nlohmann::json json);
+    void WriteDefaultConfig(const std::string& fileName);
+    void LoadConfigFromJson(const std::string& fileName);
+}

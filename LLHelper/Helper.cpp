@@ -6,6 +6,7 @@ vector<unsigned int> taskList;
 Logger logger("Helper");
 
 void loadCfg() {
+	//config
 	if (!std::filesystem::exists("plugins/LLHelper"))
 		std::filesystem::create_directories("plugins/LLHelper");
 	for (unsigned int taskId : taskList) { //Remove all tasks
@@ -30,6 +31,28 @@ void loadCfg() {
 	else {
 		logger.info("Config with default values created");
 		Settings::WriteDefaultConfig("plugins/LLHelper/LLHelper.json");
+	}
+	//tr
+	if (!std::filesystem::exists("plugins/LLHelper/langpack"))
+		std::filesystem::create_directories("plugins/LLHelper/langpack");
+	if (std::filesystem::exists("plugins/LLHelper/langpack/en-us.json")) {
+		try {
+			TR::LoadConfigFromJson("plugins/LLHelper/langpack/en-us.json");
+		}
+		catch (std::exception& e) {
+			logger.error("Config File isInvalid, Err {}", e.what());
+			Sleep(1000 * 100);
+			exit(1);
+		}
+		catch (...) {
+			logger.error("Config File isInvalid");
+			Sleep(1000 * 100);
+			exit(1);
+		}
+	}
+	else {
+		logger.info("Config with default values created");
+		TR::WriteDefaultConfig("plugins/LLHelper/langpack/en-us.json");
 	}
 }
 

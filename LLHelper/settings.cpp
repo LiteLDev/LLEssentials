@@ -98,3 +98,82 @@ namespace Settings {
         WriteDefaultConfig(fileName);
     }
 } // namespace Settings
+#define TRJ(key,val)                                         \
+if (json.find(key) != json.end()) {                          \
+    const nlohmann::json& out = json.at(key);                \
+    out.get_to(val);}                                        \
+
+namespace TR {
+    string gmodesuccess = "Your game mode is changed";
+    string banlistsuccess = "Done";
+    string banbanipsuccess = " is banned";
+    string banbansuccess = " is banned";
+    string banunbansuccess = " is unbanned";
+    string banunbanerror = "not banned";
+
+    string skicksuccess = "is kicked";
+    string vanishsuccess = "Successfully opened. When you want to cancel, please join the server again.";
+    string cnamesetnotonline = "Player not online!we will only save the custom name";
+    string cnamesetsuccess = "Set success";
+    string cnamermnotonline = "Player not online!we will only delete the custom name";
+    string cnamermsuccess = "Delete success";
+    string cnamesetnull = "Null name";
+    string hreloadsuccess = "Reloaded";
+
+    nlohmann::json globaljson() {
+        nlohmann::json json;
+        json["gmode.success"] = gmodesuccess;
+        json["ban.list.success"] = banlistsuccess;
+        json["ban.banip.success"] = banbanipsuccess;
+        json["ban.ban.success"] = banbansuccess;
+        json["ban.unban.success"] = banunbansuccess;
+        json["ban.unban.error"] = banunbanerror;
+        json["skick.success"] = skicksuccess;
+        json["vanish.success"] = vanishsuccess;
+        json["cname.set.notonline"] = cnamesetnotonline;
+        json["cname.set.success"] = cnamesetsuccess;
+        json["cname.rm.notonline"] = cnamermnotonline;
+        json["cname.rm.success"] = cnamermsuccess;
+        json["cname.set.null"] = cnamesetnull;
+        json["hreload.success"] = hreloadsuccess;
+        return json;
+    }
+    void initjson(nlohmann::json json) {
+        TRJ("gmode.success", gmodesuccess);
+        TRJ("ban.list.success", banlistsuccess);
+        TRJ("ban.banip.success", banbanipsuccess);
+        TRJ("ban.ban.success", banbansuccess);
+        TRJ("ban.unban.success", banunbansuccess);
+        TRJ("ban.unban.error", banunbanerror);
+        TRJ("skick.success", skicksuccess);
+        TRJ("vanish.success", vanishsuccess);
+        TRJ("cname.set.notonline", cnamesetnotonline);
+        TRJ("cname.set.success", cnamesetsuccess);
+        TRJ("cname.rm.notonline", cnamermnotonline);
+        TRJ("cname.rm.success", cnamermsuccess);
+        TRJ("cname.set.null", cnamesetnull);
+        TRJ("hreload.success", hreloadsuccess);
+    }
+    void WriteDefaultConfig(const std::string& fileName) {
+        std::ofstream file(fileName);
+        if (!file.is_open()) {
+            std::cout << "Can't open file " << fileName << std::endl;
+            return;
+        }
+        auto json = globaljson();
+        file << json.dump(4);
+        file.close();
+    }
+    void LoadConfigFromJson(const std::string& fileName) {
+        std::ifstream file(fileName);
+        if (!file.is_open()) {
+            std::cout << "Can't open file " << fileName << std::endl;
+            return;
+        }
+        nlohmann::json json;
+        file >> json;
+        file.close();
+        initjson(json);
+        WriteDefaultConfig(fileName);
+    }
+}
