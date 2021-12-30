@@ -94,7 +94,8 @@ namespace TR {
     string tpaguilabel = "Choose a player";
     string tpaguidropdown1 = "Mode";
     string tpaguidropdown2 = "Players";
-
+    string tpaacerror = "No Tpa request";
+    string tpadeerror = "No Tpa request";
     nlohmann::json globaljson() {
         nlohmann::json json;
         json["tp.fail.rate"] = tpfailrate;
@@ -122,6 +123,8 @@ namespace TR {
         json["tpa.gui.label"] = tpaguilabel;
         json["tpa.gui.dropdown1"] = tpaguidropdown1;
         json["tpa.gui.dropdown2"] = tpaguidropdown2;
+        json["tpa.ac.error"] = tpaacerror;
+        json["tpa.de.error"] = tpadeerror;
         return json;
     }
     void initjson(nlohmann::json json) {
@@ -150,6 +153,8 @@ namespace TR {
         TRJ("tpa.gui.label", tpaguilabel);
         TRJ("tpa.gui.dropdown1", tpaguidropdown1);
         TRJ("tpa.gui.dropdown2", tpaguidropdown2);
+        TRJ("tpa.ac.error", tpaacerror);
+        TRJ("tpa.de.error", tpadeerror);
 
     }
     void WriteDefaultConfig(const std::string& fileName) {

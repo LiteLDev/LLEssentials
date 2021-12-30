@@ -229,6 +229,7 @@ public:
 			case TPAOP::ac: {
 				auto it = DoFetchReq_receiver(ori.getName());
 				if (!it.set) {
+					outp.error(tr("tpa.ac.error"));
 					return;
 				}
 				DoCloseReq(it.val(), TPCloseReason::accept);
@@ -237,6 +238,7 @@ public:
 			case TPAOP::de: {
 				auto it = DoFetchReq_receiver(ori.getName());
 				if (!it.set) {
+					outp.error(tr("tpa.de.error"));
 					return;
 				}
 				DoCloseReq(it.val(), TPCloseReason::deny);
