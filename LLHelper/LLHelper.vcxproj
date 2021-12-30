@@ -171,7 +171,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Protect.cpp" />
-    <ClCompile Include="Tick_schedule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\SDK\Lib\bedrock_server_api.lib" />

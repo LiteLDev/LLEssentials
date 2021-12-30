@@ -41,9 +41,6 @@
     <ClCompile Include="Log.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Tick_schedule.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\SDK\Lib\bedrock_server_var.lib">

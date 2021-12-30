@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "Helper.h"
 #include <unordered_map>
+#include <ScheduleAPI.h>
 
 std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 int FAKE_SEED, MAX_CHAT_LEN;
@@ -37,11 +38,20 @@ void loadCfg() {
 	}
 }
 
+void scheduleTask() {
+	for (auto timer : CMDSCHEDULE) {
+		std::string taskCmd = timer.second;
+		unsigned long long taskTick = std::stoull(timer.first);
+		Schedule::repeat([taskCmd] {
+			Level::runcmdEx(taskCmd);
+			}, taskTick);
+	}
+};
+
 bool onPlayerLeft(Event::PlayerLeftEvent);
 bool onPlayerJoin(Event::PlayerPreJoinEvent);
 bool onPlayerUseItemOn(Event::PlayerUseItemOnEvent);
 void RegisterCommands();
-extern void ScheduleCheck();
 void entry() {
 	Event::PlayerLeftEvent::subscribe(onPlayerLeft);
 	Event::PlayerPreJoinEvent::subscribe(onPlayerJoin);
@@ -62,9 +72,9 @@ void entry() {
 		});
 	loadCfg();
 	RegisterCommands();
+	scheduleTask();
 	logger.setFile("logs/Helper.log", true);
 	logger.info("Loaded version: {}", _ver);
-	ScheduleCheck();
 }
 // enable ability
 THook(void, "?setup@ChangeSettingCommand@@SAXAEAVCommandRegistry@@@Z",
