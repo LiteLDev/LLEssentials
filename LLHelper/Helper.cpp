@@ -41,7 +41,7 @@ bool onPlayerLeft(Event::PlayerLeftEvent);
 bool onPlayerJoin(Event::PlayerPreJoinEvent);
 bool onPlayerUseItemOn(Event::PlayerUseItemOnEvent);
 void RegisterCommands();
-
+extern void ScheduleCheck();
 void entry() {
 	Event::PlayerLeftEvent::subscribe(onPlayerLeft);
 	Event::PlayerPreJoinEvent::subscribe(onPlayerJoin);
@@ -64,6 +64,7 @@ void entry() {
 	RegisterCommands();
 	logger.setFile("logs/Helper.log", true);
 	logger.info("Loaded version: {}", _ver);
+	ScheduleCheck();
 }
 // enable ability
 THook(void, "?setup@ChangeSettingCommand@@SAXAEAVCommandRegistry@@@Z",

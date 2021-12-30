@@ -2,7 +2,7 @@
 #include "pch.h"
 #pragma warning(disable:4996)
 
-#define _ver "211229"
+#define _ver "211230"
 
 extern std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
 extern int FAKE_SEED, MAX_CHAT_LEN;

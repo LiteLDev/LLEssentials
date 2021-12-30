@@ -160,6 +160,9 @@
     <ClInclude Include="Tpa.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AutoUpgrade.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="homeStorage.cpp" />
     <ClCompile Include="pch.cpp">
@@ -175,6 +178,8 @@
     <Library Include="..\SDK\Lib\bedrock_server_var.lib" />
     <Library Include="..\SDK\Lib\LiteLoader.lib" />
     <Library Include="..\SDK\Lib\SymDBHelper.lib" />
+    <Library Include="..\SDK\Lib\third-party\openssl\libcrypto.lib" />
+    <Library Include="..\SDK\Lib\third-party\openssl\libssl.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

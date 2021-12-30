@@ -275,7 +275,7 @@ public:
 				sendForm(*ori.getPlayer(), FullFormBinder{ fm,{[](ServerPlayer& P, FullFormBinder::DType data) {
 					if (!data.set) return;
 						auto& [d1,d2] = data.val();
-						P.runcmd("tpa " + d2[0] + " " + d2[1]);
+						P.runcmd("tpa \"" + d2[0] + "\" " + d2[1]);
 				}} });
 				break;
 			}
@@ -471,6 +471,7 @@ public:
 					wp.runcmd("home go \"" + d.val().second + "\"");
 				}
 				}));
+			break;
 		}
 		default:
 			break;
@@ -515,6 +516,46 @@ public:
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("suicide", "Goodbye", CommandPermissionLevel::Any, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
 		registry->registerOverload<SuicideCommand>("suicide");
+	}
+};
+
+class LLTPAUpdateCommand : public Command {
+	enum class Operation {
+		Force,
+	} operation;
+	bool isSet;
+
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& output) const override {
+		bool isForce = false;
+		if (isSet) {
+			switch (operation) {
+			case Operation::Force:
+				isForce = true;
+				break;
+			default:
+				break;
+			}
+		}
+		CheckAutoUpdate(true, isForce);
+	}
+
+	static void setup(CommandRegistry* registry) {
+		registry->registerCommand(
+			"lltpaupdate",
+			"Update LLTpa",
+			CommandPermissionLevel::Console,
+			{ (CommandFlagValue)0 },
+			{ (CommandFlagValue)0x80 }
+		);
+		registry->addEnum<Operation>("force", { {"force", Operation::Force} });
+		registry->registerOverload<LLTPAUpdateCommand>(
+			"lltpaupdate",
+			RegisterCommandHelper::makeOptional<CommandParameterDataType::ENUM>(
+				&LLTPAUpdateCommand::operation, "optional", "force",
+				&LLTPAUpdateCommand::isSet
+				)
+			);
 	}
 };
 
@@ -567,6 +608,7 @@ void tpa_entry() {
 	init();
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
+		LLTPAUpdateCommand::setup(e.mCommandRegistry);
 		if (TPA_ENABLED)	TpaCommand::setup(e.mCommandRegistry);
 		if (HOME_ENABLED) {
 			HomeCommand::setup(e.mCommandRegistry);
@@ -585,5 +627,9 @@ void tpa_entry() {
 			return true;
 			});
 	}
+	Event::ServerStartedEvent::subscribe([](const Event::ServerStartedEvent& ev) {
+		CheckAutoUpdate(true, false);
+		return true;
+		});
 	logger.info("Loaded version: {}", _ver);
 }
