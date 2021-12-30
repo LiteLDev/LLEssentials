@@ -1,2 +1,8 @@
 ## LLHelper
-- Fix `max_chat_length`
+- Add Autoupdates
+- Optimize scheduleTask
+- Rewrite the JSON system
+## LLTpa
+- Add Autoupdates
+- Fix some bugs of TPAGUI
+- Rewrite the JSON system
