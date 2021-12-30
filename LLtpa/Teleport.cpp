@@ -270,7 +270,7 @@ public:
 				sendForm(*ori.getPlayer(), FullFormBinder{ fm,{[](ServerPlayer& P, FullFormBinder::DType data) {
 					if (!data.set) return;
 						auto& [d1,d2] = data.val();
-						P.runcmd("tpa \"" + d2[0] + "\" " + d2[1]);
+						P.runcmd("tpa " + d2[0] + " \"" + d2[1]+"\"");
 				}} });
 				break;
 			}
