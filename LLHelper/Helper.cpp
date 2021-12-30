@@ -2,12 +2,16 @@
 #include "Helper.h"
 #include <unordered_map>
 #include <ScheduleAPI.h>
-
+vector<unsigned int> taskList;
 Logger logger("Helper");
 
 void loadCfg() {
 	if (!std::filesystem::exists("plugins/LLHelper"))
 		std::filesystem::create_directories("plugins/LLHelper");
+	for (unsigned int taskId : taskList) { //Remove all tasks
+		ScheduleTask task(taskId);
+		task.cancel();
+	}
 	if (std::filesystem::exists("plugins/LLHelper/LLHelper.json")) {
 		try {
 			Settings::LoadConfigFromJson("plugins/LLHelper/LLHelper.json");
@@ -30,12 +34,13 @@ void loadCfg() {
 }
 
 void scheduleTask() {
-	for (auto timer : CMDSCHEDULE) {
+	for (auto timer : Settings::CMDSCHEDULE) {
 		std::string taskCmd = timer.second;
 		unsigned long long taskTick = std::stoull(timer.first);
-		Schedule::repeat([taskCmd] {
+		ScheduleTask tsk = Schedule::repeat([taskCmd] {
 			Level::runcmdEx(taskCmd);
 			}, taskTick);
+		taskList.push_back(tsk.getTaskId());
 	}
 };
 
