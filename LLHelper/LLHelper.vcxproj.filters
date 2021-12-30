@@ -21,6 +21,9 @@
     <ClInclude Include="Helper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="settings.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -44,6 +47,12 @@
     <ClCompile Include="Tick_schedule.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="AutoUprade.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="settings.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\SDK\Lib\bedrock_server_var.lib">
@@ -56,6 +65,12 @@
       <Filter>资源文件</Filter>
     </Library>
     <Library Include="..\SDK\Lib\bedrock_server_api.lib">
+      <Filter>资源文件</Filter>
+    </Library>
+    <Library Include="..\SDK\Lib\third-party\openssl\libcrypto.lib">
+      <Filter>资源文件</Filter>
+    </Library>
+    <Library Include="..\SDK\Lib\third-party\openssl\libssl.lib">
       <Filter>资源文件</Filter>
     </Library>
   </ItemGroup>

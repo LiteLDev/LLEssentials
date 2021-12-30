@@ -2,38 +2,29 @@
 #include "Helper.h"
 #include <unordered_map>
 
-std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
-int FAKE_SEED, MAX_CHAT_LEN;
-std::unordered_set<short> logItems, banItems;
-bool regABILITY, NO_EXPLOSION, EXP_PLAY, penderman, pfarm;
-std::string LANGUAGE = "en-us";
 Logger logger("Helper");
 
 void loadCfg() {
-	try {
-		CMDMAP.clear();
-		ConfigJReader jr("plugins\\LLHelper\\LLHelper.json");
-		jr.bind("language", LANGUAGE);
-		jr.bind("command_map", CMDMAP);
-		jr.bind("timer", CMDSCHEDULE);
-		jr.bind("fake_seed", FAKE_SEED, 114514);
-		jr.bind("no_explosion", NO_EXPLOSION, false);
-		jr.bind("max_chat_length", MAX_CHAT_LEN, 96);
-		jr.bind("no_enderman_take_block", penderman, true);
-		jr.bind("protect_farm_block", pfarm, true);
-		jr.bind("force_enable_ability", regABILITY, true);
-		std::vector<int> items;
-		logItems.clear();
-		banItems.clear();
-		jr.bind("log_items", items, {});
-		for (auto i : items) logItems.insert(i);
-		items.clear();
-		jr.bind("ban_items", items, {});
-		for (auto i : items) banItems.insert(i);
+	if (!std::filesystem::exists("plugins/LLHelper"))
+		std::filesystem::create_directories("plugins/LLHelper");
+	if (std::filesystem::exists("plugins/LLHelper/LLHelper.json")) {
+		try {
+			Settings::LoadConfigFromJson("plugins/LLHelper/LLHelper.json");
+		}
+		catch (std::exception& e) {
+			logger.error("Config File isInvalid, Err {}", e.what());
+			Sleep(1000 * 100);
+			exit(1);
+		}
+		catch (...) {
+			logger.error("Config File isInvalid");
+			Sleep(1000 * 100);
+			exit(1);
+		}
 	}
-	catch (string e) {
-		printf("[LLHelper] json error %s\n", e.c_str());
-		throw 0;
+	else {
+		logger.info("Config with default values created");
+		Settings::WriteDefaultConfig("plugins/LLHelper/LLHelper.json");
 	}
 }
 
@@ -47,17 +38,21 @@ void entry() {
 	Event::PlayerPreJoinEvent::subscribe(onPlayerJoin);
 	Event::PlayerUseItemEvent::subscribe([] (Event::PlayerUseItemEvent e) {
 		std::string id = std::to_string(e.mItemStack->getId());
-		if (CMDMAP.count(id)) {
-			e.mPlayer->runcmd(CMDMAP[id]);
+		if (Settings::CMDMAP.count(id)) {
+			e.mPlayer->runcmd(Settings::CMDMAP[id]);
 		}
 		return true;
 		});
 	Event::PlayerUseItemOnEvent::subscribe(onPlayerUseItemOn);
 	Event::PlayerChatEvent::subscribe([] (Event::PlayerChatEvent e) {
-		if (e.mMessage.size() >= MAX_CHAT_LEN) {
+		if (e.mMessage.size() >= Settings::MAX_CHAT_LEN) {
 			e.mPlayer->sendText(u8"§cDon't spam");
 			return false;
 		}
+		return true;
+		});
+	Event::ServerStartedEvent::subscribe([](const Event::ServerStartedEvent& ev) {
+		CheckAutoUpdate(true, false);
 		return true;
 		});
 	loadCfg();
@@ -69,7 +64,7 @@ void entry() {
 // enable ability
 THook(void, "?setup@ChangeSettingCommand@@SAXAEAVCommandRegistry@@@Z",
 	void* self) {
-	if (regABILITY)
+	if (Settings::regABILITY)
 		SymCall("?setup@AbilityCommand@@SAXAEAVCommandRegistry@@@Z"
 			, void, void*)(self);
 	return original(self);

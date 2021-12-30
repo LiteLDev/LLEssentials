@@ -11,11 +11,10 @@
 #include <MC/Item.hpp>
 #include <SendPacketAPI.h>
 #include <MC/MinecraftPackets.hpp>
-
+#include "settings.h"
 std::unique_ptr<KVDB> db;
 playerMap<string> ORIG_NAME;
 std::unordered_map<string, string> CNAME;
-extern std::string LANGUAGE;
 
 void loadCNAME() {
 	db = KVDB::create("plugins/LLHelper/data", false);
@@ -360,7 +359,7 @@ public:
 
 void RegisterCommands() {
 	loadCNAME();
-	Translation::load("plugins\\LLHelper\\langpack\\" + LANGUAGE + ".json");
+	Translation::load("plugins\\LLHelper\\langpack\\" + Settings::LANGUAGE + ".json");
 	Event::RegCmdEvent::subscribe([](Event::RegCmdEvent e) {
 		TransferCommand::setup(e.mCommandRegistry);
 		HelperCommand::setup(e.mCommandRegistry);

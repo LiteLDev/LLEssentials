@@ -7,7 +7,7 @@ long long ticks;
 #include <ScheduleAPI.h>
 void ScheduleCheck() {
 	Schedule::repeat([] {
-		for (auto& i : CMDSCHEDULE) {
+		for (auto& i : Settings::CMDSCHEDULE) {
 			if (!(ticks % std::atoi(i.first.c_str()))) {
 				Level::runcmdEx(i.second);
 			}
