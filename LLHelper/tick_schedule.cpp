@@ -13,5 +13,5 @@ void ScheduleCheck() {
 			}
 		}
 		ticks += 5;
-	}, 0.5);
+	}, 5);
 }
