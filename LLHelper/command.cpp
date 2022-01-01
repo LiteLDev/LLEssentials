@@ -207,9 +207,7 @@ public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		auto res = pl.results(ori);
 		for (auto p : res) {
-			p->crashClient
-			
-			();
+			p->crashClient();
 		}
 		outp.success("Crashed");
 	}
@@ -357,6 +355,25 @@ public:
 	}
 };
 
+class RunasCommand : public Command {
+	CommandSelector<Player> pl;
+	std::string cmd;
+public:
+	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
+		auto res = pl.results(ori);
+		for (auto p : res) {
+			p->runcmd(cmd);
+		}
+		outp.success("Executed");
+	}
+	static void setup(CommandRegistry* registry) {
+		using RegisterCommandHelper::makeMandatory;
+		using RegisterCommandHelper::makeOptional;
+		registry->registerCommand("runas", "Run command as a player", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->registerOverload<RunasCommand>("runas", makeMandatory(&RunasCommand::pl, "player"), makeMandatory(&RunasCommand::cmd, "command"));
+	}
+};
+
 void RegisterCommands() {
 	loadCNAME();
 	Translation::load("plugins\\LLHelper\\langpack\\" + Settings::LANGUAGE + ".json");
@@ -370,6 +387,7 @@ void RegisterCommands() {
 		BanCommand::setup(e.mCommandRegistry);
 		GmodeCommand::setup(e.mCommandRegistry);
 		CrashCommand::setup(e.mCommandRegistry);
+		RunasCommand::setup(e.mCommandRegistry);
 		return true;
 		});
 }

@@ -1,3 +1,2 @@
-**Attention: Please update LLMoney because of a bug**
-## LLMoney
-- Fix bugs
+## LLHelper
+- Added `/runas` command

@@ -27,6 +27,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | /cname <set/rm> <player> [nickname] | Set nickname for a player | OP |
 | /vanish | invisibility(only effective for players who can see you) | OP |
 | /crash <player> | Crash player's client | OP |
+| /runas <player> <command> | Execute command as target player | OP |
 ## LLTpa
 | Command | Description | Permission |
 | --- | --- | --- |
