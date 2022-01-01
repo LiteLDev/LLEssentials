@@ -25,7 +25,10 @@ void loadConfig() {
 	}
 	else {
 		std::string json;
-		fs >> json;
+		char        buf[1024];
+		while (fs.getline(buf, 1024)) {
+			json.append(buf);
+		}
 		rapidjson::Document document;
 		document.Parse(json.c_str());
 		if (document.HasMember("KickMessage")) {
