@@ -84,15 +84,14 @@ public:
 			break;
 		case pay:
 		{
-			if ((unsigned short)ori.getOriginType() != (unsigned short)OriginType::Player) {
-				outp.error("You are not a player");
-			}
 			if (moneynum <= 0) {
 				outp.error(tr("money.invalid.arg"));
+				return;
 			}
 			myuid = ori.getPlayer()->getXuid();
 			if (myuid == "" || myuid == dstxuid) {
 				outp.error(tr("money.no.target"));
+				return;
 			}
 			if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
 				money_t fee = (money_t)(moneynum * MoneyFee);
@@ -103,11 +102,13 @@ public:
 			else {
 				outp.error(tr("money.not.enough"));
 			}
+			return;
 		}
 		break;
 		case set:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneySet(dstxuid, moneynum)) {
 				outp.success("set success");
@@ -119,6 +120,7 @@ public:
 		case add:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneyAdd(dstxuid, moneynum)) {
 				outp.success("add success");
@@ -130,6 +132,7 @@ public:
 		case reduce:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneyReduce(dstxuid, moneynum)) {
 			}
@@ -236,15 +239,14 @@ public:
 			break;
 		case pay:
 		{
-			if ((unsigned short)ori.getOriginType() != (unsigned short)OriginType::Player) {
-				outp.error("You are not a player");
-			}
 			if (moneynum <= 0) {
 				outp.error(tr("money.invalid.arg"));
+				return;
 			}
 			myuid = PlayerInfo::getXuid(ori.getName());
 			if (myuid.val() == "") {
 				outp.error(tr("money.no.target"));
+				return;
 			}
 			if (LLMoneyTrans(myuid.val(), dstxuid.val(), moneynum, "money pay")) {
 				money_t fee = (money_t)(moneynum * MoneyFee);
@@ -260,6 +262,7 @@ public:
 		case set:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneySet(dstxuid.val(), moneynum)) {
 				outp.success("set success");
@@ -271,6 +274,7 @@ public:
 		case add:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneyAdd(dstxuid.val(), moneynum)) {
 				outp.success("add success");
@@ -282,6 +286,7 @@ public:
 		case reduce:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			if (LLMoneyReduce(dstxuid.val(), moneynum)) {
 			}
