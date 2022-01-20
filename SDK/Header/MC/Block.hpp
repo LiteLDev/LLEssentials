@@ -5,7 +5,8 @@
 
 #define BEFORE_EXTRA
 // Add include headers & pre-declares
-class CompoundTag;
+#include "CompoundTag.hpp"
+
 #undef BEFORE_EXTRA
 
 class Block {
@@ -168,8 +169,8 @@ public:
     MCAPI void onStepOn(class Actor&, class BlockPos const&) const;
     MCAPI void onStructureBlockPlace(class BlockSource&, class BlockPos const&) const;
     MCAPI void onStructureNeighborBlockPlace(class BlockSource&, class BlockPos const&) const;
-    MCAPI bool operator!=(class Block const&);
-    MCAPI bool operator==(class Block const&);
+    MCAPI bool operator!=(class Block const&) const;
+    MCAPI bool operator==(class Block const&) const;
     MCAPI void playerDestroy(class Player&, class BlockPos const&) const;
     MCAPI bool playerWillDestroy(class Player&, class BlockPos const&) const;
     MCAPI class ItemActor* popResource(class BlockSource&, class BlockPos const&, class ItemInstance const&) const;

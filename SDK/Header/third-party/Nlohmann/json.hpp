@@ -118,7 +118,7 @@ struct position_t
  * For details, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  * SPDX-License-Identifier: CC0-1.0
  */
-#undef snprintf
+
 #if !defined(JSON_HEDLEY_VERSION) || (JSON_HEDLEY_VERSION < 13)
 #if defined(JSON_HEDLEY_VERSION)
     #undef JSON_HEDLEY_VERSION
