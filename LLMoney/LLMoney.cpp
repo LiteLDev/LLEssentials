@@ -1,8 +1,6 @@
 #include "pch.h"
 #include <Global.h>
 #include <iostream>
-#include "rapidjson/rapidjson.h"
-#include "rapidjson/document.h"
 #include <MC/Player.hpp>
 #include <MC/ServerPlayer.hpp>
 #include <regCommandAPI.h>
@@ -16,6 +14,7 @@
 #include <filesystem>
 #include <TranslationAPI.h>
 #include <JsonLoader.h>
+
 using namespace RegisterCommandHelper;
 
 Logger logger("LLMoney");
