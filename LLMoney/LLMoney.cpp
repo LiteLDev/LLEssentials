@@ -57,6 +57,7 @@ public:
 			}
 			if (dstid == "") {
 				outp.error(tr("money.no.target"));
+				return;
 			}
 			break;
 		case pay:
@@ -66,11 +67,13 @@ public:
 			dstxuid = PlayerInfo::getXuid(dst);
 			if (dstxuid == "") {
 				outp.error(tr("money.no.target"));
+				return;
 			}
 			break;
 		case purge:
 			if (ori.getPermissionsLevel() < 1) {
 				outp.error(tr("money.no.perm"));
+				return;
 			}
 			break;
 		}
