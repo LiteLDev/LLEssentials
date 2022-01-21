@@ -25,11 +25,6 @@ void loadCNAME() {
 		});
 }
 
-void LOWERSTRING(string& S) {
-	for (auto& i : S) {
-		i = tolower(i);
-	}
-}
 void addBanEntry(string const& entry, time_t timediff) {
 	time_t next = timediff == 0 ? 0 : (time(0) + timediff);
 	db->put("b_" + entry, to_view(next));
@@ -75,7 +70,6 @@ class BanCommand : public Command {
 	int time;
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
-		LOWERSTRING((std::string&)entry);
 		switch (op)
 		{
 		case BANOP::banip: {
@@ -113,7 +107,7 @@ public:
 			}
 		}
 						 break;
-		case list: {
+		case BANOP::list: {
 			db->iter([&](string_view key, string_view val)->bool {
 				if (key._Starts_with("b_")) {
 					string banned{ key.substr(2) };
