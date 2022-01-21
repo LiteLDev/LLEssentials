@@ -3,7 +3,7 @@
 #pragma warning(disable:4996)
 
 bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
-#define _ver "220120"
+#define _ver "220121"
 #define LLHELPER_VERSION LL::Version{ 2,0, std::stoi(_ver)}
 
 /////////////////////// LL AutoUpgrade ///////////////////////

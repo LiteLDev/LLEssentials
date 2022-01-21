@@ -61,7 +61,7 @@ public:
 };
 
 class BanCommand : public Command {
-	enum BANOP {
+	enum BANOP : int {
 		ban = 1,
 		unban = 2,
 		banip = 3,
@@ -309,11 +309,11 @@ class HelperCommand : public Command {
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
 		switch (action) {
-		case reload:
+		case HelperOP::reload:
 			loadCfg();
 			outp.success(tr("hreload.success"));
 			break;
-		case update:
+		case HelperOP::update:
 			std::thread th([]() {
 				CheckAutoUpdate(true, false);
 				});

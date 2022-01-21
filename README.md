@@ -22,7 +22,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | /gmode <player> <pode(0/1/2/3)> | Change gamemode | OP |
 | /ban <ban/unban/list> [player] [time(second)] | Ban/unban a player | OP |
 | /transfer <player> <IP> <port> | Transfer a player to another server | OP |
-| /helper reload | Reload LLHelper.json | OP |
+| /helper <reload/update> | Reload config/Check plugin's update | OP |
 | /skick <player> | Force kick a player from server | OP |
 | /cname <set/rm> <player> [nickname] | Set nickname for a player | OP |
 | /vanish | invisibility(only effective for players who can see you) | OP |
@@ -35,6 +35,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | /warp <add/del/go/ls> [warp] | Add a warp/delete warp/go to warp/list warp | OP |
 | /home <add/del/go/ls> [home] | Add a home/delete home/go home/list home | Player |
 | /item | Show the item info on hand | Player |
+| /lltpa <reload/update> [isForce: true or false] | Reload config/Check plugin's update | OP |
 
 # Config
 ## LLHelper

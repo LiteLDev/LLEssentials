@@ -22,7 +22,7 @@
 | /gmode <玩家> <模式(0/1/2/3)> | 切换玩家游戏模式 | OP |
 | /ban <ban/unban/list> [玩家] [时间(秒)] | 封禁/解封一名玩家 | OP |
 | /transfer <玩家> <IP> <端口> | 将一名玩家转移到其它服务器 | OP |
-| /helper reload | 重载LLHelper配置文件 | OP |
+| /helper <reload/update> | 重载配置文件/检查插件更新 | OP |
 | /skick <玩家> | 以暴力的方式强制踢出一名玩家 | OP |
 | /cname <set/rm> <玩家> [假名] | 给玩家设置假名 | OP |
 | /vanish | 隐身(仅对可以看见你的玩家有效) | OP |
@@ -35,6 +35,7 @@
 | /warp <add/del/go/ls> [地标] | 添加一个地标/删除地标/前往地标/列出地标 | OP |
 | /home <add/del/go/ls> [家] | 添加一个家/删除家/前往家/列出家 | 玩家 |
 | /item | 查询你手上的物品信息 | 玩家 |
+| /lltpa <reload/update> [是否强制: true or false] | 重载配置文件/检查插件更新 | OP |
 
 # 配置文件
 ## LLHelper

@@ -516,46 +516,6 @@ public:
 	}
 };
 
-class LLTPAUpdateCommand : public Command {
-	enum class Operation {
-		Force,
-	} operation;
-	bool isSet;
-
-public:
-	void execute(CommandOrigin const& ori, CommandOutput& output) const override {
-		bool isForce = false;
-		if (isSet) {
-			switch (operation) {
-			case Operation::Force:
-				isForce = true;
-				break;
-			default:
-				break;
-			}
-		}
-		CheckAutoUpdate(true, isForce);
-	}
-
-	static void setup(CommandRegistry* registry) {
-		registry->registerCommand(
-			"lltpaupdate",
-			"Update LLTpa",
-			CommandPermissionLevel::Console,
-			{ (CommandFlagValue)0 },
-			{ (CommandFlagValue)0x80 }
-		);
-		registry->addEnum<Operation>("force", { {"force", Operation::Force} });
-		registry->registerOverload<LLTPAUpdateCommand>(
-			"lltpaupdate",
-			RegisterCommandHelper::makeOptional<CommandParameterDataType::ENUM>(
-				&LLTPAUpdateCommand::operation, "optional", "force",
-				&LLTPAUpdateCommand::isSet
-				)
-			);
-	}
-};
-
 void loadCfg() {
 	//config
 	if (!std::filesystem::exists("plugins/LLtpa"))
@@ -603,17 +563,43 @@ void loadCfg() {
 	}
 }
 
-class ReloadCommand : public Command {
+class LLtpaCommand : public Command {
+	enum LLtpaOP : int {
+		reload = 0,
+		update = 1
+	} op;
+	std::string isForce;
+	bool isForce_set;
+
 public:
 	void execute(CommandOrigin const& ori, CommandOutput& outp) const {
-		loadCfg();
-		outp.success("Reloaded");
+		switch (op) {
+		case LLtpaOP::reload:
+			loadCfg();
+			outp.success("Reloaded");
+			break;
+		case LLtpaOP::update:
+			bool force = false;
+			if (isForce_set) {
+				if (isForce == "true") {
+					force = true;
+				}
+				else {
+					force = false;
+				}
+			}
+			std::thread th([force]() {
+				CheckAutoUpdate(true, force);
+				});
+			th.detach();
+		}
 	}
 	static void setup(CommandRegistry* registry) {
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
-		registry->registerCommand("tpareload", "Reload LLTpa's config", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->registerOverload<ReloadCommand>("tpareload");
+		registry->registerCommand("lltpa", "LLtpa manage command", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
+		registry->addEnum<LLtpaOP>("LLtpaOP", { {"reload", LLtpaOP::reload}, {"update", LLtpaOP::update} });
+		registry->registerOverload<LLtpaCommand>("lltpa", makeMandatory<CommandParameterDataType::ENUM>(&LLtpaCommand::op, "OP", "LLtpaOP"), makeOptional(&LLtpaCommand::isForce, "isForce", &LLtpaCommand::isForce_set));
 	}
 };
 
@@ -633,7 +619,6 @@ void tpa_entry() {
 	init();
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
-		LLTPAUpdateCommand::setup(e.mCommandRegistry);
 		if (Settings::TPA_ENABLED)	TpaCommand::setup(e.mCommandRegistry);
 		if (Settings::HOME_ENABLED) {
 			HomeCommand::setup(e.mCommandRegistry);
@@ -641,7 +626,7 @@ void tpa_entry() {
 		WarpCommand::setup(e.mCommandRegistry);
 		if (Settings::BACK_ENABLED) BackCommand::setup(e.mCommandRegistry);
 		if (Settings::SUICIDE_ENABLED) SuicideCommand::setup(e.mCommandRegistry);
-		ReloadCommand::setup(e.mCommandRegistry);
+		LLtpaCommand::setup(e.mCommandRegistry);
 		return true;
 		});
 	if (Settings::BACK_ENABLED) {
