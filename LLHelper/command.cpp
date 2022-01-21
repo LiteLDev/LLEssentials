@@ -12,6 +12,8 @@
 #include <SendPacketAPI.h>
 #include <MC/MinecraftPackets.hpp>
 #include "settings.h"
+#include <thread>
+
 std::unique_ptr<KVDB> db;
 playerMap<string> ORIG_NAME;
 std::unordered_map<string, string> CNAME;
@@ -300,7 +302,8 @@ public:
 
 class HelperCommand : public Command {
 	enum HelperOP : int {
-		reload = 0
+		reload = 0,
+		update = 1
 	} action;
 
 public:
@@ -310,8 +313,11 @@ public:
 			loadCfg();
 			outp.success(tr("hreload.success"));
 			break;
-		default:
-			outp.error("Error");
+		case update:
+			std::thread th([]() {
+				CheckAutoUpdate(true, false);
+				});
+			th.detach();
 		}
 		
 	}
@@ -319,7 +325,7 @@ public:
 		using RegisterCommandHelper::makeMandatory;
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("helper", "LLHelper", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 }, { (CommandFlagValue)0x80 });
-		registry->addEnum<HelperOP>("HelperOP", {{"reload", HelperOP::reload}});
+		registry->addEnum<HelperOP>("HelperOP", { {"reload", HelperOP::reload}, {"update", HelperOP::update}});
 		registry->registerOverload<HelperCommand>("helper", makeMandatory<CommandParameterDataType::ENUM>(&HelperCommand::action, "optinal", "HelperOP"));
 	}
 };
