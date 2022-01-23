@@ -638,7 +638,10 @@ void tpa_entry() {
 			});
 	}
 	Event::ServerStartedEvent::subscribe([](const Event::ServerStartedEvent& ev) {
-		CheckAutoUpdate(true, false);
+		std::thread th([]() {
+			CheckAutoUpdate(true, false);
+			});
+		th.detach();
 		return true;
 		});
 	logger.info("Loaded version: {}", _ver);

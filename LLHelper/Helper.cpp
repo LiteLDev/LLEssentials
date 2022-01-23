@@ -74,7 +74,7 @@ void RegisterCommands();
 void entry() {
 	Event::PlayerLeftEvent::subscribe(onPlayerLeft);
 	Event::PlayerPreJoinEvent::subscribe(onPlayerJoin);
-	Event::PlayerUseItemEvent::subscribe([] (Event::PlayerUseItemEvent e) {
+	Event::PlayerUseItemEvent::subscribe([](Event::PlayerUseItemEvent e) {
 		std::string id = std::to_string(e.mItemStack->getId());
 		if (Settings::CMDMAP.count(id)) {
 			e.mPlayer->runcmd(Settings::CMDMAP[id]);
@@ -82,7 +82,7 @@ void entry() {
 		return true;
 		});
 	Event::PlayerUseItemOnEvent::subscribe(onPlayerUseItemOn);
-	Event::PlayerChatEvent::subscribe([] (Event::PlayerChatEvent e) {
+	Event::PlayerChatEvent::subscribe([](Event::PlayerChatEvent e) {
 		if (e.mMessage.size() >= Settings::MAX_CHAT_LEN) {
 			e.mPlayer->sendText(u8"§cDon't spam");
 			return false;
@@ -90,7 +90,10 @@ void entry() {
 		return true;
 		});
 	Event::ServerStartedEvent::subscribe([](const Event::ServerStartedEvent& ev) {
-		CheckAutoUpdate(true, false);
+		std::thread th([]() {
+			CheckAutoUpdate(true, false);
+			});
+		th.detach();
 		return true;
 		});
 	loadCfg();

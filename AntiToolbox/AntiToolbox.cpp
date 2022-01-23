@@ -127,14 +127,17 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 	unsigned short device_os = con_req->getDeviceOS();
 	if (device_os == 1) {
 		std::string pkt = base64_decode(con_req->rawToken.get()->data);
-		/*std::ofstream of("packet.txt");
-		if (of) {
-			of << pkt << "\n";
-		}*/
+		for (std::string pl_name : Array) { // WhiteList detecting
+			std::string xuid = PlayerInfo::getXuid(pl_name);
+			if (xuid == sp->getXuid()) { // WhiteList detected
+				return original(thi, networkId, con_req, sp);
+			}
+		}
 		rapidjson::Document document;
 		document.Parse(pkt.c_str());
 		std::string device_model = document["DeviceModel"].GetString();
 		std::string player_name = sp->getRealName();
+
 		if (device_model == "") {
 			antiToolboxLogger.info("Null model detected: {}, using Horion client?", player_name);
 			if (!EnableCustomCmd) {
@@ -152,12 +155,6 @@ THook(void, "?sendLoginMessageLocal@ServerNetworkHandler@@QEAAXAEBVNetworkIdenti
 		std::transform(device_company.begin(), device_company.end(), device_company.begin(), ::toupper);
 		//std::cout << device_company << ":" << device_company_ori << "\n";
 		if (device_company_ori != device_company) { //Toolbox detected
-			for (std::string pl_name : Array) { // WhiteList detecting
-				std::string xuid = PlayerInfo::getXuid(pl_name);
-				if (xuid == sp->getXuid()) { // WhiteList detected
-					return original(thi, networkId, con_req, sp);
-				}
-			}
 			antiToolboxLogger.info("Toolbox detected: {}", player_name);
 			if (!EnableCustomCmd) {
 				sp->kick(Kick_message);
