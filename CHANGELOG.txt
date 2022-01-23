@@ -1,6 +1,5 @@
-## LLHelper
-- Fixed a problem of `/ban`
-- Added `/helper update`
+## LLHelper && LLtpa
+Fixed main thread blockage caused by automatic update
 
-## LLtpa
-- Added `/lltpa update`
+## AntiToolbox
+Fixed whitelist
