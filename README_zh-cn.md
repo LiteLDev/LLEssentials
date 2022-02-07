@@ -80,3 +80,6 @@
     "pay_tax": 0.0 //转账税率
 }
 ```
+
+# 编译
+使用Visual Studio 2022，`CMakeLists.txt`只是为了在clion中加载符号

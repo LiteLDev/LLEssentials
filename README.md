@@ -81,3 +81,6 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
     "pay_tax": 0.0 //Tax
 }
 ```
+
+# Compile
+Use Visual Studio 2022, `CMakeLists.txt` just for loading symbols in clion

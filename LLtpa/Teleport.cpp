@@ -8,8 +8,9 @@
 #include <MC/NetworkIdentifier.hpp>
 #include <MC/Types.hpp>
 #include <Dedicated/Core.h>
-#include <GuiAPI.h>
 #include <MC/ServerPlayer.hpp>
+#include "../SDK/Header/FormUI.h"
+
 std::unique_ptr<KVDB> db;
 Logger logger("Teleport");
 
@@ -139,6 +140,17 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 	reqs.emplace_back(dir, a, b, clock());
 	string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
 	_b->sendTextPacket(prompt, TextType::RAW);
+    auto form = Form::SimpleForm(tr("tpa.request.title"), prompt.c_str());
+    form.append(Form::Button(tr("tpa.request.accept"), "", [_b](){
+        _b->runcmd("tpa ac");
+    }));
+    form.append(Form::Button(tr("tpa.request.deny"), "", [_b](){
+        _b->runcmd("tpa de");
+    }));
+    form.sendTo(_b, [](int i){
+
+    });
+    /*
 	using namespace GUI;
 	shared_ptr<RawFormBinder> x;
 	char buf[1024];
@@ -156,6 +168,7 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 			}
 		}
 	} ,{} });
+     */
 }
 
 void schTask() {
@@ -260,6 +273,26 @@ public:
 				break;
 			}
 			case TPAOP::gui: {
+                auto form = Form::CustomForm(tr("tpa.gui.title"));
+                form.append(Form::Label("label1" ,tr("tpa.gui.label")));
+                form.append(Form::Dropdown("dropdown1", tr("tpa.gui.dropdown1"), {"to", "here"}));
+                form.append(Form::Dropdown("dropdown2", tr("tpa.gui.dropdown2"), playerList()));
+                ServerPlayer* sp = ori.getPlayer();
+                form.sendTo(sp, [sp](const std::map<std::string, std::shared_ptr<Form::CustomFormElement>> & mp){
+                    std::string action;
+                    std::string target_name;
+                    unsigned short times = 0;
+                    for (const auto& i : mp) {
+                        if (times == 0) {
+                            action = i.first;
+                        } else {
+                            target_name = i.first;
+                        }
+                        times++;
+                    }
+                    sp->runcmd("tpa " + action + " " + target_name);
+                });
+                /*
 				using namespace GUI;
 				auto fm = std::make_shared<FullForm>();
 				fm->title = tr("tpa.gui.title");
@@ -274,6 +307,7 @@ public:
 						auto& [d1,d2] = data.val();
 						P.runcmd("tpa " + d2[0] + " \"" + d2[1]+"\"");
 				}} });
+                 */
 				break;
 			}
 			}
@@ -290,8 +324,18 @@ public:
 	}
 };
 
-shared_ptr<GUI::SimpleForm> WARPGUI;
+//shared_ptr<GUI::SimpleForm> WARPGUI;
+shared_ptr<Form::SimpleForm> WarpForm;
 void reinitWARPGUI() {
+    if (!WarpForm) {
+        WarpForm = make_shared<Form::SimpleForm>(tr("warp.gui.title"), tr("warp.gui.content"));
+        for (auto& [key, value] : warps) {
+            WarpForm->append(Form::Button(string(key), "", [](){
+
+            }));
+        }
+    }
+    /*
 	using namespace GUI;
 	if (!WARPGUI) WARPGUI = make_shared<SimpleForm>();
 	WARPGUI->title = tr("warp.gui.title");
@@ -300,15 +344,28 @@ void reinitWARPGUI() {
 	for (auto& [k, v] : warps) {
 		WARPGUI->addButton(GUIButton(string(k)));
 	}
+     */
 }
 
-void sendWARPGUI(ServerPlayer* wp) {
+void sendWARPGUI(ServerPlayer* sp) {
+    WarpForm->sendTo(sp, [sp](int i){
+        unsigned short times = 1;
+        for (auto& [key, value] : warps) {
+            if (times == i) {
+                sp->runcmd("warp go \"" + key + "\"");
+                return;
+            }
+            times++;
+        }
+    });
+    /*
 	using namespace GUI;
 	sendForm(*wp, SimpleFormBinder(WARPGUI, [](ServerPlayer& wp, SimpleFormBinder::DType d) {
 		if (d.set) {
 			wp.runcmd("warp go \"" + d.val().second + "\"");
 		}
 		}));
+     */
 }
 
 void saveWarps() {
@@ -455,8 +512,19 @@ public:
 			break;
 		}
 		case HOMEOP::gui: {
-			auto wp = ori.getPlayer();
-			auto HomeGUI = make_shared<GUI::SimpleForm>();
+			ServerPlayer* sp = ori.getPlayer();
+			std::shared_ptr<Form::SimpleForm> form = std::make_shared<Form::SimpleForm>(tr("home.gui.title"), tr("home.gui.content"));
+            for (auto& i : hm.data) {
+                std::string home_name = i.name;
+                form->append(Form::Button(home_name, "", [home_name, sp](){
+                    sp->runcmd("home go \"" + home_name + "\"");
+                }));
+            }
+            form->sendTo(sp, [](int i){
+
+            });
+            /*
+            auto HomeGUI = make_shared<GUI::SimpleForm>();
 			HomeGUI->title = tr("home.gui.title");
 			HomeGUI->content = tr("home.gui.content");
 			HomeGUI->reset();
@@ -468,6 +536,7 @@ public:
 					wp.runcmd("home go \"" + d.val().second + "\"");
 				}
 				}));
+			 */
 			break;
 		}
 		default:
