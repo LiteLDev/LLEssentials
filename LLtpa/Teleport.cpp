@@ -283,9 +283,9 @@ public:
                     std::string target_name;
                     unsigned short times = 0;
                     for (const auto& i : mp) {
-                        if (times == 0) {
+                        if (times == 1) {
                             action = i.first;
-                        } else {
+                        } else if (times == 2) {
                             target_name = i.first;
                         }
                         times++;
@@ -329,11 +329,11 @@ shared_ptr<Form::SimpleForm> WarpForm;
 void reinitWARPGUI() {
     if (!WarpForm) {
         WarpForm = make_shared<Form::SimpleForm>(tr("warp.gui.title"), tr("warp.gui.content"));
-        for (auto& [key, value] : warps) {
-            WarpForm->append(Form::Button(string(key), "", [](){
+    }
+    for (auto& [key, value] : warps) {
+        WarpForm->append(Form::Button(key, "", [](){
 
-            }));
-        }
+        }));
     }
     /*
 	using namespace GUI;
