@@ -282,7 +282,7 @@ public:
                     std::string action;
                     std::string target_name;
                     unsigned short times = 0;
-                    for (const auto& i : mp) {
+                    for (const auto& i : mp) { // waiting for LiteLoaderBDS update
                         if (times == 1) {
                             action = i.first;
                         } else if (times == 2) {
@@ -330,6 +330,7 @@ void reinitWARPGUI() {
     if (!WarpForm) {
         WarpForm = make_shared<Form::SimpleForm>(tr("warp.gui.title"), tr("warp.gui.content"));
     }
+    WarpForm.reset();
     for (auto& [key, value] : warps) {
         WarpForm->append(Form::Button(key, "", [](){
 
@@ -349,7 +350,7 @@ void reinitWARPGUI() {
 
 void sendWARPGUI(ServerPlayer* sp) {
     WarpForm->sendTo(sp, [sp](int i){
-        unsigned short times = 1;
+        unsigned short times = 0;
         for (auto& [key, value] : warps) {
             if (times == i) {
                 sp->runcmd("warp go \"" + key + "\"");
