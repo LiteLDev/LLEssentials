@@ -14,7 +14,7 @@
 #include <LoggerAPI.h>
 #include <MC/ConnectionRequest.hpp>
 #include <vector>
-#include <third-party/rapidjson/document.h>
+#include <rapidjson/document.h>
 #include "base64.h"
 #include <MC/Level.hpp>
 #include <PlayerInfoAPI.h>
