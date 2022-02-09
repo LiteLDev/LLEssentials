@@ -12,6 +12,7 @@ class ItemDescriptor {
 
 #define AFTER_EXTRA
 // Add Member There
+    char filler[72];
 
 #undef AFTER_EXTRA
 
@@ -28,7 +29,6 @@ public:
     MCAPI ItemDescriptor(class Item const&, int);
     MCAPI ItemDescriptor(class gsl::basic_string_span<char const, -1>, int);
     MCAPI ItemDescriptor();
-    MCAPI bool deserialize(class BasicLoader&, struct SerializerTraits const&, class BedrockLoadContext const&);
     MCAPI short getAuxValue() const;
     MCAPI class Block const* getBlock() const;
     MCAPI std::string const& getFullName() const;
@@ -44,12 +44,11 @@ public:
     MCAPI bool isNull() const;
     MCAPI bool isValid() const;
     MCAPI void operator=(class ItemDescriptor&&);
-    MCAPI void operator=(class ItemDescriptor const&);
-    MCAPI bool operator==(class ItemDescriptor const&);
+///    MCAPI void operator=(class ItemDescriptor const&);
+    MCAPI bool operator==(class ItemDescriptor const&) const;
     MCAPI bool sameItemAndAux(class ItemDescriptor const&) const;
     MCAPI bool sameItemAndAux(class ItemStack const&) const;
     MCAPI class std::optional<class CompoundTag> save() const;
-    MCAPI bool serialize(class BasicSaver&, struct SerializerTraits const&) const;
     MCAPI ~ItemDescriptor();
     MCAPI static void bindType();
     MCAPI static class std::optional<class ItemDescriptor> fromTag(class CompoundTag const*);

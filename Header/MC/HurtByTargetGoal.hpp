@@ -26,13 +26,13 @@ public:
 public:
     /*0*/ virtual ~HurtByTargetGoal();
     /*1*/ virtual bool canUse();
-    /*2*/ virtual bool isTargetGoal() const;
-    /*3*/ virtual void start();
-    /*4*/ virtual void stop();
-    /*5*/ virtual void appendDebugInfo(std::string&) const;
-    /*6*/ virtual void __unk_vfn_0();
-    /*7*/ virtual void __unk_vfn_1();
-    /*8*/ virtual void alertOther(class Mob*, class Mob*);
+    /*3*/ virtual void __unk_vfn_3();
+    /*4*/ virtual void start();
+    /*5*/ virtual void stop();
+    /*7*/ virtual void appendDebugInfo(std::string&) const;
+    /*8*/ virtual void __unk_vfn_8();
+    /*9*/ virtual void __unk_vfn_9();
+    /*11*/ virtual void alertOther(class Mob*, class Mob*);
     MCAPI HurtByTargetGoal(class Mob&, std::vector<struct MobDescriptor> const&, bool);
 
 protected:

@@ -27,8 +27,8 @@ public:
     /*2*/ virtual std::string getName() const;
     /*3*/ virtual void write(class BinaryStream&) const;
     /*4*/ virtual struct ExtendedStreamReadResult readExtended(class ReadOnlyBinaryStream&);
-    /*5*/ virtual void __unk_vfn_0();
-    /*6*/ virtual enum StreamReadResult _read(class ReadOnlyBinaryStream&);
+    /*5*/ virtual void __unk_vfn_5();
+    /*6*/ virtual ~SyncActorPropertyPacket();
     /*
     inline  ~SyncActorPropertyPacket(){
          (SyncActorPropertyPacket::*rv)();

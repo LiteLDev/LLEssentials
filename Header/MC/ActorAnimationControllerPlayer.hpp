@@ -24,16 +24,16 @@ public:
 
 public:
     /*0*/ virtual ~ActorAnimationControllerPlayer();
-    /*1*/ virtual void __unk_vfn_0();
+    /*1*/ virtual void __unk_vfn_1();
     /*2*/ virtual void resetAnimation();
-    /*3*/ virtual void __unk_vfn_1();
+    /*3*/ virtual void __unk_vfn_3();
     /*4*/ virtual void bindParticleEffects(class std::unordered_map<class HashedString, class HashedString, struct std::hash<class HashedString>, struct std::equal_to<class HashedString>, class std::allocator<struct std::pair<class HashedString const, class HashedString> > > const&);
     /*5*/ virtual void bindSoundEffects(class std::unordered_map<class HashedString, std::string, struct std::hash<class HashedString>, struct std::equal_to<class HashedString>, class std::allocator<struct std::pair<class HashedString const, std::string > > > const&);
     /*6*/ virtual bool hasAnimationFinished() const;
     /*7*/ virtual class std::shared_ptr<class ActorAnimationPlayer> findAnimation(class HashedString const&);
     /*8*/ virtual enum ActorAnimationType getAnimationType() const;
     /*9*/ virtual class HashedString const& getRawName() const;
-    MCAPI ActorAnimationControllerPlayer(class HashedString const&, class ActorAnimationControllerPtr const&, class AnimationComponent&, class ExpressionNode const&);
+    MCAPI ActorAnimationControllerPlayer(class HashedString const&, class ActorAnimationControllerPtr const&, class AnimationComponent&, class ExpressionNode const&, class std::set<class HashedString, struct std::hash<class HashedString>, class std::allocator<class HashedString> >&);
 
 protected:
 

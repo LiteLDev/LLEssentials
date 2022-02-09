@@ -5,7 +5,7 @@
 
 #define BEFORE_EXTRA
 // Include Headers or Declare Types Here
-
+#include "InventoryTransaction.hpp"
 #undef BEFORE_EXTRA
 
 class ComplexInventoryTransaction {
@@ -13,7 +13,15 @@ class ComplexInventoryTransaction {
 #define AFTER_EXTRA
 // Add Member There
 public:
-enum Type;
+enum class Type : unsigned
+{
+    NORMAL = 0,
+    MISMATCH = 1,
+    ITEM_USE = 2,
+    ITEM_USE_ON_ACTOR = 3,
+    RELEASE_ITEM = 4,
+} type;
+InventoryTransaction* data;
 
 #undef AFTER_EXTRA
 
@@ -26,8 +34,8 @@ public:
 
 public:
     /*0*/ virtual ~ComplexInventoryTransaction();
-    /*1*/ virtual void __unk_vfn_0();
-    /*2*/ virtual void __unk_vfn_1();
+    /*1*/ virtual void __unk_vfn_1();
+    /*2*/ virtual void __unk_vfn_2();
     /*3*/ virtual void postLoadItems(class BlockPalette&, bool);
     /*4*/ virtual enum InventoryTransactionError handle(class Player&, bool) const;
     /*5*/ virtual void onTransactionError(class Player&, enum InventoryTransactionError) const;

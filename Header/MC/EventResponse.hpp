@@ -2,7 +2,6 @@
 #pragma once
 #define AUTO_GENERATED
 #include "../Global.h"
-#include "JsonUtil.hpp"
 
 #define BEFORE_EXTRA
 // Include Headers or Declare Types Here
@@ -26,8 +25,8 @@ public:
 public:
     /*0*/ virtual ~EventResponse();
     /*1*/ virtual std::string const& getName() const;
-    /*2*/ virtual void __unk_vfn_0() = 0;
-    /*3*/ virtual void buildSchema(class std::shared_ptr<class JsonUtil::JsonSchemaObjectNode<class JsonUtil::EmptyClass, struct EventResponseCollection> >&, class Factory<class EventResponse> const&) const;
+    /*2*/ virtual void __unk_vfn_2() = 0;
+    /*3*/ virtual ~EventResponse();
     /*
     inline  ~EventResponse(){
          (EventResponse::*rv)();

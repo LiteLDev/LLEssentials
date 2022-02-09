@@ -7,6 +7,8 @@
 
 #define BEFORE_EXTRA
 // Include Headers or Declare Types Here
+#include "Level.hpp"
+
 enum EventType : int {
     ACHIEVEMENT_AWARDED,
     ENTITY_INTERACT,
@@ -77,8 +79,8 @@ public:
     /*1*/ virtual enum MinecraftPacketIds getId() const;
     /*2*/ virtual std::string getName() const;
     /*3*/ virtual void write(class BinaryStream&) const;
-    /*4*/ virtual bool disallowBatching() const;
-    /*5*/ virtual enum StreamReadResult _read(class ReadOnlyBinaryStream&);
+    /*5*/ virtual void __unk_vfn_5();
+    /*6*/ virtual enum StreamReadResult _read(class ReadOnlyBinaryStream&);
     /*
     inline  ~EventPacket(){
          (EventPacket::*rv)();

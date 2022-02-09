@@ -24,11 +24,11 @@ public:
 
 public:
     /*0*/ virtual ~ActorAnimationControllerStatePlayer();
-    /*1*/ virtual void __unk_vfn_0();
+    /*1*/ virtual void __unk_vfn_1();
     /*2*/ virtual void resetAnimation();
-    /*3*/ virtual void __unk_vfn_1();
-    /*4*/ virtual void __unk_vfn_2();
-    /*5*/ virtual void __unk_vfn_3();
+    /*3*/ virtual void __unk_vfn_3();
+    /*4*/ virtual void __unk_vfn_4();
+    /*5*/ virtual void __unk_vfn_5();
     /*6*/ virtual bool hasAnimationFinished() const;
     /*7*/ virtual class std::shared_ptr<class ActorAnimationPlayer> findAnimation(class HashedString const&);
     /*8*/ virtual enum ActorAnimationType getAnimationType() const;
@@ -45,7 +45,7 @@ public:
         return (this->*rv)(std::forward<class std::unordered_map<class HashedString, std::string, struct std::hash<class HashedString>, struct std::equal_to<class HashedString>, class std::allocator<struct std::pair<class HashedString const, std::string > > > const&>(a0));
     }
     */
-    MCAPI ActorAnimationControllerStatePlayer(class HashedString const&, class ActorAnimationControllerPlayer&, class std::shared_ptr<class ActorAnimationControllerState>, class AnimationComponent&, class ExpressionNode const&);
+    MCAPI ActorAnimationControllerStatePlayer(class HashedString const&, class ActorAnimationControllerPlayer&, class std::shared_ptr<class ActorAnimationControllerState>, class AnimationComponent&, class ExpressionNode const&, class std::set<class HashedString, struct std::hash<class HashedString>, class std::allocator<class HashedString> >&);
     MCAPI bool allAnimationsFinished() const;
     MCAPI bool anyAnimationsFinished() const;
 
