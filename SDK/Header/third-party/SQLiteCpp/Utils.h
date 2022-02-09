@@ -62,3 +62,5 @@ const nullptr_t nullptr = {};
 #endif // HAVE_NULLPTR
 #endif // (__cplusplus < 201103L) && !defined(__GXX_EXPERIMENTAL_CXX0X__)
 #endif // _MSC_VER
+
+// A macro for snprintf support in Visual Studio

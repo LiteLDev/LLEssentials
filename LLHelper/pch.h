@@ -11,8 +11,6 @@
 #include <iostream>
 #include <streambuf>
 #include <map>
-#include <rapidjson/rapidjson.h>
-#include <rapidjson/document.h>
 #include <fstream>
 #include <sstream>
 #include <MC/Player.hpp>
@@ -32,7 +30,6 @@
 #include <Utils/VarInt.h>
 #include <Utils/PlayerMap.h>
 #include <TranslationAPI.h>
-#include <JsonLoader.h>
 #include <MC/ItemStack.hpp>
 #include <EventAPI.h>
 #include <MC/ServerPlayer.hpp>

@@ -14,6 +14,8 @@ class ServerLevel;
 class ServerNetworkHandler;
 class DBStorage;
 class Scoreboard;
+class AllowListFile;
+class PropertiesSettings;
 
 class LevelStorage;
 

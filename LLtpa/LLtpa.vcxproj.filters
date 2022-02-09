@@ -64,10 +64,10 @@
     <Library Include="..\SDK\Lib\SymDBHelper.lib">
       <Filter>资源文件</Filter>
     </Library>
-    <Library Include="..\SDK\Lib\third-party\openssl\libcrypto.lib">
+    <Library Include="..\Lib\openssl\libssl.lib">
       <Filter>资源文件</Filter>
     </Library>
-    <Library Include="..\SDK\Lib\third-party\openssl\libssl.lib">
+    <Library Include="..\Lib\openssl\libcrypto.lib">
       <Filter>资源文件</Filter>
     </Library>
   </ItemGroup>

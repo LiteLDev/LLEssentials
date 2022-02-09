@@ -141,13 +141,13 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 	string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
 	_b->sendTextPacket(prompt, TextType::RAW);
     auto form = Form::SimpleForm(tr("tpa.request.title"), prompt.c_str());
-    form.append(Form::Button(tr("tpa.request.accept"), "", [_b](){
-        _b->runcmd("tpa ac");
+    form.append(Form::Button(tr("tpa.request.accept"), "", [](Player* pl){
+        pl->runcmd("tpa ac");
     }));
-    form.append(Form::Button(tr("tpa.request.deny"), "", [_b](){
-        _b->runcmd("tpa de");
+    form.append(Form::Button(tr("tpa.request.deny"), "", [](Player* pl){
+        pl->runcmd("tpa de");
     }));
-    form.sendTo(_b, [](int i){
+    form.sendTo(_b, [](Player* pl ,int i){
 
     });
     /*
@@ -278,19 +278,18 @@ public:
                 form.append(Form::Dropdown("dropdown1", tr("tpa.gui.dropdown1"), {"to", "here"}));
                 form.append(Form::Dropdown("dropdown2", tr("tpa.gui.dropdown2"), playerList()));
                 ServerPlayer* sp = ori.getPlayer();
-                form.sendTo(sp, [sp](const std::map<std::string, std::shared_ptr<Form::CustomFormElement>> & mp){
+                form.sendTo(sp, [](Player* pl, const std::map<string, std::shared_ptr<Form::CustomFormElement>>& mp){
                     std::string action;
                     std::string target_name;
-                    unsigned short times = 0;
-                    for (const auto& i : mp) { // waiting for LiteLoaderBDS update
-                        if (times == 1) {
-                            action = i.first;
-                        } else if (times == 2) {
-                            target_name = i.first;
+                    for (auto i : mp) {
+                        if (i.first == "dropdown1") {
+                            action = i.second->getString();
                         }
-                        times++;
+                        if (i.first == "dropdown2") {
+                            target_name = i.second->getString();
+                        }
                     }
-                    sp->runcmd("tpa " + action + " " + target_name);
+                    pl->runcmd("tpa " + action + " " + target_name);
                 });
                 /*
 				using namespace GUI;
@@ -332,7 +331,7 @@ void reinitWARPGUI() {
     }
     WarpForm.reset();
     for (auto& [key, value] : warps) {
-        WarpForm->append(Form::Button(key, "", [](){
+        WarpForm->append(Form::Button(key, "", [](Player*){
 
         }));
     }
@@ -349,11 +348,11 @@ void reinitWARPGUI() {
 }
 
 void sendWARPGUI(ServerPlayer* sp) {
-    WarpForm->sendTo(sp, [sp](int i){
+    WarpForm->sendTo(sp, [](Player* pl ,int i){
         unsigned short times = 0;
         for (auto& [key, value] : warps) {
             if (times == i) {
-                sp->runcmd("warp go \"" + key + "\"");
+                pl->runcmd("warp go \"" + key + "\"");
                 return;
             }
             times++;
@@ -517,11 +516,11 @@ public:
 			std::shared_ptr<Form::SimpleForm> form = std::make_shared<Form::SimpleForm>(tr("home.gui.title"), tr("home.gui.content"));
             for (auto& i : hm.data) {
                 std::string home_name = i.name;
-                form->append(Form::Button(home_name, "", [home_name, sp](){
-                    sp->runcmd("home go \"" + home_name + "\"");
+                form->append(Form::Button(home_name, "", [home_name](Player* pl){
+                    pl->runcmd("home go \"" + home_name + "\"");
                 }));
             }
-            form->sendTo(sp, [](int i){
+            form->sendTo(sp, [](Player*, int){
 
             });
             /*

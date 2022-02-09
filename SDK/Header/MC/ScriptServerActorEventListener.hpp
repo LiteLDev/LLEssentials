@@ -24,28 +24,37 @@ public:
 
 public:
     /*0*/ virtual ~ScriptServerActorEventListener();
-    /*1*/ virtual enum EventResult onActorAttack(class Actor&, class Actor&, int);
-    /*2*/ virtual enum EventResult onActorHurt(struct ActorHurtEvent const&);
+    /*2*/ virtual enum EventResult onActorAttack(class Actor&, class Actor&, int);
     /*3*/ virtual enum EventResult onActorMove(class Actor&, class Vec3 const&);
-    /*4*/ virtual void __unk_vfn_0();
+    /*4*/ virtual void __unk_vfn_4();
     /*5*/ virtual enum EventResult onActorTick(class Actor&);
     /*6*/ virtual enum EventResult onActorSneakChanged(class Actor&, bool);
     /*7*/ virtual enum EventResult onActorStartRiding(class Actor&, class Actor&);
     /*8*/ virtual enum EventResult onActorStopRiding(class Actor&, bool, bool, bool);
     /*9*/ virtual enum EventResult onActorDeath(class Actor&, class ActorDamageSource const&, enum ActorType);
-    /*10*/ virtual enum EventResult onActorDefinitionEventTriggered(struct ActorDefinitionEvent const&);
-    /*11*/ virtual enum EventResult onActorUseItem(struct ActorUseItemEvent const&);
-    /*12*/ virtual void __unk_vfn_1();
-    /*13*/ virtual enum EventResult onActorCreated(class Actor&);
-    /*14*/ virtual enum EventResult onProjectileHit(struct ProjectileHitEvent const&);
-    /*15*/ virtual void __unk_vfn_2();
-    /*16*/ virtual void __unk_vfn_3();
-    /*17*/ virtual enum EventResult onActorAcquiredItem(struct ActorAcquiredItemEvent const&);
-    /*18*/ virtual void __unk_vfn_4();
-    /*19*/ virtual enum EventResult onActorDroppedItem(class Actor&, class ItemInstance const&);
-    /*20*/ virtual enum EventResult onActorCarriedItemChanged(class Actor&, class ItemInstance const&, class ItemInstance const&, enum HandSlot);
-    /*21*/ virtual enum EventResult onActorEquippedArmor(class Actor&, class ItemInstance const&, enum ArmorSlot);
-    /*22*/ virtual enum EventResult onActorRemoved(struct ActorRemovedEvent const&);
+    /*10*/ virtual void __unk_vfn_10();
+    /*11*/ virtual enum EventResult onActorCreated(class Actor&);
+    /*12*/ virtual void __unk_vfn_12();
+    /*13*/ virtual void __unk_vfn_13();
+    /*14*/ virtual void __unk_vfn_14();
+    /*15*/ virtual enum EventResult onActorDroppedItem(class Actor&, class ItemInstance const&);
+    /*16*/ virtual enum EventResult onActorCarriedItemChanged(class Actor&, class ItemInstance const&, class ItemInstance const&, enum HandSlot);
+    /*17*/ virtual enum EventResult onActorEquippedArmor(class Actor&, class ItemInstance const&, enum ArmorSlot);
+    /*18*/ virtual void __unk_vfn_18();
+    /*19*/ virtual void __unk_vfn_19();
+    /*20*/ virtual void __unk_vfn_20();
+    /*21*/ virtual enum EventResult onEvent(struct ProjectileHitEvent const&);
+    /*22*/ virtual void __unk_vfn_22();
+    /*23*/ virtual void __unk_vfn_23();
+    /*24*/ virtual enum EventResult onEvent(struct ActorUseItemEvent const&);
+    /*25*/ virtual void __unk_vfn_25();
+    /*26*/ virtual enum EventResult onEvent(struct ActorRemovedEvent const&);
+    /*27*/ virtual void __unk_vfn_27();
+    /*28*/ virtual enum EventResult onEvent(struct ActorDefinitionEvent const&);
+    /*29*/ virtual enum EventResult onEvent(struct ActorHurtEvent const&);
+    /*30*/ virtual void __unk_vfn_30();
+    /*31*/ virtual void __unk_vfn_31();
+    /*32*/ virtual enum EventResult onEvent(struct ActorAcquiredItemEvent const&);
     MCAPI ScriptServerActorEventListener(class MinecraftServerScriptEngine&);
 
 protected:

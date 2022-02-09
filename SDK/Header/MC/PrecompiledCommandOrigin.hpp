@@ -30,26 +30,71 @@ public:
     /*2*/ virtual std::string getName() const;
     /*3*/ virtual class BlockPos getBlockPosition() const;
     /*4*/ virtual class Vec3 getWorldPosition() const;
-    /*5*/ virtual class Level* getLevel() const;
-    /*6*/ virtual class Dimension* getDimension() const;
-    /*7*/ virtual class Actor* getEntity() const;
-    /*8*/ virtual enum CommandPermissionLevel getPermissionsLevel() const;
-    /*9*/ virtual std::unique_ptr<class CommandOrigin> clone() const;
-    /*10*/ virtual class std::optional<class BlockPos> getCursorHitBlockPos() const;
-    /*11*/ virtual class std::optional<class Vec3> getCursorHitPos() const;
-    /*12*/ virtual bool hasChatPerms() const;
-    /*13*/ virtual bool hasTellPerms() const;
-    /*14*/ virtual bool canUseAbility(enum AbilitiesIndex) const;
-    /*15*/ virtual bool isWorldBuilder() const;
-    /*16*/ virtual bool canUseCommandsWithoutCheatsEnabled() const;
-    /*17*/ virtual bool isSelectorExpansionAllowed() const;
-    /*18*/ virtual unsigned char getSourceSubId() const;
-    /*19*/ virtual void __unk_vfn_0();
-    /*20*/ virtual enum CommandOriginType getOriginType() const;
-    /*21*/ virtual void __unk_vfn_1();
-    /*22*/ virtual void handleCommandOutputCallback(class Json::Value&&) const;
-    /*23*/ virtual class CompoundTag serialize() const;
-    /*24*/ virtual bool isValid() const;
+    /*5*/ virtual class std::optional<class Vec2> getRotation() const;
+    /*6*/ virtual class Level* getLevel() const;
+    /*7*/ virtual class Dimension* getDimension() const;
+    /*8*/ virtual class Actor* getEntity() const;
+    /*9*/ virtual void __unk_vfn_9();
+    /*10*/ virtual std::unique_ptr<class CommandOrigin> clone() const;
+    /*11*/ virtual class std::optional<class BlockPos> getCursorHitBlockPos() const;
+    /*12*/ virtual class std::optional<class Vec3> getCursorHitPos() const;
+    /*13*/ virtual void __unk_vfn_13();
+    /*14*/ virtual void __unk_vfn_14();
+    /*15*/ virtual void __unk_vfn_15();
+    /*16*/ virtual void __unk_vfn_16();
+    /*17*/ virtual void __unk_vfn_17();
+    /*18*/ virtual void __unk_vfn_18();
+    /*20*/ virtual void __unk_vfn_20();
+    /*21*/ virtual void __unk_vfn_21();
+    /*23*/ virtual enum CommandOriginType getOriginType() const;
+    /*25*/ virtual void __unk_vfn_25();
+    /*26*/ virtual void handleCommandOutputCallback(class Json::Value&&) const;
+    /*27*/ virtual void updateValues();
+    /*29*/ virtual class CompoundTag serialize() const;
+    /*30*/ virtual void __unk_vfn_30();
+    /*31*/ virtual void _setUUID(class mce::UUID const&);
+    /*
+    inline bool hasTellPerms() const{
+        bool (PrecompiledCommandOrigin::*rv)() const;
+        *((void**)&rv) = dlsym("?hasTellPerms@PrecompiledCommandOrigin@@UEBA_NXZ");
+        return (this->*rv)();
+    }
+    inline enum CommandPermissionLevel getPermissionsLevel() const{
+        enum CommandPermissionLevel (PrecompiledCommandOrigin::*rv)() const;
+        *((void**)&rv) = dlsym("?getPermissionsLevel@PrecompiledCommandOrigin@@UEBA?AW4CommandPermissionLevel@@XZ");
+        return (this->*rv)();
+    }
+    inline bool isWorldBuilder() const{
+        bool (PrecompiledCommandOrigin::*rv)() const;
+        *((void**)&rv) = dlsym("?isWorldBuilder@PrecompiledCommandOrigin@@UEBA_NXZ");
+        return (this->*rv)();
+    }
+    inline bool hasChatPerms() const{
+        bool (PrecompiledCommandOrigin::*rv)() const;
+        *((void**)&rv) = dlsym("?hasChatPerms@PrecompiledCommandOrigin@@UEBA_NXZ");
+        return (this->*rv)();
+    }
+    inline bool isValid() const{
+        bool (PrecompiledCommandOrigin::*rv)() const;
+        *((void**)&rv) = dlsym("?isValid@PrecompiledCommandOrigin@@UEBA_NXZ");
+        return (this->*rv)();
+    }
+    inline bool canUseAbility(enum AbilitiesIndex a0) const{
+        bool (PrecompiledCommandOrigin::*rv)(enum AbilitiesIndex) const;
+        *((void**)&rv) = dlsym("?canUseAbility@PrecompiledCommandOrigin@@UEBA_NW4AbilitiesIndex@@@Z");
+        return (this->*rv)(std::forward<enum AbilitiesIndex>(a0));
+    }
+    inline bool canUseCommandsWithoutCheatsEnabled() const{
+        bool (PrecompiledCommandOrigin::*rv)() const;
+        *((void**)&rv) = dlsym("?canUseCommandsWithoutCheatsEnabled@PrecompiledCommandOrigin@@UEBA_NXZ");
+        return (this->*rv)();
+    }
+    inline bool isSelectorExpansionAllowed() const{
+        bool (PrecompiledCommandOrigin::*rv)() const;
+        *((void**)&rv) = dlsym("?isSelectorExpansionAllowed@PrecompiledCommandOrigin@@UEBA_NXZ");
+        return (this->*rv)();
+    }
+    */
 
 protected:
 
