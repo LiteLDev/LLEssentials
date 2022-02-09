@@ -24,9 +24,15 @@ public:
 #endif
 
 public:
+<<<<<<< HEAD
     ///*0*/ virtual ~NpcAction();
     ///*1*/ virtual void __unk_vfn_0() = 0;
     ///*2*/ virtual ~NpcAction();
+=======
+    /*0*/ virtual ~NpcAction();
+    /*1*/ virtual void __unk_vfn_1() = 0;
+    /*2*/ virtual void __unk_vfn_2();
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     /*
     inline  ~NpcAction(){
          (NpcAction::*rv)();

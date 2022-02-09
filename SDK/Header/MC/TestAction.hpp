@@ -26,7 +26,11 @@ public:
 public:
     /*0*/ virtual ~TestAction();
     /*1*/ virtual void execute(class ServerLevel&, class Dimension&);
+<<<<<<< HEAD
     /*2*/ virtual bool operator==(class IRequestAction&) const;
+=======
+    /*3*/ virtual bool operator==(class IRequestAction&) const;
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
 
 protected:
 

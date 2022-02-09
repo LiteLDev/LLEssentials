@@ -17,13 +17,17 @@ struct VolumeIdentifier {
 
 #ifndef DISABLE_CONSTRUCTOR_PREVENTION_VOLUMEIDENTIFIER
 public:
+    struct VolumeIdentifier& operator=(struct VolumeIdentifier const&) = delete;
     VolumeIdentifier(struct VolumeIdentifier const&) = delete;
     VolumeIdentifier() = delete;
 #endif
 
 public:
+<<<<<<< HEAD
     MCAPI struct VolumeIdentifier& operator=(struct VolumeIdentifier const&);
     MCAPI bool operator==(struct VolumeIdentifier const&) const;
+=======
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
 
 protected:
 

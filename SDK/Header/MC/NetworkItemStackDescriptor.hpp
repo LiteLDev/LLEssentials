@@ -7,6 +7,10 @@
 // Include Headers or Declare Types Here
 #include "ItemDescriptor.hpp"
 #include "ItemStackNetIdVariant.hpp"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
 #undef BEFORE_EXTRA
 
 class NetworkItemStackDescriptor {
@@ -20,6 +24,16 @@ public:
 
 #define AFTER_EXTRA
 // Add Member There
+public:
+    ItemDescriptor mDescriptor;
+    unsigned short mCount; //72
+private:
+    int unk76;
+public:
+    bool mHasNetID;                   //80
+    ItemStackNetIdVariant mNetworkID; //84
+    unsigned int mBlockRuntimeID;     //92
+    std::string mIdentifier;
 
 #undef AFTER_EXTRA
 

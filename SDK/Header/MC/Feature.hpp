@@ -25,7 +25,11 @@ public:
 public:
     /*0*/ virtual ~Feature();
     /*1*/ virtual class std::optional<class BlockPos> place(class IBlockWorldGenAPI&, class BlockPos const&, class Random&, class RenderParams&) const;
+<<<<<<< HEAD
     /*2*/ virtual void __unk_vfn_0();
+=======
+    /*2*/ virtual void __unk_vfn_2();
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     /*3*/ virtual ~Feature();
     /*
     inline  ~Feature(){

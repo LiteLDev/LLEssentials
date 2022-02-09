@@ -25,8 +25,13 @@ public:
 
 public:
     /*0*/ virtual ~EndPodiumFeature();
+<<<<<<< HEAD
     /*1*/ virtual void __unk_vfn_0();
     /*2*/ virtual ~EndPodiumFeature();
+=======
+    /*2*/ virtual void __unk_vfn_2();
+    /*3*/ virtual ~EndPodiumFeature();
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     /*
     inline  ~EndPodiumFeature(){
          (EndPodiumFeature::*rv)();

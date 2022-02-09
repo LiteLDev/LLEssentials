@@ -32,8 +32,13 @@ public:
 
 public:
     /*0*/ virtual ~SpikeFeature();
+<<<<<<< HEAD
     /*1*/ virtual void __unk_vfn_0();
     /*2*/ virtual ~SpikeFeature();
+=======
+    /*2*/ virtual void __unk_vfn_2();
+    /*3*/ virtual ~SpikeFeature();
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     /*
     inline  ~SpikeFeature(){
          (SpikeFeature::*rv)();

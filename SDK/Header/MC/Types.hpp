@@ -65,7 +65,11 @@ public:
         id = x;
     }
 
+<<<<<<< HEAD
     inline operator T()
+=======
+    inline operator T() const
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     {
         return id;
     }
@@ -86,12 +90,20 @@ public:
         id = i;
     }
 
+<<<<<<< HEAD
     inline long long get()
+=======
+    inline long long get() const
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     {
         return id;
     }
 
+<<<<<<< HEAD
     inline operator long long()
+=======
+    inline operator long long() const
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     {
         return id;
     }
@@ -104,12 +116,20 @@ class ActorRuntimeID
 public:
     unsigned long long id;
 
+<<<<<<< HEAD
     inline unsigned long long get()
+=======
+    inline unsigned long long get() const
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     {
         return id;
     }
 
+<<<<<<< HEAD
     inline operator unsigned long long()
+=======
+    inline operator unsigned long long() const
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     {
         return id;
     }
@@ -291,6 +311,10 @@ class TypedServerNetId
 {
 public:
     T2 netId;
+    inline operator T2()
+    {
+        return netId;
+    }
 };
 
 template <typename T, typename T2, int unk>
@@ -329,8 +353,14 @@ class Factory;
 template <typename T>
 class InheritanceTree;
 
+<<<<<<< HEAD
 template <typename T, int unk>
 class ItemStackRequestActionCraft;
+=======
+//enum class ItemStackRequestActionType : char;
+//template <typename T, ItemStackRequestActionType actionType>
+//class ItemStackRequestActionCraft;
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
 
 template <typename T>
 class ItemStateVariant;
@@ -357,12 +387,32 @@ template<typename T>
 class WeakPtr {
     T** value;
 public:
+<<<<<<< HEAD
     inline T* get() {
+=======
+    inline T* get()
+    {
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
         if (value)
             return *value;
         return nullptr;
     }
+<<<<<<< HEAD
     inline T& operator *() {
+=======
+    inline T const* get() const
+    {
+        if (value)
+            return *value;
+        return nullptr;
+    }
+    inline T& operator*()
+    {
+        return *get();
+    }
+    inline T const& operator*() const
+    {
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
         return *get();
     }
     //inline operator ->() {
@@ -436,6 +486,7 @@ template <typename T1>
 class WildcardCommandSelector;
 
 //enum
+<<<<<<< HEAD
 enum class ContainerType : unsigned char
 {
     INVENTORY = 0xff,
@@ -481,6 +532,59 @@ enum class DataItemType : unsigned char
     POS = 6,
     LONG = 7,
     VEC3 = 8
+=======
+enum class ContainerType : char
+{
+    INVENTORY              = -1,
+    NONE                   = -9,
+    CONTAINER              = 0,
+    WORKBENCH              = 1,
+    FURNACE                = 2,
+    ENCHANTMENT            = 3,
+    BREWING_STAND          = 4,
+    ANVIL                  = 5,
+    DISPENSER              = 6,
+    DROPPER                = 7,
+    HOPPER                 = 8,
+    CAULDRON               = 9,
+    MINECART_CHEST         = 10,
+    MINECART_HOPPER        = 11,
+    HORSE                  = 12,
+    TRADE                  = 15,//NotGenerated
+    MINECART_COMMAND_BLOCK = 16,
+    JUKEBOX                = 17,
+    COMPOUND_CREATOR       = 20,
+    ELEMENT_CONSTRUCTOR    = 21,
+    MATERIAL_REDUCER       = 22,
+    LAB_TABLE              = 23,
+    BLAST_FURNACE          = 27,
+    SMOKER                 = 28,
+    STONECUTTER            = 29,
+    HUD                    = 31,
+    SMITHING_TABLE         = 33,
+};
+
+enum class UpdateBlockLayer : int
+{
+    UpdateBlockDefault,
+    UpdateBlockLiquid
+};
+
+enum class UpdateBlockFlags : int
+{
+    UpdateBlockNone = 0,
+    BlockUpdateNeighbors = 1,
+    BlockUpdateNetwork = 2,
+    BlockUpdateAll = 3,//default value in BDS
+    BlockUpdateNoGraphic = 4,
+    BlockUpdatePriority = 8,
+    BlockUpdateAllPriority = 11
+    //old one not correctly ? 
+    //BlockUpdateNeighbours = 1,
+    //BlockUpdateNetwork = 2,
+    //BlockUpdateNoGraphics = 3,
+    //BlockUpdatePriority = 4,
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
 };
 
 enum class TextType : char
@@ -533,6 +637,73 @@ enum class BossEventColour : int
     White = 6
 };
 
+<<<<<<< HEAD
+=======
+enum class ContainerEnumName : int8_t
+{
+    AnvilInputContainer = 0,
+    AnvilMaterialContainer = 1,
+    AnvilResultPreviewContainer = 2,
+    SmithingTableInputContainer = 3,
+    SmithingTableMaterialContainer = 4,
+    SmithingTableResultPreviewContainer = 5,
+    ArmorContainer = 6,
+    LevelEntityContainer = 7,
+    BeaconPaymentContainer = 8,
+    BrewingStandInputContainer = 9,
+    BrewingStandResultContainer = 10,
+    BrewingStandFuelContainer = 11,
+    CombinedHotbarAndInventoryContainer = 12,
+    CraftingInputContainer = 13,
+    CraftingOutputPreviewContainer = 14,
+    RecipeConstructionContainer = 15,
+    RecipeNatureContainer = 16,
+    RecipeItemsContainer = 17,
+    RecipeSearchContainer = 18,
+    RecipeSearchBarContainer = 19,
+    RecipeEquipmentContainer = 20,
+    EnchantingInputContainer = 21,
+    EnchantingMaterialContainer = 22,
+    FurnaceFuelContainer = 23,
+    FurnaceIngredientContainer = 24,
+    FurnaceResultContainer = 25,
+    HorseEquipContainer = 26,
+    HotbarContainer = 27,
+    InventoryContainer = 28,
+    ShulkerBoxContainer = 29,
+    TradeIngredient1Container = 30,
+    TradeIngredient2Container = 31,
+    TradeResultPreviewContainer = 32,
+    OffhandContainer = 33,
+    CompoundCreatorInput = 34,
+    CompoundCreatorOutputPreview = 35,
+    ElementConstructorOutputPreview = 36,
+    MaterialReducerInput = 37,
+    MaterialReducerOutput = 38,
+    LabTableInput = 39,
+    LoomInputContainer = 40,
+    LoomDyeContainer = 41,
+    LoomMaterialContainer = 42,
+    LoomResultPreviewContainer = 43,
+    BlastFurnaceIngredientContainer = 44,
+    SmokerIngredientContainer = 45,
+    Trade2Ingredient1Container = 46,
+    Trade2Ingredient2Container = 47,
+    Trade2ResultPreviewContainer = 48,
+    GrindstoneInputContainer = 49,
+    GrindstoneAdditionalContainer = 50,
+    GrindstoneResultPreviewContainer = 51,
+    StonecutterInputContainer = 52,
+    StonecutterResultPreviewContainer = 53,
+    CartographyInputContainer = 54,
+    CartographyAdditionalContainer = 55,
+    CartographyResultPreviewContainer = 56,
+    BarrelContainer = 57,
+    CursorContainer = 58,
+    CreatedOutputContainer = 59
+};
+
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
 enum class ParticleType
 {
     dragondestroyblock = 0x40,
@@ -624,7 +795,11 @@ enum class transactionType
     ItemReleaseTransaction = 0x04
 };
 
+<<<<<<< HEAD
 enum class ItemStackRequestActionType
+=======
+enum class ItemStackRequestActionType: char
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
 {
     Take = 0x00,
     Place = 0x01,
@@ -954,6 +1129,7 @@ class CommandOutputParameter
 {
     std::string str;
     int type;
+<<<<<<< HEAD
 
 public:
     MCINLINE CommandOutputParameter(std::string str, int type)
@@ -1181,3 +1357,40 @@ inline constexpr int16_t FALL_DAMAGE_MULTIPLIER              = 110;
 inline constexpr int16_t NAME_RAW_TEXT                       = 111;
 inline constexpr int16_t CAN_RIDE_TARGET                     = 112;*/
 } // namespace ActorDataIDs
+=======
+
+public:
+    MCINLINE CommandOutputParameter(std::string str, int type)
+        : str(std::move(str))
+        , type(type)
+    {
+    }
+};
+
+template <typename T>
+class CommandSelectorResults
+{
+public:
+    std::shared_ptr<std::vector<T*>> data;
+
+    auto begin()
+    {
+        return data->begin();
+    }
+
+    auto end()
+    {
+        return data->end();
+    }
+
+    auto count() const
+    {
+        return data->size();
+    }
+
+    auto empty() const
+    {
+        return data->empty();
+    }
+};
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d

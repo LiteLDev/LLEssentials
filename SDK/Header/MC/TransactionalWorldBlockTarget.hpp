@@ -25,7 +25,7 @@ public:
 public:
     /*0*/ virtual ~TransactionalWorldBlockTarget();
     /*1*/ virtual bool shimPlaceForOldFeatures(class Feature const&, class BlockPos const&, class Random&) const;
-    /*2*/ virtual void __unk_vfn_0();
+    /*2*/ virtual void __unk_vfn_2();
     /*3*/ virtual class Block const& getBlock(class BlockPos const&) const;
     /*4*/ virtual class Block const& getBlockNoBoundsCheck(class BlockPos const&) const;
     /*5*/ virtual class Block const& getExtraBlock(class BlockPos const&) const;
@@ -38,7 +38,7 @@ public:
     /*12*/ virtual bool canSurvive(class BlockPos const&, class Block const&) const;
     /*13*/ virtual short getMaxHeight() const;
     /*14*/ virtual short getMinHeight() const;
-    /*15*/ virtual void __unk_vfn_1();
+    /*15*/ virtual void __unk_vfn_15();
     /*16*/ virtual short getHeightmap(int, int);
     /*17*/ virtual bool isLegacyLevel();
     /*18*/ virtual class Biome const* getBiome(class BlockPos const&) const;
@@ -46,6 +46,7 @@ public:
     /*20*/ virtual short getLocalWaterLevel(class BlockPos const&) const;
     /*21*/ virtual class LevelData const& getLevelData() const;
     /*22*/ virtual struct WorldGenContext const& getContext();
+    /*23*/ virtual void disableBlockSimple();
     /*
     inline  ~TransactionalWorldBlockTarget(){
          (TransactionalWorldBlockTarget::*rv)();

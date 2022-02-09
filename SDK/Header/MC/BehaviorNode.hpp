@@ -23,7 +23,11 @@ public:
 
 public:
     /*0*/ virtual ~BehaviorNode();
+<<<<<<< HEAD
     /*1*/ virtual void __unk_vfn_0() = 0;
+=======
+    /*1*/ virtual void __unk_vfn_1() = 0;
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     /*2*/ virtual ~BehaviorNode();
     /*
     inline  ~BehaviorNode(){

@@ -25,8 +25,13 @@ public:
 
 public:
     /*0*/ virtual ~BonusChestFeature();
+<<<<<<< HEAD
     /*1*/ virtual void __unk_vfn_0();
     /*2*/ virtual ~BonusChestFeature();
+=======
+    /*2*/ virtual void __unk_vfn_2();
+    /*3*/ virtual ~BonusChestFeature();
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     /*
     inline  ~BonusChestFeature(){
          (BonusChestFeature::*rv)();

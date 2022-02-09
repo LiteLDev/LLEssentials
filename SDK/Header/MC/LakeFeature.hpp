@@ -25,8 +25,13 @@ public:
 
 public:
     /*0*/ virtual ~LakeFeature();
+<<<<<<< HEAD
     /*1*/ virtual void __unk_vfn_0();
     /*2*/ virtual ~LakeFeature();
+=======
+    /*2*/ virtual void __unk_vfn_2();
+    /*3*/ virtual ~LakeFeature();
+>>>>>>> 51d0529ff191cb743d7dd9047e8ce5e7edba226d
     /*
     inline  ~LakeFeature(){
          (LakeFeature::*rv)();
@@ -34,7 +39,7 @@ public:
         return (this->*rv)();
     }
     */
-    MCAPI LakeFeature(class Block const&);
+    MCAPI LakeFeature(class Block const&, class std::optional<class XoroshiroPositionalRandomFactory>);
 
 protected:
 
