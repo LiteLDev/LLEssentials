@@ -35,6 +35,7 @@
 #include <iterator>
 #include <list>
 #include <string>
+#include <unordered_map>
 #include <LLAPI.h>
 #include <Utils/WinHelper.h>
 
@@ -65,30 +66,34 @@ namespace Event
 constexpr bool Ok = true;
 constexpr bool Cancel = false;
 
-LIAPI void OutputEventError(const string& errorMsg, const string& eventName, const string& pluginName);
+template<typename EVENT>
+class EventManager
+{
+public:
+    LIAPI static int addEventListener(std::string name, std::function<bool(EVENT)> callback);
+    LIAPI static int addEventListenerRef(std::string name, std::function<bool(EVENT&)> callback);
+    LIAPI static bool removeEventListener(int id);
+    LIAPI static bool hasListener();
+    LIAPI static bool call(EVENT &ev);
+    LIAPI static bool callToPlugin(std::string pluginName, EVENT& ev);
+};
 
-template <typename ListenersContainer>
+template <typename EVENT>
 class EventListener
 {
 private:
-    using Iterator = typename ListenersContainer::const_iterator;
-    ListenersContainer* listeners;
-    Iterator _this;
+    int listenerId;
     bool deleted = false;
 
 public:
-    EventListener(ListenersContainer* listeners, Iterator _this)
-        : listeners(listeners)
-        , _this(_this)
-    {
-    }
+    EventListener(int id) : listenerId(id) {}
 
     void remove()
     {
         if (!deleted)
         {
-            listeners->erase(_this);
             deleted = true;
+            EventManager<EVENT>::removeEventListener(listenerId);
         }
     }
 };
@@ -97,145 +102,23 @@ template <typename EVENT>
 class EventTemplate
 {
 public:
-    using Callback = std::function<bool(const EVENT&)>;
-    using ListenersContainer = std::list<std::pair<string, Callback>>; // pluginName & callback
-    using Listener = EventListener<ListenersContainer>;
-
-    using CallbackNoConst = std::function<bool(EVENT&)>;
-    using ListenersContainerNoConst = std::list<std::pair<string, CallbackNoConst>>; // pluginName & callback
-    using ListenerNoConst = EventListener<ListenersContainerNoConst>;
-
-protected:
-    LIAPI static ListenersContainer listeners;
-    LIAPI static ListenersContainerNoConst listenersNoConst;
-
-public:
-    static Listener subscribe(Callback callback)
+    static EventListener<EVENT> subscribe(std::function<bool(EVENT)> callback)
     {
         auto plugin = LL::getPlugin(GetCurrentModule());
-        std::string pluginName = plugin == nullptr ? "" : plugin->name;
-        listeners.emplace_back(std::make_pair(pluginName, callback));
-        return Listener(&listeners, --listeners.end());
+        return EventListener<EVENT>(EventManager<EVENT>::addEventListener(plugin ? plugin->name : "", callback));
     }
 
-    static ListenerNoConst subscribe_ref(CallbackNoConst callback)
+    static EventListener<EVENT> subscribe_ref(std::function<bool(EVENT&)> callback)
     {
         auto plugin = LL::getPlugin(GetCurrentModule());
-        std::string pluginName = plugin == nullptr ? "" : plugin->name;
-        listenersNoConst.emplace_back(std::make_pair(pluginName, callback));
-        return ListenerNoConst(&listenersNoConst, --listenersNoConst.end());
+        return EventListener<EVENT>(EventManager<EVENT>::addEventListenerRef(plugin ? plugin->name : "", callback));
     }
 
-    static void unsubscribe(const Listener& listener)
-    {
-        listener.remove();
-    }
+    static void unsubscribe(const EventListener<EVENT>& listener) { listener.remove(); }
+    static bool hasListener() { return EventManager<EVENT>::hasListener(); }
 
-    static void unsubscribe_ref(const ListenerNoConst& listener)
-    {
-        listener.remove();
-    }
-
-    static bool hasListener()
-    {
-        return !(listeners.empty() && listenersNoConst.empty());
-    }
-
-    bool call()
-    {
-        bool passToBDS = true;
-
-        //NoConst
-        auto iNoConst = listenersNoConst.begin();
-        try
-        {
-            for (; iNoConst != listenersNoConst.end(); ++iNoConst)
-            {
-                if (!iNoConst->second(*(EVENT*)this))
-                    passToBDS = false;
-            }
-        }
-        catch (const seh_exception& e)
-        {
-            OutputEventError("Uncaught SEH Exception Detected!", typeid(EVENT).name(), iNoConst->first);
-        }
-        catch (const std::exception& e)
-        {
-            OutputEventError(string("Uncaught Exception Detected! ") + e.what(), typeid(EVENT).name(), iNoConst->first);
-        }
-
-        //Common
-        auto i = listeners.begin();
-        try
-        {
-            for (; i != listeners.end(); ++i)
-            {
-                if (!i->second(*(EVENT*)this))
-                    passToBDS = false;
-            }
-        }
-        catch (const seh_exception& e)
-        {
-            OutputEventError("Uncaught SEH Exception Detected!", typeid(EVENT).name(), i->first);
-        }
-        catch (const std::exception& e)
-        {
-            OutputEventError(string("Uncaught Exception Detected! ") + e.what(), typeid(EVENT).name(), i->first);
-        }
-
-        return passToBDS;
-    }
-
-    bool callToPlugin(std::string pluginName)
-    {
-        bool passToBDS = true;
-
-        //NoConst
-        auto iNoConst = listenersNoConst.begin();
-        try {
-            for (; iNoConst != listenersNoConst.end(); ++iNoConst)
-            {
-                if (iNoConst->first == pluginName)
-                {
-                    if (!iNoConst->second(*(EVENT*)this))
-                        passToBDS = false;
-                    break;
-                }
-            }
-        }
-        catch (const seh_exception& e)
-        {
-            OutputEventError("Uncaught SEH Exception Detected!", typeid(EVENT).name(), iNoConst->first);
-        }
-        catch (const std::exception& e)
-        {
-            OutputEventError(string("Uncaught Exception Detected! ") + e.what(), typeid(EVENT).name(), iNoConst->first);
-        }
-
-        //Common
-        auto i = listeners.begin();
-        try {
-            for (; i != listeners.end(); ++i)
-            {
-                if (i->first == pluginName)
-                {
-                    if (!i->second(*(EVENT*)this))
-                        passToBDS = false;
-                    break;
-                }
-            }
-        }
-        catch (const seh_exception& e)
-        {
-            OutputEventError("Uncaught SEH Exception Detected!", typeid(EVENT).name(), i->first);
-        }
-        catch (const std::exception& e)
-        {
-            OutputEventError(string("Uncaught Exception Detected! ") + e.what(), typeid(EVENT).name(), i->first);
-        }
-
-        return passToBDS;
-    }
+    bool call() { return EventManager<EVENT>::call(*(EVENT*)this); }
+    bool callToPlugin(std::string pluginName) { return EventManager<EVENT>::callToPlugin(pluginName, *(EVENT*)this); }
 };
 
 
