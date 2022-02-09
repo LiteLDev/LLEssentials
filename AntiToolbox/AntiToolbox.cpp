@@ -1,4 +1,15 @@
 ﻿#include "pch.h"
+#include <MC/Player.hpp>
+#include <MC/ServerPlayer.hpp>
+#include <EventAPI.h>
+#include <LoggerAPI.h>
+#include <MC/ConnectionRequest.hpp>
+#include <vector>
+#include <rapidjson/document.h>
+#include "base64.h"
+#include <MC/Level.hpp>
+#include <PlayerInfoAPI.h>
+#include <MC/NetworkIdentifier.hpp>
 #include <filesystem>
 
 std::string Kick_message = u8"§cDon't use toolbox!";

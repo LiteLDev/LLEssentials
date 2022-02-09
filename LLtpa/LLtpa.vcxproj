@@ -178,12 +178,12 @@
     <ClCompile Include="Teleport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="..\Lib\openssl\libcrypto.lib" />
+    <Library Include="..\Lib\openssl\libssl.lib" />
     <Library Include="..\SDK\Lib\bedrock_server_api.lib" />
     <Library Include="..\SDK\Lib\bedrock_server_var.lib" />
     <Library Include="..\SDK\Lib\LiteLoader.lib" />
     <Library Include="..\SDK\Lib\SymDBHelper.lib" />
-    <Library Include="..\SDK\Lib\third-party\openssl\libcrypto.lib" />
-    <Library Include="..\SDK\Lib\third-party\openssl\libssl.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

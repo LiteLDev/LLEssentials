@@ -6,14 +6,14 @@
 #include <regCommandAPI.h>
 #include <map>
 #include "pch.h"
-#include<fstream>
-#include<streambuf>
+#include <fstream>
+#include <streambuf>
 #include <EventAPI.h>
 #include "LLMoney.h"
 #include "Money.h"
 #include <filesystem>
 #include <TranslationAPI.h>
-#include <JsonLoader.h>
+#include <Dedicated/JsonLoader.h>
 
 using namespace RegisterCommandHelper;
 

@@ -10,6 +10,6 @@
 // 添加要在此处预编译的标头
 
 #include <iostream>
-#include<SQLiteCpp/SQLiteCpp.h>
+#include <SQLiteCpp/SQLiteCpp.h>
 #include <PlayerInfoAPI.h>
 #endif //PCH_H

@@ -174,11 +174,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Library Include="..\Lib\SQLiteCpp\sqlite3.lib" />
+    <Library Include="..\Lib\SQLiteCpp\SQLiteCpp.lib" />
     <Library Include="..\SDK\Lib\bedrock_server_api.lib" />
     <Library Include="..\SDK\Lib\bedrock_server_var.lib" />
     <Library Include="..\SDK\Lib\LiteLoader.lib" />
-    <Library Include="..\SDK\Lib\sqlite3.lib" />
-    <Library Include="..\SDK\Lib\SQLiteCpp.lib" />
     <Library Include="..\SDK\Lib\SymDBHelper.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

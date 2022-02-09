@@ -8,17 +8,6 @@
 #define PCH_H
 
 // 添加要在此处预编译的标头
-#include <MC/Player.hpp>
-#include <MC/ServerPlayer.hpp>
-#include <EventAPI.h>
-#include <LoggerAPI.h>
-#include <MC/ConnectionRequest.hpp>
-#include <vector>
-#include <rapidjson/document.h>
-#include "base64.h"
-#include <MC/Level.hpp>
-#include <PlayerInfoAPI.h>
-#include <MC/NetworkIdentifier.hpp>
-#include <MC/ServerNetworkEventHandler.hpp>
+
 
 #endif //PCH_H
