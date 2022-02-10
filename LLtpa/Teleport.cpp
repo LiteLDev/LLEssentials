@@ -326,10 +326,12 @@ public:
 //shared_ptr<GUI::SimpleForm> WARPGUI;
 shared_ptr<Form::SimpleForm> WarpForm;
 void reinitWARPGUI() {
+    if (WarpForm) {
+        WarpForm.reset();
+    }
     if (!WarpForm) {
         WarpForm = make_shared<Form::SimpleForm>(tr("warp.gui.title"), tr("warp.gui.content"));
     }
-    WarpForm.reset();
     for (auto& [key, value] : warps) {
         WarpForm->append(Form::Button(key, "", [](Player*){
 
