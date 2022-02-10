@@ -278,17 +278,9 @@ public:
                 form.append(Form::Dropdown("dropdown1", tr("tpa.gui.dropdown1"), {"to", "here"}));
                 form.append(Form::Dropdown("dropdown2", tr("tpa.gui.dropdown2"), playerList()));
                 ServerPlayer* sp = ori.getPlayer();
-                form.sendTo(sp, [](Player* pl, const std::map<string, std::shared_ptr<Form::CustomFormElement>>& mp){
-                    std::string action;
-                    std::string target_name;
-                    for (auto i : mp) {
-                        if (i.first == "dropdown1") {
-                            action = i.second->getString();
-                        }
-                        if (i.first == "dropdown2") {
-                            target_name = i.second->getString();
-                        }
-                    }
+                form.sendTo(sp, [](Player* pl, std::map<string, std::shared_ptr<Form::CustomFormElement>> mp){
+                    std::string action = mp["dropdown1"]->getString();
+                    std::string target_name = mp["dropdown2"]->getString();
                     pl->runcmd("tpa " + action + " " + target_name);
                 });
                 /*
