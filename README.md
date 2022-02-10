@@ -39,7 +39,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 
 # Config
 ## LLHelper
-```json
+```jsonc
 {
     "language": "en-us",
     "force_enable_expplay": false,//Enable experimental mode
@@ -63,7 +63,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
     "protect_farm_block": true//Protect arable land from being trampled on
 ```
 ## LLtpa
-```json
+```jsonc
 {
     "language": "en-us",
     "max_homes": 3,//The maximum number of homes the player can set
@@ -74,7 +74,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 }
 ```
 ## LLMoney
-```json
+```jsonc
 {
     "language": "en-us",
     "def_money": 0, //Default money
