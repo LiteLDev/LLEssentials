@@ -1,5 +1,1 @@
-## LLHelper && LLtpa
-Fixed main thread blockage caused by automatic update
-
-## AntiToolbox
-Fixed whitelist
+Adapt to LiteLoaderBDS 2.1.0
