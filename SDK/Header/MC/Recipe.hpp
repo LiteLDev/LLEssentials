@@ -33,18 +33,13 @@ public:
     /*7*/ virtual int size() const = 0;
     /*8*/ virtual class mce::UUID const& getId() const;
     /*9*/ virtual class ItemPack const& getItemPack() const;
-    /*10*/ virtual void __unk_vfn_10();
+    /*10*/ virtual bool isMultiRecipe() const;
     /*11*/ virtual bool itemValidForRecipe(class ItemDescriptor const&, class ItemStack const&) const;
     /*12*/ virtual bool itemsMatch(class ItemDescriptor const&, class ItemDescriptor const&) const;
     /*13*/ virtual bool itemsMatch(class ItemDescriptor const&, class ItemDescriptor const&, class CompoundTag const*) const;
     /*14*/ virtual bool itemsMatch(class ItemDescriptor const&, int, int, class CompoundTag const*) const;
     /*15*/ virtual void loadResultList(class BlockPalette const&) const;
     /*
-    inline bool isMultiRecipe() const{
-        bool (Recipe::*rv)() const;
-        *((void**)&rv) = dlsym("?isMultiRecipe@Recipe@@UEBA_NXZ");
-        return (this->*rv)();
-    }
     inline  ~Recipe(){
          (Recipe::*rv)();
         *((void**)&rv) = dlsym("??1Recipe@@UEAA@XZ");
