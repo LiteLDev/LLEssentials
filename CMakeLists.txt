@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.21)
 project(LiteLoaderPlugins)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_BUILD_TYPE Release)
 
 include_directories(AntiToolbox)
 include_directories(LLHelper)
@@ -21,4 +22,4 @@ file(GLOB SRC_FILES
         ${PROJECT_SOURCE_DIR}/AntiToolbox/*.h
         )
 
-add_executable(LiteLoaderPlugins ${SRC_FILES})
+add_library(LiteLoaderPlugins SHARED ${SRC_FILES})
