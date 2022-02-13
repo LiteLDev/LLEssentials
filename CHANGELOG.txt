@@ -1,1 +1,2 @@
-Adapt to LiteLoaderBDS 2.1.0
+## LLHelper
+Fixed #23
