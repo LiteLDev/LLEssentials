@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <PlayerInfoAPI.h>
 
 #ifdef LLMONEY_EXPORTS
 #define LLMONEY_API __declspec(dllexport)
@@ -34,25 +35,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Old interface
 // Just for compatibility
 // Do not use

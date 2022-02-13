@@ -1,9 +1,10 @@
-#include "pch.h"
 #include "llmoney.h"
 #include <memory>
 #include <vector>
 #include "Event.h"
 #include <LoggerAPI.h>
+#include <SQLiteCpp/SQLiteCpp.h>
+
 static std::unique_ptr<SQLite::Database> db;
 Logger moneylog("LLMoney");
 money_t DEF_MONEY = 0;
@@ -52,7 +53,7 @@ bool initDB() {
 	return true;
 }
 
-LLMONEY_API money_t LLMoneyGet(xuid_t xuid) {
+money_t LLMoneyGet(xuid_t xuid) {
 	try {
 		static SQLite::Statement get{ *db,"select Money from money where XUID=?" };
 		get.bindNoCopy(1, xuid);
@@ -82,7 +83,7 @@ LLMONEY_API money_t LLMoneyGet(xuid_t xuid) {
 
 bool isRealTrans = true;
 
-LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const& note)
+bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const& note)
 {
 	bool isRealTrans = ::isRealTrans;
 	::isRealTrans = true;
@@ -149,7 +150,7 @@ LLMONEY_API bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const&
 	}
 }
 
-LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money)
+bool LLMoneyAdd(xuid_t xuid, money_t money)
 {
 	if (!CallBeforeEvent(LLMoneyEvent::Add, "", xuid, money))
 		return false;
@@ -161,7 +162,7 @@ LLMONEY_API bool LLMoneyAdd(xuid_t xuid, money_t money)
 	return res;
 }
 
-LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money)
+bool LLMoneyReduce(xuid_t xuid, money_t money)
 {
 	if (!CallBeforeEvent(LLMoneyEvent::Reduce, "", xuid, money))
 		return false;
@@ -173,7 +174,7 @@ LLMONEY_API bool LLMoneyReduce(xuid_t xuid, money_t money)
 	return res;
 }
 
-LLMONEY_API bool LLMoneySet(xuid_t xuid, money_t money)
+bool LLMoneySet(xuid_t xuid, money_t money)
 {
 	if (!CallBeforeEvent(LLMoneyEvent::Set, "", xuid, money))
 		return false;
@@ -198,7 +199,7 @@ LLMONEY_API bool LLMoneySet(xuid_t xuid, money_t money)
 }
 
 
-LLMONEY_API string LLMoneyGetHist(xuid_t xuid, int timediff)
+string LLMoneyGetHist(xuid_t xuid, int timediff)
 {
 	try {
 		static SQLite::Statement get{ *db,"select tFrom,tTo,Money,datetime(Time,'unixepoch', 'localtime'),Note from mtrans where strftime('%s','now')-time<? and (tFrom=? OR tTo=?) ORDER BY Time DESC" };
@@ -229,7 +230,7 @@ LLMONEY_API string LLMoneyGetHist(xuid_t xuid, int timediff)
 	}
 }
 
-LLMONEY_API void LLMoneyClearHist(int difftime) {
+void LLMoneyClearHist(int difftime) {
 	try {
 		db->exec("DELETE FROM mtrans WHERE strftime('%s','now')-time>" + std::to_string(difftime));
 	}

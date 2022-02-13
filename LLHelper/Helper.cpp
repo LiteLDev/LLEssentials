@@ -1,7 +1,15 @@
-﻿#include "pch.h"
+﻿#include "settings.h"
 #include "Helper.h"
 #include <unordered_map>
 #include <ScheduleAPI.h>
+#include <filesystem>
+#include <LoggerAPI.h>
+#include <EventAPI.h>
+#include <MC/Player.hpp>
+#include <MC/ServerPlayer.hpp>
+#include <MC/Level.hpp>
+#include <MC/ItemStack.hpp>
+
 vector<unsigned int> taskList;
 Logger logger("Helper");
 

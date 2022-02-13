@@ -1,5 +1,6 @@
-#include "pch.h"
-#include "Helper.h"
+#include "settings.h"
+#include <MC/BlockSource.hpp>
+#include <MC/Actor.hpp>
 
 THook(void, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z",
 	Level* _this, BlockSource* a2, Actor* a3, Vec3* a4, float a5, bool a6, bool a7, float a8, bool a9) {

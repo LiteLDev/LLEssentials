@@ -1,15 +1,24 @@
-﻿// BDXTPA.cpp : 定义 DLL 的导出函数。
-//
-
-#include "pch.h"
+﻿#include "settings.h"
 #include "homeStorage.h"
 #include "Tpa.h"
 #include <RegCommandAPI.h>
-#include <MC/NetworkIdentifier.hpp>
 #include <MC/Types.hpp>
 #include <Dedicated/Core.h>
 #include <MC/ServerPlayer.hpp>
-#include "../SDK/Header/FormUI.h"
+#include <FormUI.h>
+#include <SendPacketAPI.h>
+#include <KVDBAPI.h>
+#include <TranslationAPI.h>
+#include <ctime>
+#include <Utils/PlayerMap.h>
+#include <Utils/ViewHelper.h>
+#include <filesystem>
+#include <EventAPI.h>
+#include <MC/Level.hpp>
+#include <ScheduleAPI.h>
+#include <MC/NetworkIdentifier.hpp>
+using std::shared_ptr, std::pair;
+using std::make_shared;
 
 std::unique_ptr<KVDB> db;
 Logger logger("Teleport");

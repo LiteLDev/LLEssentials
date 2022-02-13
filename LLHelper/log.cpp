@@ -1,6 +1,10 @@
-﻿#include "pch.h"
-#include "Helper.h"
+﻿#include "settings.h"
 #include <MC/Block.hpp>
+#include <LoggerAPI.h>
+#include <EventAPI.h>
+#include <MC/Player.hpp>
+#include <MC/ItemStack.hpp>
+#include <MC/HashedString.hpp>
 
 extern Logger logger;
 

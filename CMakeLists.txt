@@ -33,4 +33,5 @@ add_link_options(
 add_library(LiteLoaderPlugins SHARED ${SRC_FILES})
 
 include_directories(SDK/Header)
+include_directories(SDK/Header/third-party)
 include_directories(Header)

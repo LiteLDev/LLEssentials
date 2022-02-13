@@ -1,7 +1,5 @@
-#include "pch.h"
 #include <EventAPI.h>
 #include <stddef.h>
-#include <iostream>
 #include <string>
 #include "Helper.h"
 #include <string_view>
@@ -13,6 +11,20 @@
 #include <MC/MinecraftPackets.hpp>
 #include "settings.h"
 #include <thread>
+#include <regCommandAPI.h>
+#include <ctime>
+#include <chrono>
+#include <unordered_set>
+#include <KVDBAPI.h>
+#include <PlayerInfoAPI.h>
+#include <Utils/ViewHelper.h>
+#include <MC/Certificate.hpp>
+#include <Utils/VarInt.h>
+#include <Utils/PlayerMap.h>
+#include <TranslationAPI.h>
+#include <MC/ItemStack.hpp>
+#include <MC/ServerPlayer.hpp>
+#include <MC/Level.hpp>
 
 std::unique_ptr<KVDB> db;
 playerMap<string> ORIG_NAME;

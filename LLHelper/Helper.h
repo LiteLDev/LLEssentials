@@ -1,5 +1,4 @@
 #pragma once
-#include "pch.h"
 #pragma warning(disable:4996)
 
 bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);

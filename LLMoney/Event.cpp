@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Event.h"
 #include "LLMoney.h"
 #include <vector>

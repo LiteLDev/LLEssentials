@@ -1,19 +1,13 @@
-#include "pch.h"
 #include <Global.h>
-#include <iostream>
 #include <MC/Player.hpp>
 #include <MC/ServerPlayer.hpp>
 #include <regCommandAPI.h>
-#include <map>
-#include "pch.h"
-#include <fstream>
-#include <streambuf>
 #include <EventAPI.h>
 #include "LLMoney.h"
 #include "Money.h"
-#include <filesystem>
 #include <TranslationAPI.h>
 #include <Dedicated/JsonLoader.h>
+#include <SQLiteCpp/SQLiteCpp.h>
 
 using namespace RegisterCommandHelper;
 
