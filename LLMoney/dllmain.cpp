@@ -10,7 +10,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 ) {
     switch (ul_reason_for_call) {
         case DLL_PROCESS_ATTACH:
-            LL::registerPlugin("LLMoney", "EconomyCore for LiteLoaderBDS", LL::Version{2, 0, std::stoi(_ver)},
+            LL::registerPlugin("LLMoney", "EconomyCore for LiteLoaderBDS", LLMONEY_VERSION,
                                "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
         case DLL_THREAD_ATTACH:
         case DLL_THREAD_DETACH:

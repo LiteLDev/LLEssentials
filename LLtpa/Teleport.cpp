@@ -17,6 +17,7 @@
 #include <MC/Level.hpp>
 #include <ScheduleAPI.h>
 #include <MC/NetworkIdentifier.hpp>
+#include <unordered_map>
 
 using std::shared_ptr, std::pair;
 using std::make_shared;
@@ -43,9 +44,6 @@ struct TPASet {
     clock_t lastReq = 0;
     bool Accept = true;
 };
-
-#include<unordered_map>
-#include "settings.h"
 
 using std::unordered_map;
 static std::list<TPReq> reqs;
@@ -764,6 +762,6 @@ void tpa_entry() {
         th.detach();
         return true;
     });
-    logger.info("Loaded version: {}", _ver);
+    logger.info("Loaded version: {}", LLTPA_VERSION.toString());
 }
 

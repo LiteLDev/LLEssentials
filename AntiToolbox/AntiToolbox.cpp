@@ -1,5 +1,4 @@
-﻿#include <MC/Player.hpp>
-#include <MC/ServerPlayer.hpp>
+﻿#include <MC/ServerPlayer.hpp>
 #include <EventAPI.h>
 #include <LoggerAPI.h>
 #include <MC/ConnectionRequest.hpp>

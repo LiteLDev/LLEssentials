@@ -6,8 +6,7 @@
 
 bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
 
-#define _ver "220123"
-#define LLHELPER_VERSION LL::Version{ 2,0, std::stoi(_ver)}
+#define LLHELPER_VERSION LL::Version{ 2,1,1 }
 
 /////////////////////// LL AutoUpgrade ///////////////////////
 

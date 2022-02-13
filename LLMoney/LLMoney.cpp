@@ -335,5 +335,5 @@ void entry() {
         throw 0;
     }
     Translation::load("plugins\\LLMoney\\langpack\\" + LANGUAGE + ".json");
-    Logger("LLMoney").info("Loaded version: {}", _ver);
+    Logger("LLMoney").info("Loaded version: {}", LLMONEY_VERSION.toString());
 }

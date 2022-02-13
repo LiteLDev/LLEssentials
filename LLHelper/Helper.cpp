@@ -110,7 +110,7 @@ void entry() {
     RegisterCommands();
     scheduleTask();
     logger.setFile("logs/Helper.log", true);
-    logger.info("Loaded version: {}", _ver);
+    logger.info("Loaded version: {}", LLHELPER_VERSION.toString());
 }
 // enable ability
 THook(void, "?setup@ChangeSettingCommand@@SAXAEAVCommandRegistry@@@Z",
