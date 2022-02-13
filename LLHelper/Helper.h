@@ -1,4 +1,5 @@
 #pragma once
+#include <Utils/PlayerMap.h>
 #pragma warning(disable:4996)
 
 bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);

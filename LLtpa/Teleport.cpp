@@ -290,7 +290,7 @@ public:
                 form.sendTo(sp, [](Player* pl, std::map<string, std::shared_ptr<Form::CustomFormElement>> mp){
                     std::string action = mp["dropdown1"]->getString();
                     std::string target_name = mp["dropdown2"]->getString();
-                    pl->runcmd("tpa " + action + " " + target_name);
+                    pl->runcmd("tpa " + action + " \"" + target_name + "\"");
                 });
                 /*
 				using namespace GUI;
