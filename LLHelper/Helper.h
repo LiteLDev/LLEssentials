@@ -1,8 +1,11 @@
 #pragma once
+
 #include <Utils/PlayerMap.h>
+
 #pragma warning(disable:4996)
 
 bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
+
 #define _ver "220123"
 #define LLHELPER_VERSION LL::Version{ 2,0, std::stoi(_ver)}
 
@@ -23,6 +26,7 @@ bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
 #define LL_UPDATE_OTHER_FILES_RECORD "plugins/LLhelper/Versions.ini"
 
 void loadCfg();
-extern Minecraft* mc;
+
+extern Minecraft *mc;
 extern playerMap<string> ORIG_NAME;
 extern std::unordered_map<string, string> CNAME;
