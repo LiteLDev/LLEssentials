@@ -1,4 +1,5 @@
 ﻿#include "settings.h"
+#include "Helper.h"
 #include <MC/Block.hpp>
 #include <LoggerAPI.h>
 #include <EventAPI.h>

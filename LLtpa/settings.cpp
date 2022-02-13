@@ -2,7 +2,7 @@
 #include <Nlohmann/json.hpp>
 #include "settings.h"
 
-#define TRJ(key,val)                                         \
+#define TRJ(key, val)                                         \
 if (json.find(key) != json.end()) {                          \
     const nlohmann::json& out = json.at(key);                \
     out.get_to(val);}                                        \
@@ -10,7 +10,7 @@ if (json.find(key) != json.end()) {                          \
 
 namespace Settings {
 
-    extern int MAX_HOMES =5;
+    extern int MAX_HOMES = 5;
     extern clock_t TPexpire = CLOCKS_PER_SEC * 20;
     extern clock_t TPratelimit = CLOCKS_PER_SEC * 5;
     extern int HOME_DISTANCE_LAND = -1;
@@ -33,6 +33,7 @@ namespace Settings {
         json["home_enabled"] = HOME_ENABLED;
         return json;
     }
+
     void initjson(nlohmann::json json) {
         TRJ("language", LANGUAGE);
         TRJ("max_homes", MAX_HOMES);
@@ -44,7 +45,8 @@ namespace Settings {
         TRJ("tpa_enabled", TPA_ENABLED);
         TRJ("home_enabled", HOME_ENABLED);
     }
-    void WriteDefaultConfig(const std::string& fileName) {
+
+    void WriteDefaultConfig(const std::string &fileName) {
         std::ofstream file(fileName);
         if (!file.is_open()) {
             std::cout << "Can't open file " << fileName << std::endl;
@@ -54,7 +56,8 @@ namespace Settings {
         file << json.dump(4);
         file.close();
     }
-    void LoadConfigFromJson(const std::string& fileName) {
+
+    void LoadConfigFromJson(const std::string &fileName) {
         std::ifstream file(fileName);
         if (!file.is_open()) {
             std::cout << "Can't open file " << fileName << std::endl;
@@ -96,6 +99,7 @@ namespace TR {
     string tpaguidropdown2 = "Players";
     string tpaacerror = "No Tpa request";
     string tpadeerror = "No Tpa request";
+
     nlohmann::json globaljson() {
         nlohmann::json json;
         json["tp.fail.rate"] = tpfailrate;
@@ -127,6 +131,7 @@ namespace TR {
         json["tpa.de.error"] = tpadeerror;
         return json;
     }
+
     void initjson(nlohmann::json json) {
         TRJ("tp.fail.rate", tpfailrate);
         TRJ("tp.fail.inreq", tpfailinreq);
@@ -157,7 +162,8 @@ namespace TR {
         TRJ("tpa.de.error", tpadeerror);
 
     }
-    void WriteDefaultConfig(const std::string& fileName) {
+
+    void WriteDefaultConfig(const std::string &fileName) {
         std::ofstream file(fileName);
         if (!file.is_open()) {
             std::cout << "Can't open file " << fileName << std::endl;
@@ -167,7 +173,8 @@ namespace TR {
         file << json.dump(4);
         file.close();
     }
-    void LoadConfigFromJson(const std::string& fileName) {
+
+    void LoadConfigFromJson(const std::string &fileName) {
         std::ifstream file(fileName);
         if (!file.is_open()) {
             std::cout << "Can't open file " << fileName << std::endl;

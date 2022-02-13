@@ -1,6 +1,7 @@
 ﻿#include<iostream>
 #include<filesystem>
 #include "Helper.h"
+#include <LLAPI.h>
 
 BOOL APIENTRY DllMain(HMODULE hModule,
                       DWORD ul_reason_for_call,
