@@ -61,6 +61,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
     "log_cmd": true,//Log command
     "no_enderman_take_block": true,//Stop the enderman from picking up the block
     "protect_farm_block": true//Protect arable land from being trampled on
+}
 ```
 ## LLtpa
 ```jsonc
