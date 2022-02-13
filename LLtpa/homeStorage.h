@@ -1,6 +1,10 @@
 #pragma once
-#include "pch.h"
 #include <Utils/Bstream.h>
+#include <memory>
+#include "KVDBAPI.h"
+#include "MC/ServerPlayer.hpp"
+#include "Utils/ViewHelper.h"
+#include "PlayerInfoAPI.h"
 
 extern std::unique_ptr<KVDB> db;
 struct Vec4 {
