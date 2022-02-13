@@ -39,7 +39,7 @@
 
 # 配置文件
 ## LLHelper
-```json
+```jsonc
 {
     "language": "en-us", //语言
     "force_enable_expplay": false,//开启实验性模式
@@ -62,7 +62,7 @@
 }
 ```
 ## LLtpa
-```json
+```jsonc
 {
     "language": "en-us", //语言，改为zh-cn为中文
     "max_homes": 3,//玩家可以设置的家的最大数量
@@ -73,7 +73,7 @@
 }
 ```
 ## LLMoney
-```json
+```jsonc
 {
     "language": "en-us", //语言，改为zh-cn为中文
     "def_money": 0, //默认金钱数
