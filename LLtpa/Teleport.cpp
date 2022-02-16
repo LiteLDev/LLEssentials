@@ -296,6 +296,9 @@ public:
                     form.append(Form::Dropdown("dropdown2", tr("tpa.gui.dropdown2"), playerList()));
                     ServerPlayer *sp = ori.getPlayer();
                     form.sendTo(sp, [](Player *pl, std::map<string, std::shared_ptr<Form::CustomFormElement>> mp) {
+                        if (mp.empty()) {
+                            return;
+                        }
                         std::string action = mp["dropdown1"]->getString();
                         std::string target_name = mp["dropdown2"]->getString();
                         pl->runcmd("tpa " + action + " \"" + target_name + "\"");
