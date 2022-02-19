@@ -16,9 +16,9 @@ namespace Settings {
     extern bool pfarm;
     extern std::string LANGUAGE;
 
-    nlohmann::json globaljson();
+    nlohmann::json GlobalJson();
 
-    void initjson(nlohmann::json json);
+    void InitJson(nlohmann::json json);
 
     void WriteDefaultConfig(const std::string &fileName);
 
@@ -26,9 +26,9 @@ namespace Settings {
 } // namespace Settings
 
 namespace TR {
-    nlohmann::json globaljson();
+    nlohmann::json GlobalJson();
 
-    void initjson(nlohmann::json json);
+    void InitJson(nlohmann::json json);
 
     void WriteDefaultConfig(const std::string &fileName);
 

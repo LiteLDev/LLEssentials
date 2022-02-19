@@ -15,7 +15,7 @@ namespace Settings {
     bool pfarm = true;
     std::string LANGUAGE = "en-us";
 
-    nlohmann::json globaljson() {
+    nlohmann::json GlobalJson() {
         nlohmann::json json;
         json["language"] = LANGUAGE;
         json["command_map"] = CMDMAP;
@@ -31,7 +31,7 @@ namespace Settings {
         return json;
     }
 
-    void initjson(nlohmann::json json) {
+    void InitJson(nlohmann::json json) {
         if (json.find("language") != json.end()) {
             const nlohmann::json &out = json.at("language");
             out.get_to(LANGUAGE);
@@ -84,7 +84,7 @@ namespace Settings {
             std::cout << "Can't open file " << fileName << std::endl;
             return;
         }
-        auto json = globaljson();
+        auto json = GlobalJson();
         file << json.dump(4);
         file.close();
     }
@@ -98,66 +98,66 @@ namespace Settings {
         nlohmann::json json;
         file >> json;
         file.close();
-        initjson(json);
+        InitJson(json);
         WriteDefaultConfig(fileName);
     }
 } // namespace Settings
+
 #define TRJ(key, val)                                         \
 if (json.find(key) != json.end()) {                          \
     const nlohmann::json& out = json.at(key);                \
     out.get_to(val);}                                         \
 
 namespace TR {
-    string gmodesuccess = "Your game mode is changed";
-    string banlistsuccess = "Done";
-    string banbanipsuccess = " is banned";
-    string banbansuccess = " is banned";
-    string banunbansuccess = " is unbanned";
-    string banunbanerror = "not banned";
+    std::string gmode_success = "Your game mode is changed";
+    std::string ban_list_success = "Done";
+    std::string ban_ip_success = " is banned";
+    std::string ban_ban_success = " is banned";
+    std::string ban_unban_success = " is unbanned";
+    std::string ban_ban_error = "not banned";
+    std::string skick_success = "is kicked";
+    std::string vanish_success = "Successfully opened. When you want to cancel, please join the server again.";
+    std::string cname_set_not_online = "Player not online!we will only save the custom name";
+    std::string cname_set_success = "Set success";
+    std::string cname_rm_not_online = "Player not online!we will only delete the custom name";
+    std::string cname_rm_success = "Delete success";
+    std::string cname_set_null = "Null name";
+    std::string hreload_success = "Reloaded";
 
-    string skicksuccess = "is kicked";
-    string vanishsuccess = "Successfully opened. When you want to cancel, please join the server again.";
-    string cnamesetnotonline = "Player not online!we will only save the custom name";
-    string cnamesetsuccess = "Set success";
-    string cnamermnotonline = "Player not online!we will only delete the custom name";
-    string cnamermsuccess = "Delete success";
-    string cnamesetnull = "Null name";
-    string hreloadsuccess = "Reloaded";
-
-    nlohmann::json globaljson() {
+    nlohmann::json GlobalJson() {
         nlohmann::json json;
-        json["gmode.success"] = gmodesuccess;
-        json["ban.list.success"] = banlistsuccess;
-        json["ban.banip.success"] = banbanipsuccess;
-        json["ban.ban.success"] = banbansuccess;
-        json["ban.unban.success"] = banunbansuccess;
-        json["ban.unban.error"] = banunbanerror;
-        json["skick.success"] = skicksuccess;
-        json["vanish.success"] = vanishsuccess;
-        json["cname.set.notonline"] = cnamesetnotonline;
-        json["cname.set.success"] = cnamesetsuccess;
-        json["cname.rm.notonline"] = cnamermnotonline;
-        json["cname.rm.success"] = cnamermsuccess;
-        json["cname.set.null"] = cnamesetnull;
-        json["hreload.success"] = hreloadsuccess;
+        json["gmode.success"] = gmode_success;
+        json["ban.list.success"] = ban_list_success;
+        json["ban.banip.success"] = ban_ip_success;
+        json["ban.ban.success"] = ban_ban_success;
+        json["ban.unban.success"] = ban_unban_success;
+        json["ban.unban.error"] = ban_ban_error;
+        json["skick.success"] = skick_success;
+        json["vanish.success"] = vanish_success;
+        json["cname.set.notonline"] = cname_set_not_online;
+        json["cname.set.success"] = cname_set_success;
+        json["cname.rm.notonline"] = cname_rm_not_online;
+        json["cname.rm.success"] = cname_rm_success;
+        json["cname.set.null"] = cname_set_null;
+        json["hreload.success"] = hreload_success;
         return json;
     }
 
-    void initjson(nlohmann::json json) {
-        TRJ("gmode.success", gmodesuccess);
-        TRJ("ban.list.success", banlistsuccess);
-        TRJ("ban.banip.success", banbanipsuccess);
-        TRJ("ban.ban.success", banbansuccess);
-        TRJ("ban.unban.success", banunbansuccess);
-        TRJ("ban.unban.error", banunbanerror);
-        TRJ("skick.success", skicksuccess);
-        TRJ("vanish.success", vanishsuccess);
-        TRJ("cname.set.notonline", cnamesetnotonline);
-        TRJ("cname.set.success", cnamesetsuccess);
-        TRJ("cname.rm.notonline", cnamermnotonline);
-        TRJ("cname.rm.success", cnamermsuccess);
-        TRJ("cname.set.null", cnamesetnull);
-        TRJ("hreload.success", hreloadsuccess);
+    void InitJson(nlohmann::json json) {
+        TRJ("gmode.success", gmode_success);
+        TRJ("ban.list.success", ban_list_success);
+        TRJ("ban.banip.success", ban_ip_success);
+        TRJ("ban.ban.success", ban_ban_success);
+        TRJ("ban.unban.success", ban_unban_success);
+        TRJ("ban.unban.error", ban_ban_error);
+        TRJ("skick.success", skick_success);
+        TRJ("vanish.success", vanish_success);
+        TRJ("cname.set.notonline", cname_set_not_online);
+        TRJ("cname.set.success", cname_set_success);
+        TRJ("cname.rm.notonline", cname_rm_not_online);
+        TRJ("cname.rm.success", cname_rm_success);
+        TRJ("cname.set.null", cname_set_null);
+        TRJ("hreload.success", hreload_success);
     }
 
     void WriteDefaultConfig(const std::string &fileName) {
@@ -166,7 +166,7 @@ namespace TR {
             std::cout << "Can't open file " << fileName << std::endl;
             return;
         }
-        auto json = globaljson();
+        auto json = GlobalJson();
         file << json.dump(4);
         file.close();
     }
@@ -180,7 +180,7 @@ namespace TR {
         nlohmann::json json;
         file >> json;
         file.close();
-        initjson(json);
+        InitJson(json);
         WriteDefaultConfig(fileName);
     }
 }
