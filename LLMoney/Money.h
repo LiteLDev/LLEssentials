@@ -1,2 +1,2 @@
 #pragma once
-#define LLMONEY_VERSION LL::Version{ 2,1,1 }
+#define LLMONEY_VERSION LL::Version{ 2,1,2 }
