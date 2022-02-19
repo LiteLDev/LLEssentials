@@ -1,2 +1,2 @@
-## LLHelper
-Fixed #23
+## LLtpa
+Fixed target not selected error when use `/tpa gui`
