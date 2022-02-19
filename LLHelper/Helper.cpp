@@ -5,7 +5,6 @@
 #include <filesystem>
 #include <LoggerAPI.h>
 #include <EventAPI.h>
-#include <MC/Player.hpp>
 #include <MC/ServerPlayer.hpp>
 #include <MC/Level.hpp>
 #include <MC/ItemStack.hpp>
@@ -40,26 +39,26 @@ void loadCfg() {
         Settings::WriteDefaultConfig("plugins/LLHelper/LLHelper.json");
     }
     //tr
-    if (!std::filesystem::exists("plugins/LLHelper/langpack"))
-        std::filesystem::create_directories("plugins/LLHelper/langpack");
-    if (std::filesystem::exists("plugins/LLHelper/langpack/en-us.json")) {
-        try {
-            TR::LoadConfigFromJson("plugins/LLHelper/langpack/en-us.json");
-        }
-        catch (std::exception &e) {
-            logger.error("Config File isInvalid, Err {}", e.what());
-            Sleep(1000 * 100);
-            exit(1);
-        }
-        catch (...) {
-            logger.error("Config File isInvalid");
-            Sleep(1000 * 100);
-            exit(1);
-        }
-    } else {
-        logger.info("Config with default values created");
-        TR::WriteDefaultConfig("plugins/LLHelper/langpack/en-us.json");
-    }
+//    if (!std::filesystem::exists("plugins/LLHelper/langpack"))
+//        std::filesystem::create_directories("plugins/LLHelper/langpack");
+//    if (std::filesystem::exists("plugins/LLHelper/langpack/en-us.json")) {
+//        try {
+//            TR::LoadConfigFromJson("plugins/LLHelper/langpack/en-us.json");
+//        }
+//        catch (std::exception &e) {
+//            logger.error("Config File isInvalid, Err {}", e.what());
+//            Sleep(1000 * 100);
+//            exit(1);
+//        }
+//        catch (...) {
+//            logger.error("Config File isInvalid");
+//            Sleep(1000 * 100);
+//            exit(1);
+//        }
+//    } else {
+//        logger.info("Config with default values created");
+//        TR::WriteDefaultConfig("plugins/LLHelper/langpack/en-us.json");
+//    }
 }
 
 void scheduleTask() {

@@ -656,26 +656,26 @@ void loadCfg() {
         Settings::WriteDefaultConfig("plugins/LLtpa/tpa.json");
     }
     //tr
-    if (!std::filesystem::exists("plugins/LLtpa/langpack"))
-        std::filesystem::create_directories("plugins/LLtpa/langpack");
-    if (std::filesystem::exists("plugins/LLtpa/langpack/en-us.json")) {
-        try {
-            TR::LoadConfigFromJson("plugins/LLtpa/langpack/en-us.json");
-        }
-        catch (std::exception &e) {
-            logger.error("Config File isInvalid, Err {}", e.what());
-            Sleep(1000 * 100);
-            exit(1);
-        }
-        catch (...) {
-            logger.error("Config File isInvalid");
-            Sleep(1000 * 100);
-            exit(1);
-        }
-    } else {
-        logger.info("Config with default values created");
-        TR::WriteDefaultConfig("plugins/LLtpa/langpack/en-us.json");
-    }
+//    if (!std::filesystem::exists("plugins/LLtpa/langpack"))
+//        std::filesystem::create_directories("plugins/LLtpa/langpack");
+//    if (std::filesystem::exists("plugins/LLtpa/langpack/en-us.json")) {
+//        try {
+//            TR::LoadConfigFromJson("plugins/LLtpa/langpack/en-us.json");
+//        }
+//        catch (std::exception &e) {
+//            logger.error("Config File isInvalid, Err {}", e.what());
+//            Sleep(1000 * 100);
+//            exit(1);
+//        }
+//        catch (...) {
+//            logger.error("Config File isInvalid");
+//            Sleep(1000 * 100);
+//            exit(1);
+//        }
+//    } else {
+//        logger.info("Config with default values created");
+//        TR::WriteDefaultConfig("plugins/LLtpa/langpack/en-us.json");
+//    }
 }
 
 class LLtpaCommand : public Command {
