@@ -50,7 +50,7 @@ bool initDB() {
 		); ");
     }
     catch (std::exception const &e) {
-        moneylog.error("DB err {}", e.what());
+        moneylog.error("Database error: {}", e.what());
         return false;
     }
     ConvertData();
@@ -59,7 +59,7 @@ bool initDB() {
 
 money_t LLMoneyGet(xuid_t xuid) {
     try {
-        static SQLite::Statement get{*db, "select Money from money where XUID=?"};
+        SQLite::Statement get{*db, "select Money from money where XUID=?"};
         get.bindNoCopy(1, xuid);
         money_t rv = DEF_MONEY;
         bool fg = false;
@@ -70,7 +70,7 @@ money_t LLMoneyGet(xuid_t xuid) {
         get.reset();
         get.clearBindings();
         if (!fg) {
-            static SQLite::Statement set{*db, "insert into money values (?,?)"};
+            SQLite::Statement set{*db, "insert into money values (?,?)"};
             set.bindNoCopy(1, xuid);
             set.bind(2, DEF_MONEY);
             set.exec();
@@ -80,7 +80,7 @@ money_t LLMoneyGet(xuid_t xuid) {
         return rv;
     }
     catch (std::exception const &e) {
-        moneylog.error("DB err {}\n", e.what());
+        moneylog.error("Database error: {}\n", e.what());
         return -1;
     }
 }
@@ -98,7 +98,7 @@ bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const &note) {
         return false;
     try {
         db->exec("begin");
-        static SQLite::Statement set{*db, "update money set Money=? where XUID=?"};
+        SQLite::Statement set{*db, "update money set Money=? where XUID=?"};
         if (from != "") {
             auto fmoney = LLMoneyGet(from);
             if (fmoney < val) {
@@ -131,7 +131,7 @@ bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const &note) {
             }
         }
         {
-            static SQLite::Statement addTrans{*db, "insert into mtrans (tFrom,tTo,Money,Note) values (?,?,?,?)"};
+            SQLite::Statement addTrans{*db, "insert into mtrans (tFrom,tTo,Money,Note) values (?,?,?,?)"};
             addTrans.bindNoCopy(1, from);
             addTrans.bindNoCopy(2, to);
             addTrans.bind(3, val);
@@ -148,7 +148,7 @@ bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const &note) {
     }
     catch (std::exception const &e) {
         db->exec("rollback");
-        moneylog.error("DB err {}\n", e.what());
+        moneylog.error("Database error: {}\n", e.what());
         return false;
     }
 }
@@ -200,7 +200,7 @@ bool LLMoneySet(xuid_t xuid, money_t money) {
 
 string LLMoneyGetHist(xuid_t xuid, int timediff) {
     try {
-        static SQLite::Statement get{*db,
+        SQLite::Statement get{*db,
                                      "select tFrom,tTo,Money,datetime(Time,'unixepoch', 'localtime'),Note from mtrans where strftime('%s','now')-time<? and (tFrom=? OR tTo=?) ORDER BY Time DESC"};
         string rv;
         get.bind(1, timediff);
@@ -224,7 +224,7 @@ string LLMoneyGetHist(xuid_t xuid, int timediff) {
         return rv;
     }
     catch (std::exception const &e) {
-        moneylog.error("DB err {}\n", e.what());
+        moneylog.error("Database error: {}\n", e.what());
         return "failed";
     }
 }
