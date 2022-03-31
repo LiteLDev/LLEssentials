@@ -37,17 +37,16 @@ class MoneyCommand : public Command {
     int difftime;
 public:
     void execute(CommandOrigin const &ori, CommandOutput &outp) const {
-        std::string dstid;
         std::string dstxuid, myuid;
         switch (op) {
             case query:
             case hist:
                 if (dst_isSet && ori.getPermissionsLevel() > 0) {
-                    dstid = PlayerInfo::getXuid(dst);
+                    dstxuid = PlayerInfo::getXuid(dst);
                 } else {
-                    dstid = PlayerInfo::getXuid(ori.getName());
+                    dstxuid = PlayerInfo::getXuid(ori.getName());
                 }
-                if (dstid == "") {
+                if (dstxuid == "") {
                     outp.error(tr("money.no.target"));
                     return;
                 }
@@ -71,10 +70,10 @@ public:
         }
         switch (op) {
             case query:
-                outp.addMessage("Money: " + std::to_string(LLMoneyGet(dstid)));
+                outp.addMessage("Balance: " + std::to_string(LLMoneyGet(dstxuid)));
                 break;
             case hist:
-                outp.addMessage(LLMoneyGetHist(dstid));
+                outp.addMessage(LLMoneyGetHist(dstxuid));
                 break;
             case pay: {
                 if (moneynum <= 0) {
@@ -82,15 +81,11 @@ public:
                     return;
                 }
                 myuid = ori.getPlayer()->getXuid();
-                if (myuid == "" || myuid == dstxuid) {
-                    outp.error(tr("money.no.target"));
-                    return;
-                }
                 if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
                     money_t fee = (money_t) (moneynum * MoneyFee);
                     if (fee)
                         LLMoneyTrans(dstxuid, "", fee, "money pay fee");
-                    outp.success("pay success");
+                    outp.success("Pay successfully");
                 } else {
                     outp.error(tr("money.not.enough"));
                 }
@@ -103,7 +98,7 @@ public:
                     return;
                 }
                 if (LLMoneySet(dstxuid, moneynum)) {
-                    outp.success("set success");
+                    outp.success("Set successfully");
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
@@ -114,7 +109,7 @@ public:
                     return;
                 }
                 if (LLMoneyAdd(dstxuid, moneynum)) {
-                    outp.success("add success");
+                    outp.success("Add successfully");
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
@@ -125,6 +120,7 @@ public:
                     return;
                 }
                 if (LLMoneyReduce(dstxuid, moneynum)) {
+                    outp.success(tr("Reduce successfully"));
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
@@ -186,21 +182,21 @@ class MoneySCommand : public Command {
     int difftime;
 public:
     void execute(CommandOrigin const &ori, CommandOutput &outp) const {
-        std::string dstid;
-        optional<std::string> dstxuid, myuid;
+        optional<std::string> dstxuid;
+        std::string myuid;
         switch (op) {
             case query:
             case hist:
                 if (dst_isSet) {
                     if (ori.getPermissionsLevel() > 0) {
                         if (!player.results(ori).empty()) {
-                            dstid = PlayerInfo::getXuid(player.results(ori).begin().operator*()->getRealName());
+                            dstxuid = PlayerInfo::getXuid(player.results(ori).begin().operator*()->getRealName());
                         }
                     }
                 } else {
-                    dstid = PlayerInfo::getXuid(ori.getName());
+                    dstxuid = PlayerInfo::getXuid(ori.getName());
                 }
-                if (dstid == "") {
+                if (dstxuid.val() == "") {
                     outp.error(tr("money.no.target"));
                     return;
                 }
@@ -224,10 +220,10 @@ public:
         }
         switch (op) {
             case query:
-                outp.addMessage("Money: " + std::to_string(LLMoneyGet(dstid)));
+                outp.addMessage("Balance: " + std::to_string(LLMoneyGet(dstxuid.val())));
                 break;
             case hist:
-                outp.addMessage(LLMoneyGetHist(dstid));
+                outp.addMessage(LLMoneyGetHist(dstxuid.val()));
                 break;
             case pay: {
                 if (moneynum <= 0) {
@@ -235,15 +231,15 @@ public:
                     return;
                 }
                 myuid = PlayerInfo::getXuid(ori.getName());
-                if (myuid.val() == "") {
+                if (myuid == "") {
                     outp.error(tr("money.no.target"));
                     return;
                 }
-                if (LLMoneyTrans(myuid.val(), dstxuid.val(), moneynum, "money pay")) {
+                if (LLMoneyTrans(myuid, dstxuid.val(), moneynum, "money pay")) {
                     money_t fee = (money_t) (moneynum * MoneyFee);
                     if (fee)
                         LLMoneyTrans(dstxuid.val(), "", fee, "money pay fee");
-                    outp.success("pay success");
+                    outp.success("Pay successfully");
                 } else {
                     outp.error(tr("money.not.enough"));
                 }
@@ -255,7 +251,7 @@ public:
                     return;
                 }
                 if (LLMoneySet(dstxuid.val(), moneynum)) {
-                    outp.success("set success");
+                    outp.success("Set successfully");
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
@@ -266,7 +262,7 @@ public:
                     return;
                 }
                 if (LLMoneyAdd(dstxuid.val(), moneynum)) {
-                    outp.success("add success");
+                    outp.success("Add successfully");
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
@@ -277,6 +273,7 @@ public:
                     return;
                 }
                 if (LLMoneyReduce(dstxuid.val(), moneynum)) {
+                    outp.success("Reduce successfully");
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
