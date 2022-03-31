@@ -1,2 +1,3 @@
-## LLtpa
-Fixed target not selected error when use `/tpa gui`
+## LLMoney
+Add balance ranking #30
+Fix error when wrong call #26
