@@ -36,19 +36,15 @@ LLMONEY_API void LLMoneyListenAfterEvent(LLMoneyCallback callback);
 #ifdef __cplusplus
 }
 #endif
+LLMONEY_API std::map<std::string, money_t> LLMoneyRanking(unsigned short num = 5);
 // Old interface
 // Just for compatibility
 // Do not use
 namespace Money {
     LLMONEY_API money_t getMoney(xuid_t xuid);
-
     LLMONEY_API std::string getTransHist(xuid_t xuid, int timediff = 24 * 60 * 60);
-
     LLMONEY_API bool createTrans(xuid_t from, xuid_t to, money_t val, std::string const &note = "");
-
     LLMONEY_API bool setMoney(xuid_t xuid, money_t money);
-
     LLMONEY_API bool reduceMoney(xuid_t xuid, money_t money);
-
     LLMONEY_API void purgeHist(int difftime = 0);
 }

@@ -15,6 +15,7 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | /money reduce <player> <amount> | Reduce player's balance | OP |
 | /money hist | Print your running account | Player |
 | /money purge | Clear your running account | OP |
+| /money top | Balance ranking | Player |
 | /money_s | Command with TargetSelector | Player |
 ## LLHelper
 | Command | Description | Permission |

@@ -197,6 +197,26 @@ bool LLMoneySet(xuid_t xuid, money_t money) {
     return res;
 }
 
+std::map<std::string, money_t> LLMoneyRanking(unsigned short num) {
+    try {
+        SQLite::Statement get{ *db, "select * from money ORDER BY money DESC LIMIT ?" };
+        std::map<std::string, money_t> mapTemp;
+        get.bind(1, num);
+        while (get.executeStep()) {
+            std::string xuid = get.getColumn(0).getString();
+            long long balance = get.getColumn(1).getInt64();
+            //std::cout << xuid << " " << balance << "\n";
+            mapTemp[xuid] = balance;
+        }
+        get.reset();
+        get.clearBindings();
+        return mapTemp;
+    }
+    catch (std::exception const& e) {
+        moneylog.error("Database error: {}\n", e.what());
+        return {};
+    }
+}
 
 string LLMoneyGetHist(xuid_t xuid, int timediff) {
     try {

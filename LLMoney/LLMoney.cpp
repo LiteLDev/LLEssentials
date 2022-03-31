@@ -28,7 +28,8 @@ class MoneyCommand : public Command {
         set = 4,
         add = 5,
         reduce = 6,
-        purge = 7
+        purge = 7,
+        top = 8
     } op;
     string dst;
     bool dst_isSet;
@@ -130,6 +131,14 @@ public:
                     LLMoneyClearHist(difftime);
                 else
                     LLMoneyClearHist(0);
+                break;
+            case top:
+                std::map<std::string, money_t> mapTemp = LLMoneyRanking();
+                outp.addMessage("===== Ranking =====");
+                for (std::pair<std::string, money_t> mp : mapTemp) {
+                    outp.addMessage(PlayerInfo::fromXuid(mp.first) + "  " + std::to_string(mp.second));
+                }
+                outp.success("===================");
         }
         return;
     }
@@ -142,7 +151,8 @@ public:
                 {(CommandFlagValue) 0x80});
         //addEnum
         registry->addEnum<MoneyOP>("MoneyOP1", {{"query", MoneyOP::query},
-                                                {"hist",  MoneyOP::hist}});
+                                                {"hist",  MoneyOP::hist},
+                                                {"top", MoneyOP::top}});
         registry->addEnum<MoneyOP>("MoneyOP2", {{"add",    MoneyOP::add},
                                                 {"pay",    MoneyOP::pay},
                                                 {"reduce", MoneyOP::reduce},
