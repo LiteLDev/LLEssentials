@@ -13,8 +13,8 @@ using namespace RegisterCommandHelper;
 
 Logger logger("LLMoney");
 std::string LANGUAGE = "en-us";
-
 double MoneyFee;
+bool EnableRanking;
 
 bool initDB();
 
@@ -68,6 +68,11 @@ public:
                     return;
                 }
                 break;
+            case top:
+                if (!EnableRanking) {
+                    outp.error("Balance ranking not enabled");
+                    return;
+                }
         }
         switch (op) {
             case query:
@@ -335,6 +340,7 @@ void entry() {
         jr.bind("language", LANGUAGE);
         jr.bind("def_money", defmoney, 0);
         jr.bind("pay_tax", MoneyFee, .0);
+        jr.bind("enable_ranking", EnableRanking, true);
         DEF_MONEY = defmoney;
     }
     catch (string e) {
