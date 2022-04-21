@@ -20,6 +20,11 @@ bool initDB();
 
 extern money_t DEF_MONEY;
 
+bool cmp(std::pair<std::string, money_t>a, std::pair<std::string, money_t>b)
+{
+    return a.second > b.second;
+}
+
 class MoneyCommand : public Command {
     enum MoneyOP : int {
         query = 1,
@@ -138,10 +143,11 @@ public:
                     LLMoneyClearHist(0);
                 break;
             case top:
-                std::map<std::string, money_t> mapTemp = LLMoneyRanking();
+                vector<std::pair<std::string, money_t>>  mapTemp = LLMoneyRanking();
+                sort(mapTemp.begin(), mapTemp.end(), cmp);
                 outp.addMessage("===== Ranking =====");
-                for (std::pair<std::string, money_t> mp : mapTemp) {
-                    outp.addMessage(PlayerInfo::fromXuid(mp.first) + "  " + std::to_string(mp.second));
+                for (auto it = mapTemp.begin(); it != mapTemp.end(); it++){
+                    outp.addMessage((PlayerInfo::fromXuid(it->first).empty()? "NULL" : PlayerInfo::fromXuid(it->first)) + "  " + std::to_string(it->second));
                 }
                 outp.success("===================");
         }

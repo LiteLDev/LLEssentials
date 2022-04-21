@@ -32,7 +32,7 @@ struct Vec4 {
     }
 
     Vec4(ServerPlayer *wp) {
-        vc = wp->getPos();
+        vc = wp->getPosition();
         dimid = wp->getDimensionId();
     }
 

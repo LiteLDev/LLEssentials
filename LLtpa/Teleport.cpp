@@ -499,8 +499,8 @@ public:
                 }
                 ServerPlayer *wp = ori.getPlayer();
                 Vec4 vc{wp};
-                IVec2 startVc{wp->getPos()};
-                IVec2 endVc{wp->getPos()};
+                IVec2 startVc{wp->getPosition()};
+                IVec2 endVc{wp->getPosition()};
                 startVc += -Settings::HOME_DISTANCE_LAND;
                 endVc += Settings::HOME_DISTANCE_LAND;
                 /*if (!checkLandOwnerRange_stub(startVc, endVc, vc.dimid, wp.getXuid())) {

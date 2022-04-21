@@ -10,9 +10,9 @@
 extern Logger logger;
 
 bool onPlayerLeft(Event::PlayerLeftEvent e) {
-    int px = e.mPlayer->getPos().x;
-    int py = e.mPlayer->getPos().y;
-    int pz = e.mPlayer->getPos().z;
+    int px = e.mPlayer->getPosition().x;
+    int py = e.mPlayer->getPosition().y;
+    int pz = e.mPlayer->getPosition().z;
     if (px < 0)px = px - 1;
     if (pz < 0)pz = pz - 1;
     short dim = e.mPlayer->getDimensionId();

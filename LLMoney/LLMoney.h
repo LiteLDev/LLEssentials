@@ -36,7 +36,7 @@ LLMONEY_API void LLMoneyListenAfterEvent(LLMoneyCallback callback);
 #ifdef __cplusplus
 }
 #endif
-LLMONEY_API std::map<std::string, money_t> LLMoneyRanking(unsigned short num = 5);
+LLMONEY_API vector<std::pair<std::string, money_t>> LLMoneyRanking(unsigned short num = 5);
 // Old interface
 // Just for compatibility
 // Do not use

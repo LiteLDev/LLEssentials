@@ -1,3 +1,6 @@
 ## LLMoney
-Add balance ranking #30
-Fix error when wrong call #26
+- Fix TOP，#32
+- Update 1.18.30
+
+## LLESS
+- Update 1.18.30
