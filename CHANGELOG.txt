@@ -1,6 +1,1 @@
-## LLMoney
-- Fix TOP，#32
-- Update 1.18.30
-
-## LLESS
-- Update 1.18.30
+All plugins adapted to 2.2.0
