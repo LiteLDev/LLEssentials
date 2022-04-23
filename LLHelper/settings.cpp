@@ -5,7 +5,7 @@
 namespace Settings {
 
     std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
-    int FAKE_SEED = 114514;
+    int64_t FAKE_SEED = 114514;
     int MAX_CHAT_LEN = 96;
     std::unordered_set<short> logItems, banItems;
     bool regABILITY = true;
