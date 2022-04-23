@@ -20,7 +20,7 @@ THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlock
 
 THook(void*, "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z", void *a, void *b) {
     if (Settings::FAKE_SEED) {
-        dAccess<int, 48>(a) = Settings::FAKE_SEED;
+        dAccess<int64_t, 48>(a) = Settings::FAKE_SEED;
     }
     return original(a, b);
 }
