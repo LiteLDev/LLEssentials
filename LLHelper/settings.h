@@ -6,7 +6,7 @@
 namespace Settings {
 
     extern std::unordered_map<string, string> CMDMAP, CMDSCHEDULE;
-    extern int FAKE_SEED;
+    extern int64_t FAKE_SEED;
     extern int MAX_CHAT_LEN;
     extern std::unordered_set<short> logItems, banItems;
     extern bool regABILITY;
