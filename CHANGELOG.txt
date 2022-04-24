@@ -1,1 +1,2 @@
-All plugins adapted to 2.2.0
+## LLHelper
+- Fixed FakeSeed
