@@ -43,33 +43,34 @@
 ```jsonc
 {
     "language": "en-us", //语言
-    "force_enable_expplay": false,//开启实验性模式
-    "command_map": {//点地执行命令，前为ID后为命令
+    "force_enable_expplay": false, //开启实验性模式
+    "command_map": { //点地执行命令，前为ID后为命令
         "391": "me 114514"
     },
     "timer": {//定时执行命令
         "600": "say Welcome to the server"
     },
-    "ban_items": [],//禁用的物品，使用ID
-    "log_items": [//使用后会被记录到日志的物品，使用ID
+    "ban_items": [], //禁用的物品，使用ID
+    "log_items": [ //使用后会被记录到日志的物品，使用ID
         7
     ],
-    "force_enable_ability": false,//开启/ability命令，如果开启了教育版会导致服务器异常
-    "fake_seed": 114514,//假种子
-    "no_explosion": true,//禁止服务器内的所有爆炸
-    "max_chat_length": 1919,//聊天信息的最大长度
-    "no_enderman_take_block": true,//禁止末影人拿起方块
-    "protect_farm_block": true//保护耕地不被踩踏
+    "force_enable_ability": false, //开启/ability命令，如果开启了教育版会导致服务器异常
+    "fake_seed": 114514, //假种子
+    "no_explosion": true, //禁止服务器内的所有爆炸
+    "max_chat_length": 1919, //聊天信息的最大长度
+    "no_enderman_take_block": true, //禁止末影人拿起方块
+    "protect_farm_block": true //保护耕地不被踩踏
+    "enable_tps": true //启用tpa指令
 }
 ```
 ## LLtpa
 ```jsonc
 {
     "language": "en-us", //语言，改为zh-cn为中文
-    "max_homes": 3,//玩家可以设置的家的最大数量
-    "tpa_timeout": 20000,//tpa请求超时时间
-    "tpa_ratelimit": 5000,//tpa请求冷却时间
-    "back_enabled": true,//开启/back命令
+    "max_homes": 3, //玩家可以设置的家的最大数量
+    "tpa_timeout": 20000, //tpa请求超时时间
+    "tpa_ratelimit": 5000, //tpa请求冷却时间
+    "back_enabled": true, //开启/back命令
     "suicide_enabled": true//开启/suicide命令
 }
 ```

@@ -43,35 +43,36 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 ```jsonc
 {
     "language": "en-us",
-    "force_enable_expplay": false,//Enable experimental mode
-    "commmand_map": {//Use item to click block to execute a command
+    "force_enable_expplay": false, //Enable experimental mode
+    "commmand_map": { //Use item to click block to execute a command
         "391": "me 114514"
     },
-    "timer": {//Timed loop execution command
+    "timer": { //Timed loop execution command
         "600": "say Welcome to the server"
     },
-    "ban_items": [],//Prohibited items, use ID
-    "log_items": [//Items that will be recorded in the log after use, use ID
+    "ban_items": [], //Prohibited items, use ID
+    "log_items": [ //Items that will be recorded in the log after use, use ID
         7
     ],
-    "force_enable_ability": false,//Turn on the /ability command, if the educational version is turned on, the server will be abnormal
-    "fake_seed": 114514,//Fake seed
-    "no_explosion": true,//Stop all explosions in the server
-    "max_chat_length": 1919,//Maximum length of chat message
-    "log_chat": true,//Log chat
-    "log_cmd": true,//Log command
-    "no_enderman_take_block": true,//Stop the enderman from picking up the block
-    "protect_farm_block": true//Protect arable land from being trampled on
+    "force_enable_ability": false, //Turn on the /ability command, if the educational version is turned on, the server will be abnormal
+    "fake_seed": 114514, //Fake seed
+    "no_explosion": true, //Stop all explosions in the server
+    "max_chat_length": 1919, //Maximum length of chat message
+    "log_chat": true, //Log chat
+    "log_cmd": true, //Log command
+    "no_enderman_take_block": true, //Stop the enderman from picking up the block
+    "protect_farm_block": true //Protect arable land from being trampled on
+    "enable_tps": true //Enable tps command
 }
 ```
 ## LLtpa
 ```jsonc
 {
     "language": "en-us",
-    "max_homes": 3,//The maximum number of homes the player can set
-    "tpa_timeout": 20000,//tpa request timeout
-    "tpa_ratelimit": 5000,//tpa request cooldown
-    "back_enabled": true,//Enable /back command
+    "max_homes": 3, //The maximum number of homes the player can set
+    "tpa_timeout": 20000, //tpa request timeout
+    "tpa_ratelimit": 5000, //tpa request cooldown
+    "back_enabled": true, //Enable /back command
     "suicide_enabled": true//Enable /suicide command
 }
 ```
