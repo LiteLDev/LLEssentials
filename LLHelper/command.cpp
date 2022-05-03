@@ -21,7 +21,7 @@
 #include <MC/Certificate.hpp>
 #include <Utils/VarInt.h>
 #include <Utils/PlayerMap.h>
-#include <TranslationAPI.h>
+#include "I18nAPI.h"
 #include <MC/ItemStack.hpp>
 #include <MC/ServerPlayer.hpp>
 #include <MC/Level.hpp>
