@@ -18,7 +18,7 @@
     <ClInclude Include="Helper.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="settings.h">
+    <ClInclude Include="Settings.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClCompile Include="AutoUprade.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="settings.cpp">
+    <ClCompile Include="Settings.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

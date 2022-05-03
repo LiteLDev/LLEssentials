@@ -8,12 +8,13 @@ namespace Settings {
     int64_t FAKE_SEED = 114514;
     int MAX_CHAT_LEN = 96;
     std::unordered_set<short> logItems, banItems;
-    bool regABILITY = true;
+    bool REG_ABILITY = true;
     bool NO_EXPLOSION = false;
     bool EXP_PLAY = true;
-    bool penderman = true;
-    bool pfarm = true;
+    bool PROTECT_ENDERMAN = true;
+    bool PROTECT_FARM = true;
     std::string LANGUAGE = "en-us";
+    bool ENABLE_TPS = true;
 
     nlohmann::json GlobalJson() {
         nlohmann::json json;
@@ -22,12 +23,13 @@ namespace Settings {
         json["timer"] = CMDSCHEDULE;
         json["ban_items"] = banItems;
         json["log_items"] = logItems;
-        json["force_enable_ability"] = regABILITY;
+        json["force_enable_ability"] = REG_ABILITY;
         json["fake_seed"] = FAKE_SEED;
         json["no_explosion"] = NO_EXPLOSION;
         json["max_chat_length"] = MAX_CHAT_LEN;
-        json["no_enderman_take_block"] = penderman;
-        json["protect_farm_block"] = pfarm;
+        json["no_enderman_take_block"] = PROTECT_ENDERMAN;
+        json["protect_farm_block"] = PROTECT_FARM;
+        json["enable_tps"] = ENABLE_TPS;
         return json;
     }
 
@@ -54,7 +56,7 @@ namespace Settings {
         }
         if (json.find("force_enable_ability") != json.end()) {
             const nlohmann::json &out = json.at("force_enable_ability");
-            out.get_to(regABILITY);
+            out.get_to(REG_ABILITY);
         }
         if (json.find("fake_seed") != json.end()) {
             const nlohmann::json &out = json.at("fake_seed");
@@ -70,11 +72,15 @@ namespace Settings {
         }
         if (json.find("no_enderman_take_block") != json.end()) {
             const nlohmann::json &out = json.at("no_enderman_take_block");
-            out.get_to(penderman);
+            out.get_to(PROTECT_ENDERMAN);
         }
         if (json.find("protect_farm_block") != json.end()) {
             const nlohmann::json &out = json.at("protect_farm_block");
-            out.get_to(pfarm);
+            out.get_to(PROTECT_FARM);
+        }
+        if (json.find("enable_tps") != json.end()) {
+            const nlohmann::json& out = json.at("enable_tps");
+            out.get_to(ENABLE_TPS);
         }
     }
 

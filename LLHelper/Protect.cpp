@@ -27,7 +27,7 @@ THook(void*, "?write@StartGamePacket@@UEBAXAEAVBinaryStream@@@Z", void *a, void 
 
 THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEAVActor@@M@Z", void *__this, void *a2,
       void *a3, void *a4, float a5) {
-    if (Settings::pfarm) {
+    if (Settings::PROTECT_FARM) {
         return;
     }
     return original(__this, a2, a3, a4, a5);
@@ -35,7 +35,7 @@ THook(void, "?transformOnFall@FarmBlock@@UEBAXAEAVBlockSource@@AEBVBlockPos@@PEA
 
 THook(bool, "?canUse@EndermanTakeBlockGoal@@UEAA_NXZ",
       void *__this) {
-    if (Settings::penderman) {
+    if (Settings::PROTECT_ENDERMAN) {
         return false;
     }
     return original(__this);

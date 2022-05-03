@@ -21,7 +21,7 @@
     <ClInclude Include="Tpa.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="settings.h">
+    <ClInclude Include="Settings.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClCompile Include="AutoUpgrade.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="settings.cpp">
+    <ClCompile Include="Settings.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>

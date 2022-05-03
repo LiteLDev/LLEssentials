@@ -155,7 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="homeStorage.h" />
-    <ClInclude Include="settings.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Tpa.h" />
   </ItemGroup>
   <ItemGroup>
@@ -164,7 +164,7 @@
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="homeStorage.cpp" />
-    <ClCompile Include="settings.cpp">
+    <ClCompile Include="Settings.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Teleport.cpp" />

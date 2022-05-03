@@ -9,12 +9,13 @@ namespace Settings {
     extern int64_t FAKE_SEED;
     extern int MAX_CHAT_LEN;
     extern std::unordered_set<short> logItems, banItems;
-    extern bool regABILITY;
+    extern bool REG_ABILITY;
     extern bool NO_EXPLOSION;
     extern bool EXP_PLAY;
-    extern bool penderman;
-    extern bool pfarm;
+    extern bool PROTECT_ENDERMAN;
+    extern bool PROTECT_FARM;
     extern std::string LANGUAGE;
+    extern bool ENABLE_TPS;
 
     nlohmann::json GlobalJson();
 
