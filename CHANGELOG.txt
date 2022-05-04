@@ -1,2 +1,2 @@
 ## LLHelper
-- Fixed FakeSeed
+- Added `/tps` command

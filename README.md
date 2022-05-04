@@ -9,10 +9,10 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 | Command | Description | Permission |
 | --- | --- | --- |
 | /money query [player] | Query your/other players's balance | Player/OP |
-| /money pay <player> <amount> | Transfer money to a player | Player |
-| /money set <player> <amount> | Set player's balance | OP |
-| /money add <player> <amount> | Add player's balance | OP |
-| /money reduce <player> <amount> | Reduce player's balance | OP |
+| /money pay player amount | Transfer money to a player | Player |
+| /money set player amount | Set player's balance | OP |
+| /money add player amount | Add player's balance | OP |
+| /money reduce player amount | Reduce player's balance | OP |
 | /money hist | Print your running account | Player |
 | /money purge | Clear your running account | OP |
 | /money top | Balance ranking | Player |
@@ -20,15 +20,16 @@ Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
 ## LLHelper
 | Command | Description | Permission |
 | --- | --- | --- |
-| /gmode <player> <pode(0/1/2/3)> | Change gamemode | OP |
+| /gmode player <pode(0/1/2/3)> | Change gamemode | OP |
 | /ban <ban/unban/list> [player] [time(second)] | Ban/unban a player | OP |
-| /transfer <player> <IP> <port> | Transfer a player to another server | OP |
+| /transfer player IP port | Transfer a player to another server | OP |
 | /helper <reload/update> | Reload config/Check plugin's update | OP |
-| /skick <player> | Force kick a player from server | OP |
-| /cname <set/rm> <player> [nickname] | Set nickname for a player | OP |
+| /skick player | Force kick a player from server | OP |
+| /cname <set/rm> player [nickname] | Set nickname for a player | OP |
 | /vanish | invisibility(only effective for players who can see you) | OP |
-| /crash <player> | Crash player's client | OP |
-| /runas <player> <command> | Execute command as target player | OP |
+| /crash player | Crash player's client | OP |
+| /runas player command | Execute command as target player | OP |
+| /tps | Query server's TPS | OP |
 ## LLTpa
 | Command | Description | Permission |
 | --- | --- | --- |
