@@ -1,2 +1,1 @@
-## LLHelper
-- Added `/tps` command
+Adapted to LiteLoaderBDS 2.2.3(BDS 1.18.32.02)
