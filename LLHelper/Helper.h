@@ -6,7 +6,7 @@
 
 bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
 
-#define LLHELPER_VERSION LL::Version{ 2,2,2 }
+#define LLHELPER_VERSION LL::Version{ 2,2,3 }
 
 /////////////////////// LL AutoUpgrade ///////////////////////
 
