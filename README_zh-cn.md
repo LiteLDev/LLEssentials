@@ -61,7 +61,7 @@
     "max_chat_length": 1919, //聊天信息的最大长度
     "no_enderman_take_block": true, //禁止末影人拿起方块
     "protect_farm_block": true //保护耕地不被踩踏
-    "enable_tps": true //启用tpa指令
+    "enable_tps": true //启用tps指令
 }
 ```
 ## LLtpa
