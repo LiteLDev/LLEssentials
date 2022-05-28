@@ -50,8 +50,7 @@ public:
                 if (dst_isSet && ori.getPermissionsLevel() > 0) {
                     dstxuid = PlayerInfo::getXuid(dst);
                 } else {
-                    outp.error("You don't have permission to do this");
-                    return;
+                    dstxuid = ori.getPlayer()->getXuid();
                 }
                 if (dstxuid == "") {
                     outp.error(tr("money.no.target"));
