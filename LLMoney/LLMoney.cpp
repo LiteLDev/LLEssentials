@@ -50,7 +50,8 @@ public:
                 if (dst_isSet && ori.getPermissionsLevel() > 0) {
                     dstxuid = PlayerInfo::getXuid(dst);
                 } else {
-                    dstxuid = PlayerInfo::getXuid(ori.getName());
+                    outp.error("You don't have permission to do this");
+                    return;
                 }
                 if (dstxuid == "") {
                     outp.error(tr("money.no.target"));
@@ -211,11 +212,15 @@ public:
                 if (dst_isSet) {
                     if (ori.getPermissionsLevel() > 0) {
                         if (!player.results(ori).empty()) {
-                            dstxuid = PlayerInfo::getXuid(player.results(ori).begin().operator*()->getRealName());
+                            dstxuid = player.results(ori).begin().operator*()->getXuid();
                         }
                     }
+                    else {
+                        outp.error("You don't have permission to do this");
+                        return;
+                    }
                 } else {
-                    dstxuid = PlayerInfo::getXuid(ori.getName());
+                    dstxuid = ori.getPlayer()->getXuid();
                 }
                 if (dstxuid.val() == "") {
                     outp.error(tr("money.no.target"));
