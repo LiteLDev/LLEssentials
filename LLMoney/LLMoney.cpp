@@ -236,7 +236,7 @@ public:
                     return;
                 }
                 for (auto resu: player.results(ori)) {
-                    dstxuid = PlayerInfo::getXuid(resu->getRealName());
+                    dstxuid = resu->getXuid();
                     if (!dstxuid.Set()) {
                         outp.error(tr("money.no.target"));
                         return;
@@ -256,7 +256,7 @@ public:
                     outp.error(tr("money.invalid.arg"));
                     return;
                 }
-                myuid = PlayerInfo::getXuid(ori.getName());
+                myuid = ori.getPlayer()->getXuid();
                 if (myuid == "") {
                     outp.error(tr("money.no.target"));
                     return;
