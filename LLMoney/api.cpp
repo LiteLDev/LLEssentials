@@ -8,6 +8,7 @@
 static std::unique_ptr<SQLite::Database> db;
 Logger moneylog("LLMoney");
 money_t DEF_MONEY = 0;
+#undef snprintf
 
 struct cleanSTMT {
     SQLite::Statement &get;
@@ -289,4 +290,15 @@ void ConvertData() {
         moneylog.info("Conversion completed");
     }
 }
+#include <RemoteCallAPI.h>
+#define EXPORTAPI(T) RemoteCall::exportAs("LLMoney", #T , T);
 
+void RemoteCallInit() {
+    EXPORTAPI(LLMoneyGet);
+    EXPORTAPI(LLMoneyTrans);
+    EXPORTAPI(LLMoneyAdd);
+    EXPORTAPI(LLMoneyReduce);
+    EXPORTAPI(LLMoneySet);
+    EXPORTAPI(LLMoneyGetHist);
+    EXPORTAPI(LLMoneyClearHist); 
+}

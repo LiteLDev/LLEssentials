@@ -335,6 +335,7 @@ public:
     }
 };
 
+void RemoteCallInit();
 void entry() {
     if (!initDB()) {
         return;
@@ -359,4 +360,5 @@ void entry() {
     }
     Translation::load("plugins\\LLMoney\\langpack\\" + LANGUAGE + ".json");
     Logger("LLMoney").info("Loaded version: {}", LLMONEY_VERSION.toString());
+    RemoteCallInit();
 }
