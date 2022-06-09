@@ -131,13 +131,13 @@ void entry() {
 		}
 		return true;
 		});
-	Event::ServerStartedEvent::subscribe([](const Event::ServerStartedEvent& ev) {
-		std::thread th([]() {
-			CheckAutoUpdate(true, false);
-			});
-		th.detach();
-		return true;
-		});
+	//Event::ServerStartedEvent::subscribe([](const Event::ServerStartedEvent& ev) {
+	//	std::thread th([]() {
+	//		CheckAutoUpdate(false, false);
+	//		});
+	//	th.detach();
+	//	return true;
+	//	});
 	loadCfg();
 	RegisterCommands();
 	scheduleTask();
