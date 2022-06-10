@@ -37,10 +37,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cd SDK/Tools
-        mkdir ../LiteLoader
-        mkdir ../LiteLoader/Lib
-        ./LibraryBuilder.exe D:/BDS
-        mv ../LiteLoader/Lib/* ../Lib/
+        ./LibraryBuilder.exe D:/BDS -o ..\Lib\
       shell: bash
 
     - name: Add MSBuild to PATH
