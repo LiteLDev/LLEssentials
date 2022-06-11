@@ -16,7 +16,7 @@ bool onPlayerLeft(Event::PlayerLeftEvent e) {
     if (px < 0)px = px - 1;
     if (pz < 0)pz = pz - 1;
     short dim = e.mPlayer->getDimensionId();
-    logger.info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.mPlayer->getRealName(), px, py, pz, dim, e.mXUID);
+    logger.info("{} left server  Pos:({}, {}, {}, {}) xuid: {}", e.mPlayer->getRealName(), px, py, pz, dim, e.mPlayer->getXuid());
     return true;
 }
 
