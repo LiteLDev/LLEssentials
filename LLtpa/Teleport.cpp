@@ -159,7 +159,7 @@ void DoMakeReq(ServerPlayer *_a, ServerPlayer *_b, direction dir) {
     reqs.emplace_back(dir, a, b, clock());
     string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
     _b->sendTextPacket(prompt, TextType::RAW);
-    _b->sendToastPacket(tr("tpa.request.title"), prompt.c_str());
+    if(Settings::TOAST_ENABLED) _b->sendToastPacket(tr("tpa.request.title"), prompt.c_str());
     auto form = Form::SimpleForm(tr("tpa.request.title"), prompt.c_str());
     form.append(Form::Button(tr("tpa.request.accept"), "", [](Player *pl) {
         pl->runcmd("tpa ac");

@@ -10,14 +10,16 @@ if (json.find(key) != json.end()) {                          \
 
 namespace Settings {
 
-    extern int MAX_HOMES = 5;
-    extern clock_t TPexpire = CLOCKS_PER_SEC * 20;
-    extern clock_t TPratelimit = CLOCKS_PER_SEC * 5;
-    extern int HOME_DISTANCE_LAND = -1;
-    extern bool BACK_ENABLED = true;
-    extern bool SUICIDE_ENABLED = true;
-    extern bool TPA_ENABLED = true;
-    extern bool HOME_ENABLED = true;
+    int MAX_HOMES = 5;
+    clock_t TPexpire = CLOCKS_PER_SEC * 20;
+    clock_t TPratelimit = CLOCKS_PER_SEC * 5;
+    int HOME_DISTANCE_LAND = -1;
+    bool BACK_ENABLED = true;
+    bool SUICIDE_ENABLED = true;
+    bool TPA_ENABLED = true;
+    bool HOME_ENABLED = true;
+    bool TOAST_ENABLED = true;
+
     std::string LANGUAGE = "en-us";
 
     nlohmann::json GlobalJson() {
@@ -31,6 +33,7 @@ namespace Settings {
         json["back_enabled"] = BACK_ENABLED;
         json["tpa_enabled"] = TPA_ENABLED;
         json["home_enabled"] = HOME_ENABLED;
+        json["toast_enabled"] = TOAST_ENABLED;
         return json;
     }
 
@@ -44,6 +47,7 @@ namespace Settings {
         TRJ("back_enabled", BACK_ENABLED);
         TRJ("tpa_enabled", TPA_ENABLED);
         TRJ("home_enabled", HOME_ENABLED);
+        TRJ("toast_enabled", TOAST_ENABLED);
     }
 
     void WriteDefaultConfig(const std::string &fileName) {

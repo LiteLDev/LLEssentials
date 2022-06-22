@@ -13,6 +13,7 @@ namespace Settings {
     extern bool TPA_ENABLED;
     extern bool HOME_ENABLED;
     extern std::string LANGUAGE;
+    extern bool TOAST_ENABLED;
 
     nlohmann::json GlobalJson();
 
