@@ -2,7 +2,7 @@
 
 bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
 
-#define LLTPA_VERSION LL::Version{ 2,3,0 }
+#define LLTPA_VERSION LL::Version{ 2,3,1 }
 
 /////////////////////// LL AutoUpgrade ///////////////////////
 
