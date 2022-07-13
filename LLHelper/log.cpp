@@ -41,7 +41,7 @@ bool onPlayerUseItemOn(Event::PlayerUseItemOnEvent e) {
     if (Settings::banItems.count(itemId)) {
         logger.info("[ItemLog] {} used banitem({}) on ({})", sp->getRealName(), e.mItemStack->getName(), blockName,
                     e.mItemStack->toString());
-        sp->sendText("Don't use banned item");
+        sp->sendTextPacket("Don't use banned item");
         return false;
     }
     return true;

@@ -120,9 +120,9 @@ bool DoCloseReq(decltype(reqs.begin()) rq, TPCloseReason res) {
     }
     if (res == TPCloseReason::cancel) {
         if (playerA)
-            playerA->sendText(tr("tpa.reason.cancel"));
+            playerA->sendTextPacket(tr("tpa.reason.cancel"));
         if (playerB)
-            playerB->sendText(tr("tpa.reason.cancel"));
+            playerB->sendTextPacket(tr("tpa.reason.cancel"));
         reqs.erase(rq);
         return true;
     }

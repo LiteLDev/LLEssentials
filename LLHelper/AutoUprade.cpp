@@ -16,6 +16,7 @@
 #include <string>
 #include <thread>
 #include "Helper.h"
+#include <LoggerAPI.h>
 
 using namespace std;
 using namespace LL;

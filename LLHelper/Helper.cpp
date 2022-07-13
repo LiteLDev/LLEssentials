@@ -126,7 +126,7 @@ void entry() {
 	Event::PlayerUseItemOnEvent::subscribe(onPlayerUseItemOn);
 	Event::PlayerChatEvent::subscribe([](Event::PlayerChatEvent e) {
 		if (e.mMessage.size() >= Settings::MAX_CHAT_LEN) {
-			e.mPlayer->sendText(u8"§cDon't spam");
+			e.mPlayer->sendTextPacket(u8"§cDon't spam");
 			return false;
 		}
 		return true;

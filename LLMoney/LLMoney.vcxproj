@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Event.h" />
+    <ClInclude Include="lang.h" />
     <ClInclude Include="LLMoney.h" />
     <ClInclude Include="Money.h" />
   </ItemGroup>

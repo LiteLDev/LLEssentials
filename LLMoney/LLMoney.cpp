@@ -12,9 +12,71 @@
 using namespace RegisterCommandHelper;
 
 Logger logger("LLMoney");
-std::string LANGUAGE = "en-us";
-double MoneyFee;
-bool EnableRanking;
+
+
+#define JSON1(key,val)                                         \
+if (json.find(key) != json.end()) {                          \
+    const nlohmann::json& out = json.at(key);                \
+    out.get_to(val);}                                         \
+
+namespace Settings {
+
+    string language = "en_US";
+    int def_money = 0;
+    float pay_tax = 0.0;
+    bool enable_ranking = true;
+
+    nlohmann::json globaljson() {
+        nlohmann::json json;
+        json["language"] = language;
+        json["def_money"] = def_money;
+        json["pay_tax"] = pay_tax;
+        json["enable_ranking"] = enable_ranking;
+        return json;
+    }
+
+    void initjson(nlohmann::json json) {
+        JSON1("language", language);
+        JSON1("def_money", def_money);
+        JSON1("pay_tax", pay_tax);
+        JSON1("enable_ranking", enable_ranking);
+    }
+    void WriteDefaultConfig(const std::string& fileName) {
+        std::ofstream file(fileName);
+        if (!file.is_open()) {
+            logger.error("Can't open file {}",fileName);
+            return;
+        }
+        auto json = globaljson();
+        file << json.dump(4);
+        file.close();
+    }
+
+    void LoadConfigFromJson(const std::string& fileName) {
+        std::ifstream file(fileName);
+        if (!file.is_open()) {
+            logger.error("Can't open file {}", fileName);
+            return;
+        }
+        nlohmann::json json;
+        file >> json;
+        file.close();
+        initjson(json);
+        WriteDefaultConfig(fileName);
+    }
+    void reloadJson(const std::string& fileName) {
+        std::ofstream file(fileName);
+        if (file)
+        {
+            file << globaljson().dump(4);
+        }
+        else
+        {
+            logger.error("Configuration File Creation failed!");
+        }
+        file.close();
+    }
+} // namespace Settings
 
 bool initDB();
 
@@ -74,7 +136,7 @@ public:
                 }
                 break;
             case top:
-                if (!EnableRanking) {
+                if (!Settings::enable_ranking) {
                     outp.error("Balance ranking not enabled");
                     return;
                 }
@@ -93,10 +155,10 @@ public:
                 }
                 myuid = ori.getPlayer()->getXuid();
                 if (LLMoneyTrans(myuid, dstxuid, moneynum, "money pay")) {
-                    money_t fee = (money_t) (moneynum * MoneyFee);
+                    money_t fee = (money_t) (moneynum * Settings::pay_tax);
                     if (fee)
                         LLMoneyTrans(dstxuid, "", fee, "money pay fee");
-                    outp.success("Pay successfully");
+                    outp.success(tr("money.pay.succ"));
                 } else {
                     outp.error(tr("money.not.enough"));
                 }
@@ -109,7 +171,7 @@ public:
                     return;
                 }
                 if (LLMoneySet(dstxuid, moneynum)) {
-                    outp.success("Set successfully");
+                    outp.success(tr("money.set.succ"));
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
@@ -120,7 +182,7 @@ public:
                     return;
                 }
                 if (LLMoneyAdd(dstxuid, moneynum)) {
-                    outp.success("Add successfully");
+                    outp.success(tr("money.add.succ"));
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
@@ -131,7 +193,7 @@ public:
                     return;
                 }
                 if (LLMoneyReduce(dstxuid, moneynum)) {
-                    outp.success(tr("Reduce successfully"));
+                    outp.success(tr("money.reduce.succ"));
                 } else {
                     outp.error(tr("money.invalid.arg"));
                 }
@@ -275,10 +337,10 @@ public:
                 return;
             }
             if (LLMoneyTrans(myuid, dstxuid.val(), moneynum, "money pay")) {
-                money_t fee = (money_t)(moneynum * MoneyFee);
+                money_t fee = (money_t)(moneynum * Settings::pay_tax);
                 if (fee)
                     LLMoneyTrans(dstxuid.val(), "", fee, "money pay fee");
-                outp.success("Pay successfully");
+                outp.success(tr("money.pay.succ"));
             }
             else {
                 outp.error(tr("money.not.enough"));
@@ -298,7 +360,7 @@ public:
                 }
             }
             if (su) {
-                outp.success("Set successfully");
+                outp.success(tr("money.set.succ"));
             }
             else {
                 outp.error(tr("money.invalid.arg"));
@@ -317,7 +379,7 @@ public:
                 }
             }
             if (su) {
-                outp.success("Add successfully");
+                outp.success(tr("money.add.succ"));
             }
             else {
                 outp.error(tr("money.invalid.arg"));
@@ -336,7 +398,7 @@ public:
                 }
             }
             if (su) {
-                outp.success("Reduce successfully");
+                outp.success(tr("money.reduce.succ"));
             }
             else {
                 outp.error(tr("money.invalid.arg"));
@@ -374,9 +436,38 @@ public:
                 makeMandatory(&MoneySCommand::moneynum, "num"));
     }
 };
+#include "lang.h"
+
+
+void loadCfg() {
+    //config
+    if (!std::filesystem::exists("plugins/LLMoney"))
+        std::filesystem::create_directories("plugins/LLMoney");
+    //tr	
+    if (std::filesystem::exists("plugins/LLMoney/money.json")) {
+        try {
+            Settings::LoadConfigFromJson("plugins/LLMoney/money.json");
+        }
+        catch (std::exception& e) {
+            logger.error("Config File isInvalid, Err {}", e.what());
+            Sleep(1000 * 100);
+            exit(1);
+        }
+        catch (...) {
+            logger.error("Config File isInvalid");
+            Sleep(1000 * 100);
+            exit(1);
+        }
+    }
+    else {
+        Settings::WriteDefaultConfig("plugins/LLMoney/money.json");
+    }
+}
+
 
 void RemoteCallInit();
 void entry() {
+    loadCfg();
     if (!initDB()) {
         return;
     }
@@ -385,20 +476,7 @@ void entry() {
         MoneySCommand::setup(ev.mCommandRegistry);
         return true;
     });
-    try {
-        ConfigJReader jr("plugins\\LLMoney\\money.json");
-        int defmoney;
-        jr.bind("language", LANGUAGE);
-        jr.bind("def_money", defmoney, 0);
-        jr.bind("pay_tax", MoneyFee, .0);
-        jr.bind("enable_ranking", EnableRanking, true);
-        DEF_MONEY = defmoney;
-    }
-    catch (string e) {
-        Logger("LLMoney").error("Json error: {}", e);
-        throw 0;
-    }
-    Translation::load("plugins\\LLMoney\\langpack\\" + LANGUAGE + ".json");
-    Logger("LLMoney").info("Loaded version: {}", LLMONEY_VERSION.toString());
+    Translation::load("plugins\\LLMoney\\language.json",Settings::language, defaultLangData);
+    logger.info("Loaded version: {}", LLMONEY_VERSION.toString());
     RemoteCallInit();
 }
