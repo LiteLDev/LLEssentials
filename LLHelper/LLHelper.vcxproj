@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="lang.h" />
     <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>

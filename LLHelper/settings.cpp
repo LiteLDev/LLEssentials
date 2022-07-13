@@ -13,7 +13,7 @@ namespace Settings {
     bool EXP_PLAY = true;
     bool PROTECT_ENDERMAN = true;
     bool PROTECT_FARM = true;
-    std::string LANGUAGE = "en-us";
+    std::string LANGUAGE = "en_US";
     bool ENABLE_TPS = true;
 
     nlohmann::json GlobalJson() {

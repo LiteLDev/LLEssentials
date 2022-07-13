@@ -455,10 +455,11 @@ void TpsCommand() {
 		},
 		CommandPermissionLevel::GameMasters);
 }
+#include "lang.h"
 
 void RegisterCommands() {
 	loadCNAME();
-	Translation::load("plugins\\LLHelper\\langpack\\" + Settings::LANGUAGE + ".json");
+	Translation::load("plugins\\LLHelper\\language.json", Settings::LANGUAGE, defaultLangData);
 	Event::RegCmdEvent::subscribe([](Event::RegCmdEvent e) {
 		TransferCommand::setup(e.mCommandRegistry);
 		HelperCommand::setup(e.mCommandRegistry);
