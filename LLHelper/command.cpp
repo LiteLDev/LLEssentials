@@ -348,8 +348,7 @@ public:
 
 class HelperCommand : public Command {
 	enum HelperOP : int {
-		reload = 0,
-		update = 1
+		reload = 0
 	} action;
 
 public:
@@ -359,11 +358,6 @@ public:
 			loadCfg();
 			outp.success(tr("hreload.success"));
 			break;
-		case HelperOP::update:
-			std::thread th([]() {
-				CheckAutoUpdate(true, false);
-				});
-			th.detach();
 		}
 
 	}
@@ -373,8 +367,7 @@ public:
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("helper", "LLHelper", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 },
 			{ (CommandFlagValue)0x80 });
-		registry->addEnum<HelperOP>("HelperOP", { {"reload", HelperOP::reload},
-												 {"update", HelperOP::update} });
+		registry->addEnum<HelperOP>("HelperOP", {{"reload", HelperOP::reload}});
 		registry->registerOverload<HelperCommand>("helper",
 			makeMandatory<CommandParameterDataType::ENUM>(&HelperCommand::action,
 				"optinal", "HelperOP"));

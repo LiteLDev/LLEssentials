@@ -160,9 +160,6 @@
     <ClInclude Include="Tpa.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AutoUpgrade.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="homeStorage.cpp" />
     <ClCompile Include="Settings.cpp">

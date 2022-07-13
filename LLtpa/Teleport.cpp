@@ -681,8 +681,7 @@ void loadCfg() {
 
 class LLtpaCommand : public Command {
     enum LLtpaOP : int {
-        reload = 0,
-        update = 1
+        reload = 0
     } op;
     std::string isForce;
     bool isForce_set;
@@ -694,19 +693,6 @@ public:
                 loadCfg();
                 outp.success("Reloaded");
                 break;
-            case LLtpaOP::update:
-                bool force = false;
-                if (isForce_set) {
-                    if (isForce == "true") {
-                        force = true;
-                    } else {
-                        force = false;
-                    }
-                }
-                std::thread th([force]() {
-                    CheckAutoUpdate(true, force);
-                });
-                th.detach();
         }
     }
 
@@ -715,8 +701,7 @@ public:
         using RegisterCommandHelper::makeOptional;
         registry->registerCommand("lltpa", "LLtpa manage command", CommandPermissionLevel::GameMasters,
                                   {(CommandFlagValue) 0}, {(CommandFlagValue) 0x80});
-        registry->addEnum<LLtpaOP>("LLtpaOP", {{"reload", LLtpaOP::reload},
-                                               {"update", LLtpaOP::update}});
+        registry->addEnum<LLtpaOP>("LLtpaOP", {{"reload", LLtpaOP::reload}});
         registry->registerOverload<LLtpaCommand>("lltpa",
                                                  makeMandatory<CommandParameterDataType::ENUM>(&LLtpaCommand::op, "OP",
                                                                                                "LLtpaOP"),

@@ -41,9 +41,6 @@
     <ClCompile Include="Log.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="AutoUprade.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Settings.cpp">
       <Filter>Source</Filter>
     </ClCompile>

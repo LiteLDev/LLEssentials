@@ -38,9 +38,6 @@
     <ClCompile Include="Teleport.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="AutoUpgrade.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Settings.cpp">
       <Filter>Source</Filter>
     </ClCompile>
