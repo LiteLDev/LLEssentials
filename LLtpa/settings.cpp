@@ -20,7 +20,7 @@ namespace Settings {
     bool HOME_ENABLED = true;
     bool TOAST_ENABLED = true;
 
-    std::string LANGUAGE = "en-us";
+    std::string LANGUAGE = "en_US";
 
     nlohmann::json GlobalJson() {
         nlohmann::json json;

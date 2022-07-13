@@ -724,6 +724,8 @@ public:
                                                               &LLtpaCommand::isForce_set));
     }
 };
+#include "lang.h"
+
 
 void init() {
     string val;
@@ -732,7 +734,8 @@ void init() {
         rs.apply(warps);
     }
     loadCfg();
-    Translation::load("plugins/LLtpa/langpack/" + Settings::LANGUAGE + ".json");
+	
+    Translation::load("plugins/LLtpa/language.json",Settings::LANGUAGE,defaultLangData);
     reinitWARPGUI();
 }
 
