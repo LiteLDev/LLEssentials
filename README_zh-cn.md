@@ -2,7 +2,7 @@
 <a href="https://github.com/LiteLDev/LiteLoaderPlugins/actions">![status](https://img.shields.io/github/workflow/status/LiteLDev/LiteLoaderPlugins/Build%20LiteLoaderPlugins?style=for-the-badge)</a>
 <a href="https://t.me/liteloader">![Telegram](https://img.shields.io/badge/telegram-LiteLoader-%232CA5E0?style=for-the-badge&logo=Telegram)</a>  
 [English](README.md) | 简体中文  
-一些[LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)的示例插件
+[LiteLoaderBDS](https://github.com/LiteLDev/BDSLiteLoader)的Essentials
 
 # 用法
 ## LLMoney

@@ -46,7 +46,7 @@ jobs:
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        MSBuild.exe ./LiteLoaderMOD.sln -property:Configuration=Release
+        MSBuild.exe ./LLEssentials.sln -property:Configuration=Release
       shell: bash
     
     - name: MkDirs
@@ -61,7 +61,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cp x64/Release/*.dll D:/out/plugins
-        cp x64/Release/*.lib D:/out/sdk/Lib
+        cp x64/Release/LLMoney.lib D:/out/sdk/Lib
         cp x64/Release/*.pdb D:/out/plugins
         cp LLMoney/LLMoney.h D:/out/sdk/Header
         cp -r plugins/* D:/out/plugins
@@ -70,7 +70,7 @@ jobs:
     - name: Upload plugins
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: plugins
+        name: LLEssentials
         path: D:/out/plugins
 
     - name: Upload SDK
@@ -92,7 +92,7 @@ jobs:
       with:
         body_path: ${{ github.workspace }}\CHANGELOG.md
         files: |
-          D:/out/plugins.zip
+          D:/out/LLEssentials.zip
           D:/out/SDK.zip
       env:
           GITHUB_REPOSITORY: LiteLDev/LiteLoaderPlugins

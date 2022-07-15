@@ -2,7 +2,7 @@
 <a href="https://github.com/LiteLDev/LiteLoaderPlugins/actions">![status](https://img.shields.io/github/workflow/status/LiteLDev/LiteLoaderPlugins/Build%20LiteLoaderPlugins?style=for-the-badge)</a>
 <a href="https://t.me/liteloader">![Telegram](https://img.shields.io/badge/telegram-LiteLoader-%232CA5E0?style=for-the-badge&logo=Telegram)</a>  
 English | [简体中文](README_zh-cn.md)  
-Some example plugins for [LiteLoader](https://github.com/LiteLDev/BDSLiteLoader)
+Essentials for [LiteLoaderBDS](https://github.com/LiteLDev/BDSLiteLoader)
 
 # Usage
 ## LLMoney
