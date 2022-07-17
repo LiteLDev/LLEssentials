@@ -6,7 +6,7 @@
 
 bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
 
-#define LLHELPER_VERSION LL::Version{ 2,4,0 }
+#define LLHELPER_VERSION LL::Version{ 2,4,1 }
 
 /////////////////////// LL AutoUpgrade ///////////////////////
 
@@ -26,6 +26,6 @@ bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
 
 void loadCfg();
 
-extern Minecraft *mc;
+extern Minecraft* mc;
 extern playerMap<string> ORIG_NAME;
 extern std::unordered_map<string, string> CNAME;

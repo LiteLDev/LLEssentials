@@ -367,7 +367,7 @@ public:
 		using RegisterCommandHelper::makeOptional;
 		registry->registerCommand("helper", "LLHelper", CommandPermissionLevel::GameMasters, { (CommandFlagValue)0 },
 			{ (CommandFlagValue)0x80 });
-		registry->addEnum<HelperOP>("HelperOP", {{"reload", HelperOP::reload}});
+		registry->addEnum<HelperOP>("HelperOP", { {"reload", HelperOP::reload} });
 		registry->registerOverload<HelperCommand>("helper",
 			makeMandatory<CommandParameterDataType::ENUM>(&HelperCommand::action,
 				"optinal", "HelperOP"));
@@ -443,7 +443,7 @@ void TpsCommand() {
 		// dynamic command callback
 		[](DynamicCommand const& command, CommandOrigin const& origin, CommandOutput& output,
 			std::unordered_map<std::string, DynamicCommand::Result>& results) {
-				
+
 				output.success("Current TPS: " + TpsColor(Tick_per_second) + " " + TpsColor(Tick_per_minute));
 		},
 		CommandPermissionLevel::GameMasters);

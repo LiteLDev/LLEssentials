@@ -10,69 +10,69 @@ if (json.find(key) != json.end()) {                          \
 
 namespace Settings {
 
-    int MAX_HOMES = 5;
-    clock_t TPexpire = CLOCKS_PER_SEC * 20;
-    clock_t TPratelimit = CLOCKS_PER_SEC * 5;
-    int HOME_DISTANCE_LAND = -1;
-    bool BACK_ENABLED = true;
-    bool SUICIDE_ENABLED = true;
-    bool TPA_ENABLED = true;
-    bool HOME_ENABLED = true;
-    bool TOAST_ENABLED = true;
+	int MAX_HOMES = 5;
+	clock_t TPexpire = CLOCKS_PER_SEC * 20;
+	clock_t TPratelimit = CLOCKS_PER_SEC * 5;
+	int HOME_DISTANCE_LAND = -1;
+	bool BACK_ENABLED = true;
+	bool SUICIDE_ENABLED = true;
+	bool TPA_ENABLED = true;
+	bool HOME_ENABLED = true;
+	bool TOAST_ENABLED = true;
 
-    std::string LANGUAGE = "en_US";
+	std::string LANGUAGE = "en_US";
 
-    nlohmann::json GlobalJson() {
-        nlohmann::json json;
-        json["language"] = LANGUAGE;
-        json["max_homes"] = MAX_HOMES;
-        json["tpa_timeout"] = TPexpire;
-        json["tpa_ratelimit"] = TPratelimit;
-        json["home_land_distance"] = HOME_DISTANCE_LAND;
-        json["suicide_enabled"] = SUICIDE_ENABLED;
-        json["back_enabled"] = BACK_ENABLED;
-        json["tpa_enabled"] = TPA_ENABLED;
-        json["home_enabled"] = HOME_ENABLED;
-        json["toast_enabled"] = TOAST_ENABLED;
-        return json;
-    }
+	nlohmann::json GlobalJson() {
+		nlohmann::json json;
+		json["language"] = LANGUAGE;
+		json["max_homes"] = MAX_HOMES;
+		json["tpa_timeout"] = TPexpire;
+		json["tpa_ratelimit"] = TPratelimit;
+		json["home_land_distance"] = HOME_DISTANCE_LAND;
+		json["suicide_enabled"] = SUICIDE_ENABLED;
+		json["back_enabled"] = BACK_ENABLED;
+		json["tpa_enabled"] = TPA_ENABLED;
+		json["home_enabled"] = HOME_ENABLED;
+		json["toast_enabled"] = TOAST_ENABLED;
+		return json;
+	}
 
-    void InitJson(nlohmann::json json) {
-        TRJ("language", LANGUAGE);
-        TRJ("max_homes", MAX_HOMES);
-        TRJ("tpa_timeout", TPexpire);
-        TRJ("tpa_ratelimit", TPratelimit);
-        TRJ("home_land_distance", HOME_DISTANCE_LAND);
-        TRJ("suicide_enabled", SUICIDE_ENABLED);
-        TRJ("back_enabled", BACK_ENABLED);
-        TRJ("tpa_enabled", TPA_ENABLED);
-        TRJ("home_enabled", HOME_ENABLED);
-        TRJ("toast_enabled", TOAST_ENABLED);
-    }
+	void InitJson(nlohmann::json json) {
+		TRJ("language", LANGUAGE);
+		TRJ("max_homes", MAX_HOMES);
+		TRJ("tpa_timeout", TPexpire);
+		TRJ("tpa_ratelimit", TPratelimit);
+		TRJ("home_land_distance", HOME_DISTANCE_LAND);
+		TRJ("suicide_enabled", SUICIDE_ENABLED);
+		TRJ("back_enabled", BACK_ENABLED);
+		TRJ("tpa_enabled", TPA_ENABLED);
+		TRJ("home_enabled", HOME_ENABLED);
+		TRJ("toast_enabled", TOAST_ENABLED);
+	}
 
-    void WriteDefaultConfig(const std::string &fileName) {
-        std::ofstream file(fileName);
-        if (!file.is_open()) {
-            std::cout << "Can't open file " << fileName << std::endl;
-            return;
-        }
-        auto json = GlobalJson();
-        file << json.dump(4);
-        file.close();
-    }
+	void WriteDefaultConfig(const std::string& fileName) {
+		std::ofstream file(fileName);
+		if (!file.is_open()) {
+			std::cout << "Can't open file " << fileName << std::endl;
+			return;
+		}
+		auto json = GlobalJson();
+		file << json.dump(4);
+		file.close();
+	}
 
-    void LoadConfigFromJson(const std::string &fileName) {
-        std::ifstream file(fileName);
-        if (!file.is_open()) {
-            std::cout << "Can't open file " << fileName << std::endl;
-            return;
-        }
-        nlohmann::json json;
-        file >> json;
-        file.close();
-        InitJson(json);
-        WriteDefaultConfig(fileName);
-    }
+	void LoadConfigFromJson(const std::string& fileName) {
+		std::ifstream file(fileName);
+		if (!file.is_open()) {
+			std::cout << "Can't open file " << fileName << std::endl;
+			return;
+		}
+		nlohmann::json json;
+		file >> json;
+		file.close();
+		InitJson(json);
+		WriteDefaultConfig(fileName);
+	}
 } // namespace Settings
 
 //namespace TR {
