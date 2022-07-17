@@ -160,35 +160,29 @@ void DoMakeReq(ServerPlayer *_a, ServerPlayer *_b, direction dir) {
     string prompt = a + (dir == A_B ? tr("tpa.req.A_B") : tr("tpa.req.B_A"));
     _b->sendTextPacket(prompt, TextType::RAW);
     if(Settings::TOAST_ENABLED) _b->sendToastPacket(tr("tpa.request.title"), prompt.c_str());
-    auto form = Form::SimpleForm(tr("tpa.request.title"), prompt.c_str());
-    form.append(Form::Button(tr("tpa.request.accept"), "", [](Player *pl) {
-        pl->runcmd("tpa ac");
-    }));
-    form.append(Form::Button(tr("tpa.request.deny"), "", [](Player *pl) {
-        pl->runcmd("tpa de");
-    }));
-    form.sendTo(_b, [](Player *pl, int i) {
+    auto form = Form::ModalForm(tr("tpa.request.title"), prompt.c_str(), tr("tpa.request.accept"), tr("tpa.request.deny"));
+    form.sendTo(_b, [](Player* pl, int i) {
+        switch (i) {
+        case 1:
+            pl->runcmd("tpa ac");
+            break;
+        case 2:
+            pl->runcmd("tpa de");
+            break;
+        default:
+            return;
+        }
+        });
+    //auto form = Form::SimpleForm(tr("tpa.request.title"), prompt.c_str());
+    //form.append(Form::Button(tr("tpa.request.accept"), "", [](Player *pl) {
+    //    pl->runcmd("tpa ac");
+    //}));
+    //form.append(Form::Button(tr("tpa.request.deny"), "", [](Player *pl) {
+    //    pl->runcmd("tpa de");
+    //}));
+    //form.sendTo(_b, [](Player *pl, int i) {
 
-    });
-    /*
-	using namespace GUI;
-	shared_ptr<RawFormBinder> x;
-	char buf[1024];
-	std::string form = "{\"type\":\"form\",\"title\":\"" + tr("tpa.request.title") + "\",\"content\":\"%s\",\"buttons\":[{\"text\":\"" + tr("tpa.request.accept") + "\"},{\"text\":\"" + tr("tpa.request.deny") + "\"}]}";
-	string FM{ buf,(size_t)snprintf(buf,1024, form.c_str(), prompt.c_str()) };
-	sendForm(*_b, RawFormBinder{ FM,[](ServerPlayer& wp,RawFormBinder::DType i) {
-		auto [clicked,res,list] = i;
-		if (clicked) {
-			int idx = atoi(res);
-			if (idx) {
-				wp.runcmd("tpa de");
-			}
-			else {
-				wp.runcmd("tpa ac");
-			}
-		}
-	} ,{} });
-     */
+    //});
 }
 
 void schTask() {
