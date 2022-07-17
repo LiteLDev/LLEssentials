@@ -82,7 +82,7 @@ jobs:
     - name: Compress to zip
       if: startsWith(github.ref, 'refs/tags/')
       run: |
-        7z a D:/out/plugins.zip D:/out/plugins
+        7z a D:/out/LLEssentials.zip D:/out/plugins
         7z a D:/out/SDK.zip D:/out/sdk
       shell: bash
 
