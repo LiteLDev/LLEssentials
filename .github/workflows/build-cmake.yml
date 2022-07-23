@@ -72,20 +72,20 @@ jobs:
         name: SDK
         path: D:/out/sdk
 
-    - name: Compress to zip
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        7z a D:/out/LLEssentials.zip D:/out/plugins
-        7z a D:/out/SDK.zip D:/out/sdk
-      shell: bash
+    # - name: Compress to zip
+      # if: startsWith(github.ref, 'refs/tags/')
+      # run: |
+        # 7z a D:/out/LLEssentials.zip D:/out/plugins
+        # 7z a D:/out/SDK.zip D:/out/sdk
+      # shell: bash
 
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        body_path: ${{ github.workspace }}\CHANGELOG.md
-        files: |
-          D:/out/LLEssentials.zip
-          D:/out/SDK.zip
-      env:
-          GITHUB_REPOSITORY: LiteLDev/LiteLoaderPlugins
+    # - name: Release
+      # uses: softprops/action-gh-release@v1
+      # if: startsWith(github.ref, 'refs/tags/')
+      # with:
+        # body_path: ${{ github.workspace }}\CHANGELOG.md
+        # files: |
+          # D:/out/LLEssentials.zip
+          # D:/out/SDK.zip
+      # env:
+          # GITHUB_REPOSITORY: LiteLDev/LiteLoaderPlugins
