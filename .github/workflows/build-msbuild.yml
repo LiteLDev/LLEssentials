@@ -1,4 +1,4 @@
-name: Build LiteLoaderPlugins
+name: Build(MSBuild)
 
 on: [push]
 
@@ -7,7 +7,6 @@ env:
   SOLUTION_FILE_PATH: .
   BUILD_CONFIGURATION: Release
   Platform: X64
-  ChakraCore_version: cc_windows_all_1_11_24
 
 jobs:
   build:
@@ -39,9 +38,6 @@ jobs:
         cd SDK/Tools
         LibraryBuilder.exe -o ..\Lib D:\BDS 
       shell: cmd
-
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -79,20 +75,20 @@ jobs:
         name: SDK
         path: D:/out/sdk
 
-    - name: Compress to zip
-      if: startsWith(github.ref, 'refs/tags/')
-      run: |
-        7z a D:/out/LLEssentials.zip D:/out/plugins
-        7z a D:/out/SDK.zip D:/out/sdk
-      shell: bash
+    # - name: Compress to zip
+    #   if: startsWith(github.ref, 'refs/tags/')
+    #   run: |
+    #     7z a D:/out/LLEssentials.zip D:/out/plugins
+    #     7z a D:/out/SDK.zip D:/out/sdk
+    #   shell: bash
 
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        body_path: ${{ github.workspace }}\CHANGELOG.md
-        files: |
-          D:/out/LLEssentials.zip
-          D:/out/SDK.zip
-      env:
-          GITHUB_REPOSITORY: LiteLDev/LiteLoaderPlugins
+    # - name: Release
+    #   uses: softprops/action-gh-release@v1
+    #   if: startsWith(github.ref, 'refs/tags/')
+    #   with:
+    #     body_path: ${{ github.workspace }}\CHANGELOG.md
+    #     files: |
+    #       D:/out/LLEssentials.zip
+    #       D:/out/SDK.zip
+    #   env:
+    #       GITHUB_REPOSITORY: LiteLDev/LiteLoaderPlugins
