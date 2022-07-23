@@ -13,7 +13,9 @@ jobs:
     runs-on: windows-2022
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3.0.2
+      with:
+          fetch-depth: 0
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1
