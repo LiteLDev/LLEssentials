@@ -172,8 +172,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Lib\openssl\libcrypto.lib" />
-    <Library Include="..\Lib\openssl\libssl.lib" />
     <Library Include="..\SDK\Lib\bedrock_server_api.lib" />
     <Library Include="..\SDK\Lib\bedrock_server_var.lib" />
     <Library Include="..\SDK\Lib\LiteLoader.lib" />

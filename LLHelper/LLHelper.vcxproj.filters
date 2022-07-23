@@ -58,11 +58,5 @@
     <Library Include="..\SDK\Lib\bedrock_server_api.lib">
       <Filter>Lib</Filter>
     </Library>
-    <Library Include="..\Lib\openssl\libcrypto.lib">
-      <Filter>Lib</Filter>
-    </Library>
-    <Library Include="..\Lib\openssl\libssl.lib">
-      <Filter>Lib</Filter>
-    </Library>
   </ItemGroup>
 </Project>
