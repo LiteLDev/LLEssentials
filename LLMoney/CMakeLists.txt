@@ -26,10 +26,10 @@ add_link_options(
 
 link_directories(${CMAKE_SOURCE_DIR}/SDK/Lib/)
 add_library(LLMoney SHARED ${SRC_FILES})
-target_link_libraries(LLMoney SymDBHelper.lib
+target_link_libraries(LLMoney LiteLoader.lib
         bedrock_server_api.lib
         bedrock_server_var.lib
-        LiteLoader.lib
+        SymDBHelper.lib
         "${CMAKE_SOURCE_DIR}/Lib/SQLiteCpp/sqlite3.lib"
         "${CMAKE_SOURCE_DIR}/Lib/SQLiteCpp/SQLiteCpp.lib")
 

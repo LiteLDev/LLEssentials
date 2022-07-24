@@ -26,10 +26,10 @@ add_link_options(
 
 link_directories(${CMAKE_SOURCE_DIR}/SDK/Lib/)
 add_library(LLTpa SHARED ${SRC_FILES})
-target_link_libraries(LLTpa SymDBHelper.lib
+target_link_libraries(LLTpa LiteLoader.lib
         bedrock_server_api.lib
         bedrock_server_var.lib
-        LiteLoader.lib)
+        SymDBHelper.lib)
 
 include_directories(${CMAKE_SOURCE_DIR}/SDK/Header)
 include_directories(${CMAKE_SOURCE_DIR}/SDK/Header/third-party)
