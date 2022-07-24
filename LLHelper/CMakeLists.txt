@@ -20,16 +20,17 @@ add_compile_options(
 )
 
 add_link_options(
-        /MANIFEST /LTCG:incremental /NXCOMPAT /DEBUG /DLL /MACHINE:X64 /OPT:REF /INCREMENTAL:NO /SUBSYSTEM:WINDOWS
-        /MANIFESTUAC:NO /OPT:ICF /ERRORREPORT:PROMPT /NOLOGO /DELAYLOAD:"bedrock_server.dll" /TLBID:1
+        /MANIFEST /LTCG:incremental /NXCOMPAT /DEBUG /DLL /MACHINE:X64 /OPT:REF /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
+        /MANIFESTUAC:NO /OPT:ICF /ERRORREPORT:PROMPT /NOLOGO /DELAYLOAD:bedrock_server.dll /TLBID:1
 )
 
+link_directories(${CMAKE_SOURCE_DIR}/SDK/Lib/)
 add_library(LLHelper SHARED ${SRC_FILES})
-target_link_libraries(LLHelper "${PROJECT_SOURCE_DIR}/../SDK/Lib/SymDBHelper.lib"
-        "${PROJECT_SOURCE_DIR}/../SDK/Lib/bedrock_server_api.lib"
-        "${PROJECT_SOURCE_DIR}/../SDK/Lib/bedrock_server_var.lib"
-        "${PROJECT_SOURCE_DIR}/../SDK/Lib/LiteLoader.lib")
+target_link_libraries(LLHelper LiteLoader.lib
+        bedrock_server_api.lib
+        bedrock_server_var.lib
+        SymDBHelper.lib)
 
-include_directories(${PROJECT_SOURCE_DIR}/../SDK/Header)
-include_directories(${PROJECT_SOURCE_DIR}/../SDK/Header/third-party)
-include_directories(${PROJECT_SOURCE_DIR}/../Header)
+include_directories(${CMAKE_SOURCE_DIR}/SDK/Header)
+include_directories(${CMAKE_SOURCE_DIR}/SDK/Header/third-party)
+include_directories(${CMAKE_SOURCE_DIR}/Header)

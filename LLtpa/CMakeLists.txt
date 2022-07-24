@@ -11,7 +11,7 @@ file(GLOB SRC_FILES
         ${PROJECT_SOURCE_DIR}/*.h
         )
 
-add_definitions(-D"NDEBUG" -D"LLMONEY_EXPORTS" -D"_CRT_SECURE_NO_WARNINGS" -D"_WINDOWS"
+add_definitions(-D"NDEBUG" -D"_CRT_SECURE_NO_WARNINGS" -D"_WINDOWS"
         -D"_USRDLL" -D"_AMD64_" -D"NOMINMAX" -D"_WINDLL" -D"_UNICODE" -D"UNICODE")
 
 add_compile_options(
@@ -20,16 +20,17 @@ add_compile_options(
 )
 
 add_link_options(
-        /MANIFEST /LTCG:incremental /NXCOMPAT /DEBUG /DLL /MACHINE:X64 /OPT:REF /INCREMENTAL:NO /SUBSYSTEM:WINDOWS
-        /MANIFESTUAC:NO /OPT:ICF /ERRORREPORT:PROMPT /NOLOGO /DELAYLOAD:"bedrock_server.dll" /TLBID:1
+        /MANIFEST /LTCG:incremental /NXCOMPAT /DEBUG /DLL /MACHINE:X64 /OPT:REF /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
+        /MANIFESTUAC:NO /OPT:ICF /ERRORREPORT:PROMPT /NOLOGO /DELAYLOAD:bedrock_server.dll /TLBID:1
 )
 
+link_directories(${CMAKE_SOURCE_DIR}/SDK/Lib/)
 add_library(LLTpa SHARED ${SRC_FILES})
-target_link_libraries(LLTpa "${PROJECT_SOURCE_DIR}/../SDK/Lib/SymDBHelper.lib"
-        "${PROJECT_SOURCE_DIR}/../SDK/Lib/bedrock_server_api.lib"
-        "${PROJECT_SOURCE_DIR}/../SDK/Lib/bedrock_server_var.lib"
-        "${PROJECT_SOURCE_DIR}/../SDK/Lib/LiteLoader.lib")
+target_link_libraries(LLTpa SymDBHelper.lib
+        bedrock_server_api.lib
+        bedrock_server_var.lib
+        LiteLoader.lib)
 
-include_directories(${PROJECT_SOURCE_DIR}/../SDK/Header)
-include_directories(${PROJECT_SOURCE_DIR}/../SDK/Header/third-party)
-include_directories(${PROJECT_SOURCE_DIR}/../Header)
+include_directories(${CMAKE_SOURCE_DIR}/SDK/Header)
+include_directories(${CMAKE_SOURCE_DIR}/SDK/Header/third-party)
+include_directories(${CMAKE_SOURCE_DIR}/Header)
