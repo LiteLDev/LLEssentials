@@ -10,14 +10,16 @@ Logger moneylog("LLMoney");
 money_t DEF_MONEY = 0;
 #undef snprintf
 
-struct cleanSTMT {
-	SQLite::Statement& get;
+struct cleanSTMT
+{
+	SQLite::Statement &get;
 
-	cleanSTMT(SQLite::Statement& g) : get(g) {
-
+	cleanSTMT(SQLite::Statement &g) : get(g)
+	{
 	}
 
-	~cleanSTMT() {
+	~cleanSTMT()
+	{
 		get.reset();
 		get.clearBindings();
 	}
@@ -25,10 +27,12 @@ struct cleanSTMT {
 
 void ConvertData();
 
-bool initDB() {
-	try {
+bool initDB()
+{
+	try
+	{
 		db = std::make_unique<SQLite::Database>("plugins\\LLMoney\\economy.db",
-			SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
+												SQLite::OPEN_CREATE | SQLite::OPEN_READWRITE);
 		db->exec("PRAGMA journal_mode = MEMORY");
 		db->exec("PRAGMA synchronous = NORMAL");
 		db->exec("CREATE TABLE IF NOT EXISTS money ( \
@@ -50,7 +54,8 @@ bool initDB() {
 			Time COLLATE BINARY COLLATE BINARY DESC \
 		); ");
 	}
-	catch (std::exception const& e) {
+	catch (std::exception const &e)
+	{
 		moneylog.error("Database error: {}", e.what());
 		return false;
 	}
@@ -58,20 +63,24 @@ bool initDB() {
 	return true;
 }
 
-money_t LLMoneyGet(xuid_t xuid) {
-	try {
-		SQLite::Statement get{ *db, "select Money from money where XUID=?" };
+money_t LLMoneyGet(xuid_t xuid)
+{
+	try
+	{
+		SQLite::Statement get{*db, "select Money from money where XUID=?"};
 		get.bindNoCopy(1, xuid);
 		money_t rv = DEF_MONEY;
 		bool fg = false;
-		while (get.executeStep()) {
+		while (get.executeStep())
+		{
 			rv = (money_t)get.getColumn(0).getInt64();
 			fg = true;
 		}
 		get.reset();
 		get.clearBindings();
-		if (!fg) {
-			SQLite::Statement set{ *db, "insert into money values (?,?)" };
+		if (!fg)
+		{
+			SQLite::Statement set{*db, "insert into money values (?,?)"};
 			set.bindNoCopy(1, xuid);
 			set.bind(2, DEF_MONEY);
 			set.exec();
@@ -80,7 +89,8 @@ money_t LLMoneyGet(xuid_t xuid) {
 		}
 		return rv;
 	}
-	catch (std::exception const& e) {
+	catch (std::exception const &e)
+	{
 		moneylog.error("Database error: {}\n", e.what());
 		return -1;
 	}
@@ -88,7 +98,8 @@ money_t LLMoneyGet(xuid_t xuid) {
 
 bool isRealTrans = true;
 
-bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const& note) {
+bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const &note)
+{
 	bool isRealTrans = ::isRealTrans;
 	::isRealTrans = true;
 	if (isRealTrans)
@@ -97,12 +108,15 @@ bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const& note) {
 
 	if (val < 0 || from == to)
 		return false;
-	try {
+	try
+	{
 		db->exec("begin");
-		SQLite::Statement set{ *db, "update money set Money=? where XUID=?" };
-		if (from != "") {
+		SQLite::Statement set{*db, "update money set Money=? where XUID=?"};
+		if (from != "")
+		{
 			auto fmoney = LLMoneyGet(from);
-			if (fmoney < val) {
+			if (fmoney < val)
+			{
 				db->exec("rollback");
 				return false;
 			}
@@ -116,10 +130,12 @@ bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const& note) {
 				set.clearBindings();
 			}
 		}
-		if (to != "") {
+		if (to != "")
+		{
 			auto tmoney = LLMoneyGet(to);
 			tmoney += val;
-			if (tmoney < 0) {
+			if (tmoney < 0)
+			{
 				db->exec("rollback");
 				return false;
 			}
@@ -132,7 +148,7 @@ bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const& note) {
 			}
 		}
 		{
-			SQLite::Statement addTrans{ *db, "insert into mtrans (tFrom,tTo,Money,Note) values (?,?,?,?)" };
+			SQLite::Statement addTrans{*db, "insert into mtrans (tFrom,tTo,Money,Note) values (?,?,?,?)"};
 			addTrans.bindNoCopy(1, from);
 			addTrans.bindNoCopy(2, to);
 			addTrans.bind(3, val);
@@ -147,14 +163,16 @@ bool LLMoneyTrans(xuid_t from, xuid_t to, money_t val, string const& note) {
 			CallAfterEvent(LLMoneyEvent::Trans, from, to, val);
 		return true;
 	}
-	catch (std::exception const& e) {
+	catch (std::exception const &e)
+	{
 		db->exec("rollback");
 		moneylog.error("Database error: {}\n", e.what());
 		return false;
 	}
 }
 
-bool LLMoneyAdd(xuid_t xuid, money_t money) {
+bool LLMoneyAdd(xuid_t xuid, money_t money)
+{
 	if (!CallBeforeEvent(LLMoneyEvent::Add, "", xuid, money))
 		return false;
 
@@ -165,7 +183,8 @@ bool LLMoneyAdd(xuid_t xuid, money_t money) {
 	return res;
 }
 
-bool LLMoneyReduce(xuid_t xuid, money_t money) {
+bool LLMoneyReduce(xuid_t xuid, money_t money)
+{
 	if (!CallBeforeEvent(LLMoneyEvent::Reduce, "", xuid, money))
 		return false;
 
@@ -176,17 +195,20 @@ bool LLMoneyReduce(xuid_t xuid, money_t money) {
 	return res;
 }
 
-bool LLMoneySet(xuid_t xuid, money_t money) {
+bool LLMoneySet(xuid_t xuid, money_t money)
+{
 	if (!CallBeforeEvent(LLMoneyEvent::Set, "", xuid, money))
 		return false;
 	money_t now = LLMoneyGet(xuid), diff;
 	xuid_t from, to;
-	if (money >= now) {
+	if (money >= now)
+	{
 		from = "";
 		to = xuid;
 		diff = money - now;
 	}
-	else {
+	else
+	{
 		from = xuid;
 		to = "";
 		diff = now - money;
@@ -199,78 +221,94 @@ bool LLMoneySet(xuid_t xuid, money_t money) {
 	return res;
 }
 
-vector<std::pair<std::string, money_t>> LLMoneyRanking(unsigned short num) {
-	try {
-		SQLite::Statement get{ *db, "select * from money ORDER BY money DESC LIMIT ?" };
+vector<std::pair<std::string, money_t>> LLMoneyRanking(unsigned short num)
+{
+	try
+	{
+		SQLite::Statement get{*db, "select * from money ORDER BY money DESC LIMIT ?"};
 		vector<std::pair<std::string, money_t>> mapTemp;
 		get.bind(1, num);
-		while (get.executeStep()) {
+		while (get.executeStep())
+		{
 			std::string xuid = get.getColumn(0).getString();
 			long long balance = get.getColumn(1).getInt64();
-			//std::cout << xuid << " " << balance << "\n";
+			// std::cout << xuid << " " << balance << "\n";
 			mapTemp.push_back(std::pair<std::string, money_t>(xuid, balance));
 		}
 		get.reset();
 		get.clearBindings();
 		return mapTemp;
 	}
-	catch (std::exception const& e) {
+	catch (std::exception const &e)
+	{
 		moneylog.error("Database error: {}\n", e.what());
 		return {};
 	}
 }
 
-string LLMoneyGetHist(xuid_t xuid, int timediff) {
-	try {
-		SQLite::Statement get{ *db,
-									 "select tFrom,tTo,Money,datetime(Time,'unixepoch', 'localtime'),Note from mtrans where strftime('%s','now')-time<? and (tFrom=? OR tTo=?) ORDER BY Time DESC" };
+string LLMoneyGetHist(xuid_t xuid, int timediff)
+{
+	try
+	{
+		SQLite::Statement get{*db,
+							  "select tFrom,tTo,Money,datetime(Time,'unixepoch', 'localtime'),Note from mtrans where strftime('%s','now')-time<? and (tFrom=? OR tTo=?) ORDER BY Time DESC"};
 		string rv;
 		get.bind(1, timediff);
 		get.bindNoCopy(2, xuid);
 		get.bindNoCopy(3, xuid);
-		while (get.executeStep()) {
+		while (get.executeStep())
+		{
 			optional<string> from, to;
 			from = PlayerInfo::fromXuid(get.getColumn(0).getString());
 			to = PlayerInfo::fromXuid(get.getColumn(1).getString());
 			if (from.Set() && to.Set())
-				if (from.val() == "") {
+				if (from.val() == "")
+				{
 					from.val() = "System";
 				}
-				else if (to.val() == "") {
+				else if (to.val() == "")
+				{
 					to.val() = "System";
 				}
 			rv += from.val() + " -> " + to.val() + " " + std::to_string((money_t)get.getColumn(2).getInt64()) + " " +
-				get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
+				  get.getColumn(3).getText() + " (" + get.getColumn(4).getText() + ")\n";
 		}
 		get.reset();
 		get.clearBindings();
 		return rv;
 	}
-	catch (std::exception const& e) {
+	catch (std::exception const &e)
+	{
 		moneylog.error("Database error: {}\n", e.what());
 		return "failed";
 	}
 }
 
-void LLMoneyClearHist(int difftime) {
-	try {
+void LLMoneyClearHist(int difftime)
+{
+	try
+	{
 		db->exec("DELETE FROM mtrans WHERE strftime('%s','now')-time>" + std::to_string(difftime));
 	}
-	catch (std::exception&) {
-
+	catch (std::exception &)
+	{
 	}
 }
 
-void ConvertData() {
-	if (std::filesystem::exists("plugins\\LLMoney\\money.db")) {
+void ConvertData()
+{
+	if (std::filesystem::exists("plugins\\LLMoney\\money.db"))
+	{
 		moneylog.info("Old money data detected, try to convert old data to new data");
-		try {
+		try
+		{
 			std::unique_ptr<SQLite::Database> db2 = std::make_unique<SQLite::Database>("plugins\\LLMoney\\money.db",
-				SQLite::OPEN_CREATE |
-				SQLite::OPEN_READWRITE);
-			SQLite::Statement get{ *db2, "select hex(XUID),Money from money" };
-			SQLite::Statement set{ *db, "insert into money values (?,?)" };
-			while (get.executeStep()) {
+																					   SQLite::OPEN_CREATE |
+																						   SQLite::OPEN_READWRITE);
+			SQLite::Statement get{*db2, "select hex(XUID),Money from money"};
+			SQLite::Statement set{*db, "insert into money values (?,?)"};
+			while (get.executeStep())
+			{
 				std::string blob = get.getColumn(0).getText();
 				unsigned long long value;
 				std::istringstream iss(blob);
@@ -285,7 +323,8 @@ void ConvertData() {
 			}
 			get.reset();
 		}
-		catch (std::exception& e) {
+		catch (std::exception &e)
+		{
 			moneylog.error("{}", e.what());
 		}
 		std::filesystem::rename("plugins\\LLMoney\\money.db", "plugins\\LLMoney\\money_old.db");
@@ -293,9 +332,10 @@ void ConvertData() {
 	}
 }
 #include <RemoteCallAPI.h>
-#define EXPORTAPI(T) RemoteCall::exportAs("LLMoney", #T , T);
+#define EXPORTAPI(T) RemoteCall::exportAs("LLMoney", #T, T);
 
-void RemoteCallInit() {
+void RemoteCallInit()
+{
 	EXPORTAPI(LLMoneyGet);
 	EXPORTAPI(LLMoneyTrans);
 	EXPORTAPI(LLMoneyAdd);

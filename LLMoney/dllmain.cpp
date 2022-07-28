@@ -5,13 +5,14 @@
 void entry();
 
 BOOL APIENTRY DllMain(HMODULE hModule,
-	DWORD ul_reason_for_call,
-	LPVOID lpReserved
-) {
-	switch (ul_reason_for_call) {
+					  DWORD ul_reason_for_call,
+					  LPVOID lpReserved)
+{
+	switch (ul_reason_for_call)
+	{
 	case DLL_PROCESS_ATTACH:
 		LL::registerPlugin("LLMoney", "EconomyCore for LiteLoaderBDS", LLMONEY_VERSION,
-			"https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
+						   "https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 	case DLL_PROCESS_DETACH:
@@ -20,9 +21,10 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	return TRUE;
 }
 
-extern "C" {
-	_declspec(dllexport)
-		void onPostInit() {
+extern "C"
+{
+	_declspec(dllexport) void onPostInit()
+	{
 		std::ios::sync_with_stdio(false);
 		entry();
 	}
