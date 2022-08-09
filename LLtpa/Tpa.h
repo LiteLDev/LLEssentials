@@ -1,8 +1,6 @@
 #pragma once
 
-bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
-
-#define LLTPA_VERSION LL::Version{ 2,4,1 }
+#define LLTPA_VERSION LL::Version{ 2,5,0 }
 
 /////////////////////// LL AutoUpgrade ///////////////////////
 

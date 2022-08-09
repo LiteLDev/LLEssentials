@@ -4,9 +4,7 @@
 
 #pragma warning(disable:4996)
 
-bool CheckAutoUpdate(bool isUpdateManually, bool forceUpdate = false);
-
-#define LLHELPER_VERSION LL::Version{ 2,4,1 }
+#define LLHELPER_VERSION LL::Version{ 2,5,0 }
 
 /////////////////////// LL AutoUpgrade ///////////////////////
 
