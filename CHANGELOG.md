@@ -1,5 +1,1 @@
-- Update SDK to 2.4.1
-
-## LLTpa
-
-- Update tpa request form to ModalForm
+- Support LiteLoaderBDS 2.5.0(1.19.20.02)
