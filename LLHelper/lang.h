@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <I18nAPI.h>
 
-static const I18N::LangData defaultLangData = {
+static const I18nBase::LangData defaultLangData = {
 	{"en_US", {
 		 {"gmode.success", "Your game mode is changed"},
 		 {"ban.list.success", "Done"},

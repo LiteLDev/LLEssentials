@@ -1,6 +1,7 @@
 ﻿#pragma once
+#include <I18nAPI.h>
 
-static const I18N::LangData defaultLangData = {
+static const I18nBase::LangData defaultLangData = {
 	{"en_US", {
 		 {"tp.fail.rate", "Tpa speed too fast"},
 		 {"tp.fail.inreq", "A tpa request is in progress"},

@@ -8,7 +8,6 @@
 #include <FormUI.h>
 #include <SendPacketAPI.h>
 #include <KVDBAPI.h>
-#include "I18nAPI.h"
 #include <ctime>
 #include <Utils/PlayerMap.h>
 #include <Utils/ViewHelper.h>

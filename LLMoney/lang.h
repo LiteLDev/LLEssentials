@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <I18nAPI.h>
 
-static const I18N::LangData defaultLangData = {
+static const I18nBase::LangData defaultLangData = {
 	{"en", {
 		 {"money.no.target", "Can not find target"},
 		 {"money.invalid.arg", "Parameter error or unknown error"},
