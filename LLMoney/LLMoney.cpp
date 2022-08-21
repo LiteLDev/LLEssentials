@@ -22,7 +22,7 @@ Logger logger("LLMoney");
 namespace Settings
 {
 
-	string language = "en_US";
+	string language = "en";
 	int def_money = 0;
 	float pay_tax = 0.0;
 	bool enable_ranking = true;
@@ -128,6 +128,11 @@ public:
 			}
 			else
 			{
+				if (ori.getOriginType() != (CommandOriginType)OriginType::Player)
+				{
+					outp.error(tr("money.dontuseinconsole"));
+					return;
+				}
 				dstxuid = ori.getPlayer()->getXuid();
 			}
 			if (dstxuid == "")
@@ -137,6 +142,11 @@ public:
 			}
 			break;
 		case pay:
+			if (ori.getOriginType() != (CommandOriginType)OriginType::Player)
+			{
+				outp.error(tr("money.dontuseinconsole"));
+				return;
+			}
 		case set:
 		case add:
 		case reduce:
@@ -148,6 +158,11 @@ public:
 			}
 			break;
 		case purge:
+			if (ori.getOriginType() != (CommandOriginType)OriginType::Player)
+			{
+				outp.error(tr("money.dontuseinconsole"));
+				return;
+			}
 			if (ori.getPermissionsLevel() < 1)
 			{
 				outp.error(tr("money.no.perm"));
@@ -333,6 +348,11 @@ public:
 			}
 			else
 			{
+				if (ori.getOriginType() != (CommandOriginType)OriginType::Player)
+				{
+					outp.error(tr("money.dontuseinconsole"));
+					return;
+				}
 				dstxuid = ori.getPlayer()->getXuid();
 			}
 			if (dstxuid.val() == "")
@@ -343,6 +363,11 @@ public:
 			break;
 		case pay:
 		{
+			if (ori.getOriginType() != (CommandOriginType)OriginType::Player)
+			{
+				outp.error(tr("money.dontuseinconsole"));
+				return;
+			}
 			if (player.results(ori).empty())
 			{
 				outp.error(tr("money.no.target"));
@@ -524,7 +549,6 @@ void loadCfg()
 	// config
 	if (!std::filesystem::exists("plugins/LLMoney"))
 		std::filesystem::create_directories("plugins/LLMoney");
-	// tr
 	if (std::filesystem::exists("plugins/LLMoney/money.json"))
 	{
 		try
@@ -533,15 +557,11 @@ void loadCfg()
 		}
 		catch (std::exception &e)
 		{
-			logger.error("Config File isInvalid, Err {}", e.what());
-			Sleep(1000 * 100);
-			exit(1);
+			logger.error("Configuration file is Invalid, Error: {}", e.what());
 		}
 		catch (...)
 		{
-			logger.error("Config File isInvalid");
-			Sleep(1000 * 100);
-			exit(1);
+			logger.error("Configuration file is Invalid");
 		}
 	}
 	else
