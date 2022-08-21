@@ -260,12 +260,12 @@ public:
 		case top:
 			vector<std::pair<std::string, money_t>> mapTemp = LLMoneyRanking();
 			sort(mapTemp.begin(), mapTemp.end(), cmp);
-			outp.addMessage("===== Ranking =====");
+			outp.success("===== Ranking =====");
 			for (auto it = mapTemp.begin(); it != mapTemp.end(); it++)
 			{
 				outp.addMessage((PlayerInfo::fromXuid(it->first).empty() ? "NULL" : PlayerInfo::fromXuid(it->first)) + "  " + std::to_string(it->second));
 			}
-			outp.success("===================");
+			outp.addMessage("===================");
 		}
 		return;
 	}
