@@ -35,7 +35,7 @@ extern unsigned short Tick_per_minute;
 
 void loadCNAME() {
 	db = KVDB::create("plugins/LLHelper/data", false);
-	db->iter([](string_view k, string_view v) {
+	db->iter([](std::string_view k, std::string_view v) {
 		if (!k._Starts_with("b_"))
 			CNAME.emplace(k, v);
 		return true;
@@ -129,7 +129,7 @@ public:
 		}
 						 break;
 		case BANOP::list: {
-			db->iter([&](string_view key, string_view val) -> bool {
+			db->iter([&](std::string_view key, std::string_view val) -> bool {
 				if (key._Starts_with("b_")) {
 					string banned{ key.substr(2) };
 					if (banned.find('.') != banned.npos) {

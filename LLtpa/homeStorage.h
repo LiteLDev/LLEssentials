@@ -78,7 +78,7 @@ struct Homes {
 		owner = xid;
 	}
 
-	Homes(string_view own) {
+	Homes(std::string_view own) {
 		string val;
 		auto x = std::stoull(PlayerInfo::getXuid((std::string)own));
 		if (x != 0) {

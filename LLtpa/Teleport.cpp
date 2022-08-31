@@ -36,7 +36,7 @@ struct TPReq {
 
 	TPReq() {}
 
-	TPReq(direction a, string_view b, string_view c, clock_t d) : dir(a), A(b), B(c), time(d) {}
+	TPReq(direction a, std::string_view b, std::string_view c, clock_t d) : dir(a), A(b), B(c), time(d) {}
 };
 
 struct TPASet {
@@ -52,20 +52,20 @@ static unordered_map<string, Vec4> warps;
 
 playerMap<Vec4> deathPos;
 
-optional<decltype(reqs.begin())> DoFetchReq(string_view a) {
+optional<decltype(reqs.begin())> DoFetchReq(std::string_view a) {
 	for (auto it = reqs.begin(); it != reqs.end(); ++it) {
 		if (it->A == a || it->B == a) return { it };
 	}
 	return {};
 }
 
-optional<decltype(reqs.begin())> DoFetchReq_sender(string_view a) {
+optional<decltype(reqs.begin())> DoFetchReq_sender(std::string_view a) {
 	auto rv = DoFetchReq(a);
 	if (rv.set && rv.value()->A == a) return rv;
 	return {};
 }
 
-optional<decltype(reqs.begin())> DoFetchReq_receiver(string_view a) {
+optional<decltype(reqs.begin())> DoFetchReq_receiver(std::string_view a) {
 	auto rv = DoFetchReq(a);
 	if (rv.set && rv.value()->B == a) return rv;
 	return {};
@@ -78,7 +78,7 @@ enum class TPFailReason : int {
 	blocked = 3
 };
 
-TPFailReason CanMakeReq(string_view a, string_view b) {
+TPFailReason CanMakeReq(std::string_view a, std::string_view b) {
 	CHash A = do_hash(a.data()), B = do_hash(b.data());
 	if (tpaSetting[A].lastReq >= clock() - Settings::TPratelimit) {
 		return TPFailReason::ratelimit;
