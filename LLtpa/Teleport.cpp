@@ -17,6 +17,7 @@
 #include <ScheduleAPI.h>
 #include <MC/NetworkIdentifier.hpp>
 #include <unordered_map>
+#include <windows.h>
 
 using std::shared_ptr, std::pair;
 using std::make_shared;
@@ -417,14 +418,14 @@ public:
 			return;
 		}
 		case add: {
-			if (ori.getPermissionsLevel() < 1) return;
+			if ((int)ori.getPermissionsLevel() < 1) return;
 			warps.emplace(val, ori.getPlayer());
 			saveWarps();
 
 			break;
 		}
 		case del: {
-			if (ori.getPermissionsLevel() < 1) return;
+			if ((int)ori.getPermissionsLevel() < 1) return;
 			warps.erase(val);
 			saveWarps();
 
@@ -488,7 +489,7 @@ public:
 				outp.error("Please input home's name");
 				return;
 			}
-			if (ori.getPermissionsLevel() == 0 && hm.data.size() >= Settings::MAX_HOMES) {
+			if ((int)ori.getPermissionsLevel() == 0 && hm.data.size() >= Settings::MAX_HOMES) {
 				outp.error(tr("home.is.full"));
 				return;
 			}

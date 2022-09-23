@@ -1,6 +1,6 @@
 #pragma once
 
-#define LLTPA_VERSION LL::Version{ 2,6,0 }
+#define LLTPA_VERSION ll::Version{ 2,7,0 }
 
 /////////////////////// LL AutoUpgrade ///////////////////////
 

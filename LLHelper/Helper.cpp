@@ -10,6 +10,7 @@
 #include <MC/ItemStack.hpp>
 #include <thread>
 #include <chrono>
+#include <windows.h>
 
 vector<unsigned int> taskList;
 Logger logger("Helper");

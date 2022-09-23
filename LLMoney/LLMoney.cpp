@@ -122,7 +122,7 @@ public:
 		{
 		case query:
 		case hist:
-			if (dst_isSet && ori.getPermissionsLevel() > 0)
+			if (dst_isSet && (int)ori.getPermissionsLevel() > 0)
 			{
 				dstxuid = PlayerInfo::getXuid(dst);
 			}
@@ -163,7 +163,7 @@ public:
 				outp.error(tr("money.dontuseinconsole"));
 				return;
 			}
-			if (ori.getPermissionsLevel() < 1)
+			if ((int)ori.getPermissionsLevel() < 1)
 			{
 				outp.error(tr("money.no.perm"));
 				return;
@@ -207,7 +207,7 @@ public:
 		}
 		break;
 		case set:
-			if (ori.getPermissionsLevel() < 1)
+			if ((int)ori.getPermissionsLevel() < 1)
 			{
 				outp.error(tr("money.no.perm"));
 				return;
@@ -222,7 +222,7 @@ public:
 			}
 			break;
 		case add:
-			if (ori.getPermissionsLevel() < 1)
+			if ((int)ori.getPermissionsLevel() < 1)
 			{
 				outp.error(tr("money.no.perm"));
 				return;
@@ -237,7 +237,7 @@ public:
 			}
 			break;
 		case reduce:
-			if (ori.getPermissionsLevel() < 1)
+			if ((int)ori.getPermissionsLevel() < 1)
 			{
 				outp.error(tr("money.no.perm"));
 				return;
@@ -333,7 +333,7 @@ public:
 		case hist:
 			if (dst_isSet)
 			{
-				if (ori.getPermissionsLevel() > 0)
+				if ((int)ori.getPermissionsLevel() > 0)
 				{
 					if (!player.results(ori).empty())
 					{
@@ -437,7 +437,7 @@ public:
 			break;
 		case set:
 		{
-			if (ori.getPermissionsLevel() < 1)
+			if ((int)ori.getPermissionsLevel() < 1)
 			{
 				outp.error(tr("money.no.perm"));
 				return;
@@ -462,7 +462,7 @@ public:
 		}
 		case add:
 		{
-			if (ori.getPermissionsLevel() < 1)
+			if ((int)ori.getPermissionsLevel() < 1)
 			{
 				outp.error(tr("money.no.perm"));
 				return;
@@ -487,7 +487,7 @@ public:
 		}
 		case reduce:
 		{
-			if (ori.getPermissionsLevel() < 1)
+			if ((int)ori.getPermissionsLevel() < 1)
 			{
 				outp.error(tr("money.no.perm"));
 				return;

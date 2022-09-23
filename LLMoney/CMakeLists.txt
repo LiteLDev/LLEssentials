@@ -33,7 +33,8 @@ target_link_libraries(LLMoney LiteLoader.lib
         "${CMAKE_SOURCE_DIR}/Lib/SQLiteCpp/sqlite3.lib"
         "${CMAKE_SOURCE_DIR}/Lib/SQLiteCpp/SQLiteCpp.lib")
 
-include_directories(${CMAKE_SOURCE_DIR}/SDK/Header)
-include_directories(${CMAKE_SOURCE_DIR}/SDK/Header/third-party)
+include_directories(${CMAKE_SOURCE_DIR}/SDK/include)
+include_directories(${CMAKE_SOURCE_DIR}/SDK/include/llapi)
 include_directories(${CMAKE_SOURCE_DIR}/Header)
+
 

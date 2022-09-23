@@ -10,7 +10,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 ) {
 	switch (ul_reason_for_call) {
 	case DLL_PROCESS_ATTACH:
-		LL::registerPlugin("LLtpa", "A part of LLEssentials, provides teleport function", LLTPA_VERSION,
+		ll::registerPlugin("LLtpa", "A part of LLEssentials, provides teleport function", LLTPA_VERSION,
 			"https://github.com/LiteLDev/LiteLoaderPlugins", "GPLv3");
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:

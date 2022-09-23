@@ -31,6 +31,7 @@ target_link_libraries(LLHelper LiteLoader.lib
         bedrock_server_var.lib
         SymDBHelper.lib)
 
-include_directories(${CMAKE_SOURCE_DIR}/SDK/Header)
-include_directories(${CMAKE_SOURCE_DIR}/SDK/Header/third-party)
+
+include_directories(${CMAKE_SOURCE_DIR}/SDK/include)
+include_directories(${CMAKE_SOURCE_DIR}/SDK/include/llapi)
 include_directories(${CMAKE_SOURCE_DIR}/Header)
