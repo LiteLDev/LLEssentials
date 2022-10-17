@@ -1,14 +1,13 @@
 #include "Nlohmann/json.hpp"
 
-#define LLMONEY_VERSION ll::Version{ 2,7,0 }
+#define LLMONEY_VERSION ll::Version{ 2,7,2 }
 
 namespace Settings
 {
-
-    std::string language = "en";
-    int def_money = 0;
-    float pay_tax = 0.0;
-    bool enable_ranking = true;
+    extern std::string language;
+    extern int def_money;
+    extern float pay_tax;
+    extern bool enable_ranking;
 
     nlohmann::json globaljson();
     void initjson(nlohmann::json json);

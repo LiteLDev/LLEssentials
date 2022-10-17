@@ -4,7 +4,7 @@
 
 #pragma warning(disable:4996)
 
-#define LLHELPER_VERSION ll::Version{ 2,7,0 }
+#define LLHELPER_VERSION ll::Version{ 2,7,2 }
 
 /////////////////////// LL AutoUpgrade ///////////////////////
 

@@ -20,6 +20,11 @@ Logger logger("LLMoney");
 
 namespace Settings
 {
+    std::string language = "en";
+    int def_money = 0;
+    float pay_tax = 0.0;
+    bool enable_ranking = true;
+
 	nlohmann::json globaljson()
 	{
 		nlohmann::json json;
