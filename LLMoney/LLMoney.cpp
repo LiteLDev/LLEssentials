@@ -5,7 +5,6 @@
 #include <EventAPI.h>
 #include "LLMoney.h"
 #include "Money.h"
-#include <Dedicated/JsonLoader.h>
 #include <SQLiteCpp/SQLiteCpp.h>
 
 using namespace RegisterCommandHelper;
@@ -21,12 +20,6 @@ Logger logger("LLMoney");
 
 namespace Settings
 {
-
-	string language = "en";
-	int def_money = 0;
-	float pay_tax = 0.0;
-	bool enable_ranking = true;
-
 	nlohmann::json globaljson()
 	{
 		nlohmann::json json;
@@ -87,8 +80,6 @@ namespace Settings
 } // namespace Settings
 
 bool initDB();
-
-extern money_t DEF_MONEY;
 
 bool cmp(std::pair<std::string, money_t> a, std::pair<std::string, money_t> b)
 {

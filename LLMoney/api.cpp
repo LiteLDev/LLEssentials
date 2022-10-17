@@ -1,13 +1,13 @@
-#include "llmoney.h"
+#include "LLMoney.h"
 #include <memory>
 #include <vector>
 #include "Event.h"
 #include <LoggerAPI.h>
 #include <SQLiteCpp/SQLiteCpp.h>
+#include "Money.h"
 
 static std::unique_ptr<SQLite::Database> db;
 Logger moneylog("LLMoney");
-money_t DEF_MONEY = 0;
 #undef snprintf
 
 struct cleanSTMT
@@ -69,7 +69,7 @@ money_t LLMoneyGet(xuid_t xuid)
 	{
 		SQLite::Statement get{*db, "select Money from money where XUID=?"};
 		get.bindNoCopy(1, xuid);
-		money_t rv = DEF_MONEY;
+		money_t rv = Settings::def_money;
 		bool fg = false;
 		while (get.executeStep())
 		{
@@ -82,7 +82,7 @@ money_t LLMoneyGet(xuid_t xuid)
 		{
 			SQLite::Statement set{*db, "insert into money values (?,?)"};
 			set.bindNoCopy(1, xuid);
-			set.bind(2, DEF_MONEY);
+			set.bind(2, Settings::def_money);
 			set.exec();
 			set.reset();
 			set.clearBindings();
