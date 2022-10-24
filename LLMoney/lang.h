@@ -3,16 +3,16 @@
 
 static const I18nBase::LangData defaultLangData = {
 	{"en", {
-		{"money.no.target", "Can not find target"},
-		{"money.invalid.arg", "Parameter error or unknown error"},
-		{"money.succ", "Execute successfully"},
-		{"money.not.enough", "Balance not enough"},
-		{"money.no.perm", "You have no permission to do this"},
-		{"money.pay.succ", "Pay successfully"},
-		{"money.add.succ", "Add successfully"},
-		{"money.reduce.succ", "Reduce successfully"},
-		{"money.set.succ", "Set successfully"},
-		{"money.dontuseinconsole", "Don't use this command in console"}
+		{"money.no.target", "Can not find target player."},
+		{"money.invalid.arg", "Invalid command argument, or unknown error."},
+		{"money.succ", "Command successfully executed."},
+		{"money.not.enough", "You have insufficient balance."},
+		{"money.no.perm", "You do not have the required permissions to execute this command."},
+		{"money.pay.succ", "Transfer successful."},
+		{"money.add.succ", "Balance successfully increased."},
+		{"money.reduce.succ", "Balance successfully reduced."},
+		{"money.set.succ", "Balance successfully set."},
+		{"money.dontuseinconsole", "Don't use this command in console."}
 	}},
 	{"zh_CN", {
 		{"money.no.target", u8"找不到目标"},
