@@ -463,6 +463,10 @@ void RegisterCommands() {
 		GmodeCommand::setup(e.mCommandRegistry);
 		CrashCommand::setup(e.mCommandRegistry);
 		RunasCommand::setup(e.mCommandRegistry);
+        //Enable ability command
+        if (Settings::REG_ABILITY) {
+            SymCall("?setup@AbilityCommand@@SAXAEAVCommandRegistry@@@Z", void, void*)(e.mCommandRegistry);
+        }
 		return true;
 		});
 	if (Settings::ENABLE_TPS)

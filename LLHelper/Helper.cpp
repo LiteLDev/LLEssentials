@@ -145,14 +145,7 @@ void entry() {
 	logger.setFile("logs/Helper.log", true);
 	logger.info("Loaded version: {}", LLHELPER_VERSION.toString());
 }
-// enable ability
-THook(void, "?setup@ChangeSettingCommand@@SAXAEAVCommandRegistry@@@Z",
-	void* self) {
-	if (Settings::REG_ABILITY)
-		SymCall("?setup@AbilityCommand@@SAXAEAVCommandRegistry@@@Z", void, void*)(self);
-	return original(self);
-}
-// setup custom name
+// Setup custom name
 THook(string&, "?getNameTag@Actor@@UEBAAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ", void* x) {
 	if (auto it = ORIG_NAME._map.find((ServerPlayer*)x); it != ORIG_NAME._map.end()) {
 		return it->second;
