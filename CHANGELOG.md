@@ -1,3 +1,1 @@
-- Support LiteLoaderBDS 2.8.0(1.19.40.02)
-- Improve English translations (#40)
-- Fix #39
+- Support LiteLoaderBDS 2.9.0(1.19.50.02)
