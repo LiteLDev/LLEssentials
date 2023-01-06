@@ -57,7 +57,6 @@ jobs:
         cp x64/Release/LLMoney.lib D:/out/sdk/Lib
         cp x64/Release/*.pdb D:/out/plugins
         cp LLMoney/LLMoney.h D:/out/sdk/Header
-        cp -r plugins/* D:/out/plugins
       shell: bash
 
     - name: Upload plugins
