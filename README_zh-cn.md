@@ -1,34 +1,40 @@
 # LiteLoaderEssentials
-[![status](https://img.shields.io/github/actions/workflow/status/LiteLDev/LLEssentials/build-cmake.yml?style=for-the-badge)](https://github.com/LiteLDev/LLEssentials/actions")
+
+[![status](https://img.shields.io/github/actions/workflow/status/LiteLDev/LLEssentials/build-cmake.yml?style=for-the-badge)](https://github.com/LiteLDev/LLEssentials/actions")  
 [English](README.md) | 简体中文  
 [LiteLoaderBDS](https://github.com/LiteLDev/LiteLoaderBDS)的Essentials
 
 # 用法
 
 ## LLHelper
-| 命令 | 说明 | 权限等级 |
-| --- | --- | --- |
-| /gmode <玩家> <模式(0/1/2/3)> | 切换玩家游戏模式 | OP |
-| /ban <ban/unban/list> [玩家] [时间(秒)] | 封禁/解封一名玩家 | OP |
-| /transfer <玩家> <IP> <端口> | 将一名玩家转移到其它服务器 | OP |
-| /helper <reload/update> | 重载配置文件/检查插件更新 | OP |
-| /skick <玩家> | 以暴力的方式强制踢出一名玩家 | OP |
-| /cname <set/rm> <玩家> [假名] | 给玩家设置假名 | OP |
-| /vanish | 隐身(仅对可以看见你的玩家有效) | OP |
-| /crash <玩家> | 崩溃玩家的客户端 | OP |
-| /runas <玩家> <指令> | 以目标玩家的身份执行指令 | OP |
-| /tps | 查看服务器当前TPS | OP |
+
+| 命令                                 | 说明               | 权限等级 |
+|------------------------------------|------------------|------|
+| /gmode <玩家> <模式(0/1/2/3)>          | 切换玩家游戏模式         | OP   |
+| /ban <ban/unban/list> [玩家] [时间(秒)] | 封禁/解封一名玩家        | OP   |
+| /transfer <玩家> <IP> <端口>           | 将一名玩家转移到其它服务器    | OP   |
+| /helper <reload/update>            | 重载配置文件/检查插件更新    | OP   |
+| /skick <玩家>                        | 以暴力的方式强制踢出一名玩家   | OP   |
+| /cname <set/rm> <玩家> [假名]          | 给玩家设置假名          | OP   |
+| /vanish                            | 隐身(仅对可以看见你的玩家有效) | OP   |
+| /crash <玩家>                        | 崩溃玩家的客户端         | OP   |
+| /runas <玩家> <指令>                   | 以目标玩家的身份执行指令     | OP   |
+| /tps                               | 查看服务器当前TPS       | OP   |
+
 ## LLTpa
-| 命令 | 说明 | 权限等级 |
-| --- | --- | --- |
-| /tpa <to/here/ac/de/cancel/toggle> [玩家]	| 传送到一名玩家的位置/将玩家传送到你的位置/接受传送/拒绝传送/取消传送/改变是否接受传送的状态 | 玩家 |
-| /warp <add/del/go/ls> [地标] | 添加一个地标/删除地标/前往地标/列出地标 | OP |
-| /home <add/del/go/ls> [家] | 添加一个家/删除家/前往家/列出家 | 玩家 |
-| /item | 查询你手上的物品信息 | 玩家 |
-| /lltpa <reload/update> [是否强制: true or false] | 重载配置文件/检查插件更新 | OP |
+
+| 命令                                           | 说明                                               | 权限等级 |
+|----------------------------------------------|--------------------------------------------------|------|
+| /tpa <to/here/ac/de/cancel/toggle> [玩家]      | 传送到一名玩家的位置/将玩家传送到你的位置/接受传送/拒绝传送/取消传送/改变是否接受传送的状态 | 玩家   |
+| /warp <add/del/go/ls> [地标]                   | 添加一个地标/删除地标/前往地标/列出地标                            | OP   |
+| /home <add/del/go/ls> [家]                    | 添加一个家/删除家/前往家/列出家                                | 玩家   |
+| /item                                        | 查询你手上的物品信息                                       | 玩家   |
+| /lltpa <reload/update> [是否强制: true or false] | 重载配置文件/检查插件更新                                    | OP   |
 
 # 配置文件
+
 ## LLHelper
+
 ```jsonc
 {
     "language": "en-us", //语言
@@ -52,7 +58,9 @@
     "enable_tps": true //启用tps指令
 }
 ```
+
 ## LLtpa
+
 ```jsonc
 {
     "language": "en-us", //语言，改为zh-cn为中文
