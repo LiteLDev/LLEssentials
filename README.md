@@ -1,8 +1,20 @@
 # LiteLoaderEssentials
 
-[![status](https://img.shields.io/github/actions/workflow/status/LiteLDev/LLEssentials/build-cmake.yml?style=for-the-badge)](https://github.com/LiteLDev/LLEssentials/actions")  
+[![status](https://img.shields.io/github/actions/workflow/status/LiteLDev/LLEssentials/build-cmake.yml?style=for-the-badge)]("https://github.com/LiteLDev/LLEssentials/actions")  
 English | [简体中文](README_zh-cn.md)  
 Essentials for [LiteLoaderBDS](https://github.com/LiteLDev/LiteLoaderBDS)
+
+# Installation
+
+## Use Lip
+
+```bash
+lip install github.com/Tooth-Hub/LLEssentials
+```
+
+## Manual
+
+Download from [Release](https://github.com/LiteLDev/LLEssentials/releases)
 
 # Usage
 

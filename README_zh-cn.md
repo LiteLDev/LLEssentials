@@ -1,8 +1,20 @@
 # LiteLoaderEssentials
 
-[![status](https://img.shields.io/github/actions/workflow/status/LiteLDev/LLEssentials/build-cmake.yml?style=for-the-badge)](https://github.com/LiteLDev/LLEssentials/actions")  
+[![status](https://img.shields.io/github/actions/workflow/status/LiteLDev/LLEssentials/build-cmake.yml?style=for-the-badge)]("https://github.com/LiteLDev/LLEssentials/actions")  
 [English](README.md) | 简体中文  
 [LiteLoaderBDS](https://github.com/LiteLDev/LiteLoaderBDS)的Essentials
+
+# 安装
+
+## 使用Lip
+
+```bash
+lip install github.com/Tooth-Hub/LLEssentials
+```
+
+## 手动安装
+
+从[Release](https://github.com/LiteLDev/LLEssentials/releases)中下载
 
 # 用法
 
