@@ -1,22 +1,10 @@
-# LiteLoaderPlugins
-[![status](https://img.shields.io/github/actions/workflow/status/LiteLDev/LLEssentials/build-cmake.yml?style=for-the-badge)](https://github.com/LiteLDev/LiteLoaderPlugins/actions")
-[![Telegram](https://img.shields.io/badge/telegram-LiteLoader-%232CA5E0?style=for-the-badge&logo=Telegram)](https://t.me/liteloader)  
+# LiteLoaderEssentials
+[![status](https://img.shields.io/github/actions/workflow/status/LiteLDev/LLEssentials/build-cmake.yml?style=for-the-badge)](https://github.com/LiteLDev/LLEssentials/actions")
 English | [简体中文](README_zh-cn.md)  
-Essentials for [LiteLoaderBDS](https://github.com/LiteLDev/BDSLiteLoader)
+Essentials for [LiteLoaderBDS](https://github.com/LiteLDev/LiteLoaderBDS)
 
 # Usage
-## LLMoney
-| Command | Description | Permission |
-| --- | --- | --- |
-| /money query [player] | Query your/other players's balance | Player/OP |
-| /money pay player amount | Transfer money to a player | Player |
-| /money set player amount | Set player's balance | OP |
-| /money add player amount | Add player's balance | OP |
-| /money reduce player amount | Reduce player's balance | OP |
-| /money hist | Print your running account | Player |
-| /money purge | Clear your running account | OP |
-| /money top | Balance ranking | Player |
-| /money_s | Command with TargetSelector | Player |
+
 ## LLHelper
 | Command | Description | Permission |
 | --- | --- | --- |
@@ -75,13 +63,5 @@ Essentials for [LiteLoaderBDS](https://github.com/LiteLDev/BDSLiteLoader)
     "tpa_ratelimit": 5000, //tpa request cooldown
     "back_enabled": true, //Enable /back command
     "suicide_enabled": true//Enable /suicide command
-}
-```
-## LLMoney
-```jsonc
-{
-    "language": "en-us",
-    "def_money": 0, //Default money
-    "pay_tax": 0.0 //Tax
 }
 ```

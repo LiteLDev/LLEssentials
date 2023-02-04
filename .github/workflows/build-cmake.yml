@@ -14,12 +14,8 @@ jobs:
     - uses: actions/checkout@v3.0.2
       with:
           fetch-depth: 0
-     
-    - name: Pull submodule
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: FetchSDK.cmd
-      shell: cmd
-     
+          submodules: 'true'
+
     - name: Download Server
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
@@ -45,18 +41,13 @@ jobs:
     - name: MkDirs
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        mkdir D:/out/sdk
-        mkdir D:/out/sdk/Lib
-        mkdir D:/out/sdk/Header
         mkdir D:/out/plugins
     
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cp x64/Release/*.dll D:/out/plugins
-        cp x64/Release/LLMoney.lib D:/out/sdk/Lib
         cp x64/Release/*.pdb D:/out/plugins
-        cp LLMoney/LLMoney.h D:/out/sdk/Header
       shell: bash
 
     - name: Upload plugins
@@ -65,17 +56,10 @@ jobs:
         name: LLEssentials
         path: D:/out/plugins
 
-    - name: Upload SDK
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: SDK
-        path: D:/out/sdk
-
     - name: Compress to zip
       if: startsWith(github.ref, 'refs/tags/')
       run: |
         7z a D:/out/LLEssentials.zip D:/out/plugins
-        7z a D:/out/SDK.zip D:/out/sdk
       shell: bash
 
     - name: Release
@@ -85,6 +69,5 @@ jobs:
         body_path: ${{ github.workspace }}\CHANGELOG.md
         files: |
           D:/out/LLEssentials.zip
-          D:/out/SDK.zip
       env:
           GITHUB_REPOSITORY: LiteLDev/LiteLoaderPlugins
