@@ -1,2 +1,1 @@
-- Support LiteLoaderBDS 2.9.3(1.19.52.01)
-- Remove LLMoney because it has its own repository now
+- Support LiteLoaderBDS 2.10.0(1.19.61.01)
