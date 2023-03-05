@@ -9,9 +9,11 @@ namespace Settings {
 	extern clock_t TPratelimit;
 	extern int HOME_DISTANCE_LAND;
 	extern bool BACK_ENABLED;
+	extern bool BACK_NOTIFICATION_ENABLED;
 	extern bool SUICIDE_ENABLED;
 	extern bool TPA_ENABLED;
 	extern bool HOME_ENABLED;
+	extern bool WARP_ENABLED;
 	extern std::string LANGUAGE;
 	extern bool TOAST_ENABLED;
 

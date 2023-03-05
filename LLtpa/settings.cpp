@@ -15,8 +15,10 @@ namespace Settings {
 	clock_t TPratelimit = CLOCKS_PER_SEC * 5;
 	int HOME_DISTANCE_LAND = -1;
 	bool BACK_ENABLED = true;
+	bool BACK_NOTIFICATION_ENABLED = true;
 	bool SUICIDE_ENABLED = true;
 	bool TPA_ENABLED = true;
+	bool WARP_ENABLED = true;
 	bool HOME_ENABLED = true;
 	bool TOAST_ENABLED = true;
 
@@ -31,9 +33,11 @@ namespace Settings {
 		json["home_land_distance"] = HOME_DISTANCE_LAND;
 		json["suicide_enabled"] = SUICIDE_ENABLED;
 		json["back_enabled"] = BACK_ENABLED;
+		json["back_notification_enabled"] = BACK_NOTIFICATION_ENABLED;
 		json["tpa_enabled"] = TPA_ENABLED;
 		json["home_enabled"] = HOME_ENABLED;
 		json["toast_enabled"] = TOAST_ENABLED;
+		json["warp_enabled"] = WARP_ENABLED;
 		return json;
 	}
 
@@ -45,9 +49,11 @@ namespace Settings {
 		TRJ("home_land_distance", HOME_DISTANCE_LAND);
 		TRJ("suicide_enabled", SUICIDE_ENABLED);
 		TRJ("back_enabled", BACK_ENABLED);
+		TRJ("back_notification_enabled", BACK_NOTIFICATION_ENABLED);
 		TRJ("tpa_enabled", TPA_ENABLED);
 		TRJ("home_enabled", HOME_ENABLED);
 		TRJ("toast_enabled", TOAST_ENABLED);
+		TRJ("warp_enabled", WARP_ENABLED);
 	}
 
 	void WriteDefaultConfig(const std::string& fileName) {

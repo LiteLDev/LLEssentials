@@ -33,5 +33,21 @@ static const I18nBase::LangData defaultLangData = {
 		 {"cname.rm.success", u8"删除成功s"},
 		 {"cname.set.null", u8"未知名字"},
 		 {"hreload.success", u8"重载成功"},
-	}}
+	}},
+	{"ru_RU", {
+		 {"gmode.success", u8"Ваш игровой режим был изменен."},
+		 {"ban.list.success", u8"Готово"},
+		 {"ban.banip.success", u8" был заблокирован по IP."},
+		 {"ban.ban.success", u8"  был успешно заблокирован."},
+		 {"ban.unban.success", u8" был успешно разблокирован."},
+		 {"ban.unban.error", u8"Не удалось найти игрока с таким именем."},
+		 {"skick.success", u8" был кикнут."},
+		 {"vanish.success", u8"Вы успешно исчезли. Чтобы снова появиться, пожалуйста, перезайдите на сервер."},
+		 {"cname.set.notonline", u8"Игрок не в сети! Его пользовательское имя не было сохранено."},
+		 {"cname.set.success", u8"Пользовательское имя успешно применено."},
+		 {"cname.rm.notonline", u8"Игрок не в сети! Его пользовательское имя не было удалено."},
+		 {"cname.rm.success", u8"Пользовательское имя успешно удалено."},
+		 {"cname.set.null", u8"Null имя"},
+		 {"hreload.success", u8"Перезагружено"},
+	}},
 };

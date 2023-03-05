@@ -726,10 +726,8 @@ void tpa_entry() {
 	schTask();
 	Event::RegCmdEvent::subscribe([](const Event::RegCmdEvent& e) {
 		if (Settings::TPA_ENABLED) TpaCommand::setup(e.mCommandRegistry);
-		if (Settings::HOME_ENABLED) {
-			HomeCommand::setup(e.mCommandRegistry);
-		}
-		WarpCommand::setup(e.mCommandRegistry);
+		if (Settings::HOME_ENABLED) HomeCommand::setup(e.mCommandRegistry);
+		if (Settings::WARP_ENABLED) WarpCommand::setup(e.mCommandRegistry);
 		if (Settings::BACK_ENABLED) BackCommand::setup(e.mCommandRegistry);
 		if (Settings::SUICIDE_ENABLED) SuicideCommand::setup(e.mCommandRegistry);
 		LLtpaCommand::setup(e.mCommandRegistry);
@@ -739,7 +737,9 @@ void tpa_entry() {
 		Event::PlayerDieEvent::subscribe([](const Event::PlayerDieEvent& ev) {
 			ServerPlayer* sp = (ServerPlayer*)ev.mPlayer;
 			deathPos[sp] = Vec4{ sp };
-			sp->sendTextPacket(tr("tpa.back.use"), TextType::RAW);
+			if (Settings::BACK_NOTIFICATION_ENABLED) {
+				sp->sendTextPacket(tr("tpa.back.use"), TextType::RAW);
+			}
 			return true;
 			});
 	}
