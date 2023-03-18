@@ -1,0 +1,1 @@
+- Support LiteLoaderBDS 2.12.0(1.19.71.02)
