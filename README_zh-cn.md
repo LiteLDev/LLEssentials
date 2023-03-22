@@ -9,7 +9,7 @@
 ## 使用Lip
 
 ```bash
-lip install github.com/Tooth-Hub/LLEssentials
+lip install LLEssentials
 ```
 
 ## 手动安装

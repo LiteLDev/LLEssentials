@@ -9,7 +9,7 @@ Essentials for [LiteLoaderBDS](https://github.com/LiteLDev/LiteLoaderBDS)
 ## Use Lip
 
 ```bash
-lip install github.com/Tooth-Hub/LLEssentials
+lip install LLEssentials
 ```
 
 ## Manual
