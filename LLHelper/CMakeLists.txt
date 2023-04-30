@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.21)
 project(LLHelper)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_BUILD_TYPE Release)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/x64/)
 set(TARGET_DIR ${CMAKE_SOURCE_DIR}/x64/Release/)
@@ -36,6 +36,6 @@ include_directories(${CMAKE_SOURCE_DIR}/SDK/include)
 include_directories(${CMAKE_SOURCE_DIR}/SDK/include/llapi)
 include_directories(${CMAKE_SOURCE_DIR}/Header)
 
-add_custom_command(TARGET ${CMAKE_PROJECT_NAME} PRE_BUILD
-        COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepare_libraries.cmd ${PROJECT_SOURCE_DIR}
+add_custom_command(TARGET LLHelper PRE_BUILD
+        COMMAND cmd /c ${CMAKE_SOURCE_DIR}/prepare_libraries.cmd ${CMAKE_SOURCE_DIR}
         )
