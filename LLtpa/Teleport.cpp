@@ -1,6 +1,6 @@
 ﻿#include "settings.h"
 #include "homeStorage.h"
-#include "Tpa.h"
+#include "GlobalVar.h"
 #include <RegCommandAPI.h>
 #include <MC/Types.hpp>
 #include <Dedicated/Core.h>

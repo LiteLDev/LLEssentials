@@ -1,6 +1,6 @@
 ﻿#include<iostream>
 #include<filesystem>
-#include "Helper.h"
+#include "GlobalVar.h"
 #include <LLAPI.h>
 
 BOOL APIENTRY DllMain(HMODULE hModule,

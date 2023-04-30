@@ -35,3 +35,7 @@ target_link_libraries(LLHelper LiteLoader.lib
 include_directories(${CMAKE_SOURCE_DIR}/SDK/include)
 include_directories(${CMAKE_SOURCE_DIR}/SDK/include/llapi)
 include_directories(${CMAKE_SOURCE_DIR}/Header)
+
+add_custom_command(TARGET ${CMAKE_PROJECT_NAME} PRE_BUILD
+        COMMAND cmd /c ${PROJECT_SOURCE_DIR}/prepare_libraries.cmd ${PROJECT_SOURCE_DIR}
+        )

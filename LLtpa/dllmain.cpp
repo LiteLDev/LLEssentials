@@ -1,5 +1,5 @@
 ﻿#include <minwindef.h>
-#include "Tpa.h"
+#include "GlobalVar.h"
 #include "LLAPI.h"
 
 void tpa_entry();

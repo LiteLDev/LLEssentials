@@ -1,5 +1,5 @@
 ﻿#include "settings.h"
-#include "Helper.h"
+#include "GlobalVar.h"
 #include <unordered_map>
 #include <ScheduleAPI.h>
 #include <filesystem>

@@ -1,7 +1,7 @@
 #include <EventAPI.h>
 #include <stddef.h>
 #include <string>
-#include "Helper.h"
+#include "GlobalVar.h"
 #include <string_view>
 #include <MC/ExtendedCertificate.hpp>
 #include <MC/NetworkIdentifier.hpp>
