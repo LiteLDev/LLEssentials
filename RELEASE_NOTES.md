@@ -1,2 +1,1 @@
-- Support LiteLoaderBDS 2.12.0(1.19.71.02)
-- feat: /back configuration & new language
+- Support LiteLoaderBDS 2.13.0(1.19.81.01)
