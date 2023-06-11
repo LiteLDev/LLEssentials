@@ -20,27 +20,27 @@ Download from [Release](https://github.com/LiteLDev/LLEssentials/releases)
 
 ## LLHelper
 
-| Command                                       | Description                                              | Permission |
-|-----------------------------------------------|----------------------------------------------------------|------------|
-| /gmode player <pode(0/1/2/3)>                 | Change gamemode                                          | OP         |
-| /ban <ban/unban/list> [player] [time(second)] | Ban/unban a player                                       | OP         |
-| /transfer player IP port                      | Transfer a player to another server                      | OP         |
-| /helper <reload/update>                       | Reload config/Check plugin's update                      | OP         |
-| /skick player                                 | Force kick a player from server                          | OP         |
-| /cname <set/rm> player [nickname]             | Set nickname for a player                                | OP         |
-| /vanish                                       | invisibility(only effective for players who can see you) | OP         |
-| /crash player                                 | Crash player's client                                    | OP         |
-| /runas player command                         | Execute command as target player                         | OP         |
-| /tps                                          | Query server's TPS                                       | OP         |
+| Command                                        | Description                                              | Permission |
+| ---------------------------------------------- | -------------------------------------------------------- | ---------- |
+| /gmode \<player> <mode(0/1/2/3)>               | Change gamemode                                          | OP         |
+| /ban <ban/unban/list> \<player> [time(second)] | Ban/unban a player                                       | OP         |
+| /transfer \<player> \<IP> [port]               | Transfer a player to another server                      | OP         |
+| /helper \<reload/update>                       | Reload config/Check plugin's update                      | OP         |
+| /skick \<player>                               | Force kick a player from server                          | OP         |
+| /cname <set/rm> \<player> [nickname]           | Set nickname for a player                                | OP         |
+| /vanish                                        | invisibility(only effective for players who can see you) | OP         |
+| /crash \<player>                               | Crash player's client                                    | OP         |
+| /runas \<player> \<command>                    | Execute command as target player                         | OP         |
+| /tps                                           | Query server's TPS                                       | OP         |
+| /item                                          | Show the item info on hand                               | Player     |
 
 ## LLTpa
 
 | Command                                         | Description                                                                                                                                                                          | Permission |
-|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
 | /tpa <to/here/ac/de/cancel/toggle> [player]     | Teleport to a player's location/teleport the player to your location/accept the teleport/refuse the teleport/cancel the teleport/change the status of whether to accept the teleport | Player     |
-| /warp <add/del/go/ls> [warp]                    | Add a warp/delete warp/go to warp/list warp                                                                                                                                          | OP         |
-| /home <add/del/go/ls> [home]                    | Add a home/delete home/go home/list home                                                                                                                                             | Player     |
-| /item                                           | Show the item info on hand                                                                                                                                                           | Player     |
+| /warp <add/del/go/ls> \<warp>                   | Add a warp/delete warp/go to warp/list warp                                                                                                                                          | OP         |
+| /home <add/del/go/ls> \<home>                   | Add a home/delete home/go home/list home                                                                                                                                             | Player     |
 | /lltpa <reload/update> [isForce: true or false] | Reload config/Check plugin's update                                                                                                                                                  | OP         |
 
 # Config
