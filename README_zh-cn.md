@@ -32,6 +32,7 @@ lip install LLEssentials
 | /crash <玩家>                           | 崩溃玩家的客户端               | OP       |
 | /runas <玩家> <指令>                    | 以目标玩家的身份执行指令       | OP       |
 | /tps                                    | 查看服务器当前TPS              | OP       |
+| /item                                   | 查询你手上的物品信息           | 玩家     |
 
 ## LLTpa
 
@@ -40,7 +41,6 @@ lip install LLEssentials
 | /tpa <to/here/ac/de/cancel/toggle> [玩家]        | 传送到一名玩家的位置/将玩家传送到你的位置/接受传送/拒绝传送/取消传送/改变是否接受传送的状态 | 玩家     |
 | /warp <add/del/go/ls> <地标>                     | 添加一个地标/删除地标/前往地标/列出地标                                                     | OP       |
 | /home <add/del/go/ls> <家>                       | 添加一个家/删除家/前往家/列出家                                                             | 玩家     |
-| /item                                            | 查询你手上的物品信息                                                                        | 玩家     |
 | /lltpa <reload/update> [是否强制: true or false] | 重载配置文件/检查插件更新                                                                   | OP       |
 
 # 配置文件
