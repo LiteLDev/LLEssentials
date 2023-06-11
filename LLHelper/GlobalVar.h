@@ -4,10 +4,10 @@
 
 #pragma warning(disable:4996)
 
-#define LLHELPER_VERSION ll::Version{ 2,12,0 }
+#define LLHELPER_VERSION ll::Version{ 2,14,0 }
 
 void loadCfg();
 
-extern Minecraft* mc;
+extern Minecraft *mc;
 extern playerMap<string> ORIG_NAME;
 extern std::unordered_map<string, string> CNAME;
