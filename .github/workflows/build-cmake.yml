@@ -47,7 +47,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
         cp build/*/Release/*.dll D:/out/plugins
-        cp build/*/Release/*.dll D:/out/plugins
+        cp build/*/Release/*.pdb D:/out/plugins
       shell: bash
 
     - name: Upload plugins
