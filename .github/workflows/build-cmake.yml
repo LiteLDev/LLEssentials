@@ -46,8 +46,8 @@ jobs:
     - name: Copy Out Files
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: |
-        cp x64/Release/*.dll D:/out/plugins
-        cp x64/Release/*.pdb D:/out/plugins
+        cp build/Release/*.dll D:/out/plugins
+        cp build/Release/*.pdb D:/out/plugins
       shell: bash
 
     - name: Upload plugins

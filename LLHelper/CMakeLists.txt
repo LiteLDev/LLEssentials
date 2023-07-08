@@ -3,8 +3,6 @@ project(LLHelper)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_BUILD_TYPE Release)
-set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/x64/)
-set(TARGET_DIR ${CMAKE_SOURCE_DIR}/x64/Release/)
 
 file(GLOB SRC_FILES
         ${PROJECT_SOURCE_DIR}/*.cpp
