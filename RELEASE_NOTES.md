@@ -1,1 +1,1 @@
-- Support LiteLoaderBDS 2.14.0
+- Support LiteLoaderBDS 2.15.0
