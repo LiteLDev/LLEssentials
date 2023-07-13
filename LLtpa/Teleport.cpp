@@ -170,7 +170,7 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 			pl->runcmd("tpa de");
 			break;
 		default:
-            pl->runcmd("tpa de");
+            return;
 		}
 		});
 	//auto form = Form::SimpleForm(tr("tpa.request.title"), prompt.c_str());
