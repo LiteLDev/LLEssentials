@@ -166,11 +166,11 @@ void DoMakeReq(ServerPlayer* _a, ServerPlayer* _b, direction dir) {
 		case 1:
 			pl->runcmd("tpa ac");
 			break;
-		case 2:
+		case 0:
 			pl->runcmd("tpa de");
 			break;
 		default:
-			return;
+            pl->runcmd("tpa de");
 		}
 		});
 	//auto form = Form::SimpleForm(tr("tpa.request.title"), prompt.c_str());
