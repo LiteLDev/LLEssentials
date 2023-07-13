@@ -10,7 +10,7 @@ THook(void, "?explode@Level@@UEAAXAEAVBlockSource@@PEAVActor@@AEBVVec3@@M_N3M3@Z
 	return original(_this, a2, a3, a4, a5, a6, a7, a8, a9);
 }
 
-THook(void, "?explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
+THook(void, "?_explode@RespawnAnchorBlock@@CAXAEAVPlayer@@AEBVBlockPos@@AEAVBlockSource@@AEAVLevel@@@Z",
 	Player* a1, BlockPos* a2, BlockSource* a3, Level* a4) {
 	if (Settings::NO_EXPLOSION) {
 		return;
